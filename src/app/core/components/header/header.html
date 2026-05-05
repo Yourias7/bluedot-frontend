@@ -2,7 +2,11 @@
     <app-logo></app-logo>
     <nav class="navbar navbar-expand-lg">
         <ul class="nav">
-            <li class="nav-item"><a class="nav-link">Κλείσε ραντεβού</a></li>
+            @for(route of navRoutes; track route) {
+            <li class="nav-item">
+                <a class="nav-link" [routerLink]="[route.path]" [routerLinkActive]="'active'">{{route.title}}</a>
+            </li>
+            }
             <li class="nav-item"><a class="nav-link">Ιατρεία κοντά μου</a></li>
             <li class="nav-item"><a class="nav-link">Σχετικά με εμάς</a></li>
             <li class="nav-item"><a class="nav-link">Βοήθεια</a></li>
