@@ -15,5 +15,9 @@ export const routes: Routes = [
     {
         path:'search-results',
         component:DoctorResultPage
+    },
+    {
+        path:'map-results',
+        component:DoctorResultPage
     }
 ];
