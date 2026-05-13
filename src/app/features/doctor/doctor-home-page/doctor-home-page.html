@@ -1,0 +1,40 @@
+<section class="doctor-home-page">
+  <div class="welcome-section">
+    <h1>Welcome back Doctor1</h1>
+
+    <div class="notification-card">
+      <p>
+        You have new appointment activity.
+        Click on a highlighted day to view your schedule.
+      </p>
+    </div>
+  </div>
+
+  <div class="calendar-card">
+    <div class="calendar-header">
+      <button class="month-button">&lt;</button>
+      <h2>September 2025</h2>
+      <button class="month-button">&gt;</button>
+    </div>
+
+    <div class="week-row">
+      @for (weekDay of weekDays; track weekDay) {
+        <div class="week-day">
+          {{ weekDay }}
+        </div>
+      }
+    </div>
+
+    <div class="days-grid">
+      @for (day of calendarDays; track day.date) {
+        <button
+          class="day-button"
+          [class.activity-day]="day.hasActivity"
+          (click)="openDay(day)"
+        >
+          {{ day.number }}
+        </button>
+      }
+    </div>
+  </div>
+</section>
