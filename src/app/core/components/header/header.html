@@ -1,19 +1,40 @@
-<header class="d-flex p-2 align-items-center justify-content-center gap-4">
-    <app-logo></app-logo>
-    <nav class="navbar navbar-expand-lg">
-        <ul class="nav">
-            @for(route of navRoutes; track route) {
-            <li class="nav-item">
-                <a class="nav-link" [routerLink]="[route.path]" [routerLinkActive]="'active'">{{route.title}}</a>
-            </li>
-            }
-            <li class="nav-item"><a class="nav-link">Ιατρεία κοντά μου</a></li>
-            <li class="nav-item"><a class="nav-link">Σχετικά με εμάς</a></li>
-            <li class="nav-item"><a class="nav-link">Βοήθεια</a></li>
-        </ul>
-    </nav>
-    <div class="d-flex p-2 justify-content-evenly gap-2">
-        <button class="btn btn-light">Σύνδεση</button>
-        <button class="btn btn-dark">Εγγραφή</button>
-    </div>
+<header class="app-header">
+  <div class="header-left">
+    <a routerLink="/" class="logo-link">
+      <app-logo></app-logo>
+    </a>
+  </div>
+
+  <nav class="header-nav">
+    @for (route of navRoutes; track route.path + route.title) {
+      <a
+        [routerLink]="route.path"
+        routerLinkActive="active-link"
+        class="nav-link"
+      >
+        {{ route.title }}
+      </a>
+    }
+  </nav>
+
+  <div class="header-right">
+    @if (currentUserRole === 'doctor') {
+      <div class="doctor-profile">
+        <span class="doctor-name">{{ currentUserName }}</span>
+        <span class="doctor-avatar">👤</span>
+      </div>
+    }
+
+    @if (currentUserRole !== 'doctor') {
+  <div class="patient-actions">
+    <button type="button" class="login-button">
+      Σύνδεση
+    </button>
+
+    <button type="button" class="register-button">
+      Εγγραφή
+    </button>
+  </div>
+}
+  </div>
 </header>
