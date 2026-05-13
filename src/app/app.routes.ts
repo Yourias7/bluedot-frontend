@@ -1,6 +1,3 @@
-import { Routes } from '@angular/router';
-import { LandingPage } from './features/landing-page/landing-page';
-import { DoctorResultPage } from './features/patient/doctor-result-page/doctor-result-page';
 import { DoctorHomePage } from './features/doctor/doctor-home-page/doctor-home-page';
 import { DoctorAvailabilityPage } from './features/doctor/doctor-availability-page/doctor-availability-page';
 import { DoctorAppointmentDetailsPage } from './features/doctor/doctor-appointment-details-page/doctor-appointment-details-page';
@@ -40,5 +37,9 @@ export const routes: Routes = [
     path: 'doctor/appointments/:appointmentId',
     component: DoctorAppointmentDetailsPage,
     canActivate: [doctorOnlyGuard]
-  }
+  },
+     {
+        path:'404',
+        component:Error404
+    }
 ];

@@ -1,5 +1,11 @@
-<main>
-    <section class="mx-5">
-       <app-doctor-result-card></app-doctor-result-card>
-    </section>
-</main>
+<section>
+    @if(doctors && doctors.length>0)
+    {
+    @for (doc of doctors; track $index) {
+    <app-doctor-result-card [doctor]=doc (cardClicked)="onCardClicked(doc.id)"></app-doctor-result-card>
+    }
+    }
+    @else {
+    <p>no doctors found</p>
+    }
+</section>
