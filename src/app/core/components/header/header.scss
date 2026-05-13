@@ -1,0 +1,110 @@
+.app-header {
+  width: 100%;
+  min-height: 76px;
+  padding: 0 72px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #edf0f7;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+}
+
+.logo-link {
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+}
+
+.header-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 42px;
+}
+
+.nav-link {
+  color: #1f2a44;
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.nav-link:hover {
+  opacity: 0.75;
+}
+
+.active-link {
+  color: #2f45ff;
+}
+
+.header-right {
+  min-width: 130px;
+
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.doctor-profile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.doctor-name {
+  color: #1f2a44;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.doctor-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #eef1ff;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-button {
+  padding: 9px 16px;
+  border: 1px solid #252525;
+  border-radius: 8px;
+  background-color: #ffffff;
+  color: #252525;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.login-button:hover {
+  opacity: 0.9;
+}
+.patient-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.register-button {
+  padding: 10px 18px;
+  border: none;
+  border-radius: 8px;
+  background-color: #252525;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.register-button:hover {
+  opacity: 0.9;
+}
