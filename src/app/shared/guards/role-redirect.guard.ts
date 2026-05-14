@@ -1,9 +1,10 @@
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { FakeAuthService } from '../services/fake-auth';
+import { AuthenticationServices } from '../services/authentication-services';
+
 
 export const roleRedirectGuard = () => {
-  const fakeAuthService = inject(FakeAuthService);
+  const fakeAuthService = inject(AuthenticationServices);
   const router = inject(Router);
 
   /*

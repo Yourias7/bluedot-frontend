@@ -8,12 +8,13 @@ type CalendarDay = {
 };
 
 @Component({
-  selector: 'app-doctor-home-page',
+  selector: 'app-doctor-home',
   imports: [],
-  templateUrl: './doctor-home-page.html',
-  styleUrl: './doctor-home-page.scss'
+  templateUrl: './doctor-home.html',
+  styleUrl: './doctor-home.scss'
 })
-export class DoctorHomePage {
+export class DoctorHome
+ {
   weekDays = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
 
   calendarDays: CalendarDay[] = [

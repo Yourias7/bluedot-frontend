@@ -1,14 +1,14 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DoctorFakeDataService, Appointment } from '../services/doctor-fake-data';
+import { DoctorFakeDataService, Appointment } from '../../../../shared/services/doctor-fake-data';
 
 @Component({
-  selector: 'app-doctor-appointment-details-page',
+  selector: 'app-doctor-appointment-details',
   imports: [],
-  templateUrl: './doctor-appointment-details-page.html',
-  styleUrl: './doctor-appointment-details-page.scss'
+  templateUrl: './doctor-appointment-details.html',
+  styleUrl: './doctor-appointment-details.scss'
 })
-export class DoctorAppointmentDetailsPage {
+export class DoctorAppointmentDetails {
   appointmentId: string | null = null;
   appointment: Appointment | undefined;
 

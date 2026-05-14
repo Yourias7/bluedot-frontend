@@ -1,16 +1,16 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DoctorFakeDataService, AvailabilitySlot } from '../services/doctor-fake-data';
+import { DoctorFakeDataService, AvailabilitySlot } from '../../../../shared/services/doctor-fake-data';
 
 type UserRole = 'patient' | 'doctor' | 'manager';
 
 @Component({
-  selector: 'app-doctor-availability-page',
+  selector: 'app-doctor-availability',
   imports: [],
-  templateUrl: './doctor-availability-page.html',
-  styleUrl: './doctor-availability-page.scss'
+  templateUrl: './doctor-availability.html',
+  styleUrl: './doctor-availability.scss'
 })
-export class DoctorAvailabilityPage {
+export class DoctorAvailability {
   selectedDate: string | null = null;
 
   /*
