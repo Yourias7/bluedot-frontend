@@ -1,7 +1,8 @@
 <article class="card p-2 d-inline-block">
-    <h5>Δρ. Θάνος Κανελόπουλος</h5>
+    <h5>{{ doctor?.firstName }} {{ doctor?.lastName }}</h5>
     <p-avatar icon="pi pi-user" class="mr-2" size="xlarge" />
-    <p>Ειδικότητα: Καρδιολόγος</p>
-    <p>Τοποθεσία: Αθήνα</p>
+    <p>{{ doctor?.specialty?.name }}</p>
+    <p>{{doctor?.clinicAddress}}</p>
     <p>Βαθμολογία: 4.5/5</p>
+    <button pButton type="button" class="p-button-primary" (click)="viewDetails(doctor?.id)">Περισσότερα</button>
 </article>
