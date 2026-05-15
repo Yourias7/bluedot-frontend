@@ -84,9 +84,9 @@
       </div>
     }
 
-    @if (appointment.status === 'rejected') {
-      <div class="status-box rejected-box">
-        Το ραντεβού απορρίφθηκε.
+    @if (backendMessage) {
+      <div class="status-box">
+        <p>{{ backendMessage }}</p> 
       </div>
     }
 

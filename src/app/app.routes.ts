@@ -1,8 +1,11 @@
-import { DoctorHomePage } from './features/doctor/doctor-home-page/doctor-home-page';
-import { DoctorAvailabilityPage } from './features/doctor/doctor-availability-page/doctor-availability-page';
-import { DoctorAppointmentDetailsPage } from './features/doctor/doctor-appointment-details-page/doctor-appointment-details-page';
-import { roleRedirectGuard } from './core/guards/role-redirect.guard';
-import { doctorOnlyGuard } from './core/guards/doctor-only.guard';
+import { Routes } from '@angular/router';
+import { LandingPage } from './features/visitor/landing-page/landing-page';
+import { DoctorResultPage } from './features/patient/doctor-result-page/doctor-result-page';
+import { DoctorHome } from './features/doctor/pages/doctor-home/doctor-home';
+import { DoctorAvailability,} from './features/doctor/pages/doctor-availability/doctor-availability';
+import { DoctorAppointmentDetails, } from './features/doctor/pages/doctor-appointment-details/doctor-appointment-details';
+import { roleRedirectGuard } from './shared/guards/role-redirect.guard';
+import { doctorOnlyGuard } from './shared/guards/doctor-only.guard';
 
 export const routes: Routes = [
   {
@@ -25,17 +28,17 @@ export const routes: Routes = [
   },
   {
     path: 'doctor',
-    component: DoctorHomePage,
+    component: DoctorHome,
     canActivate: [doctorOnlyGuard]
   },
   {
-    path: 'doctor/availability/:date',
-    component: DoctorAvailabilityPage,
+    path: 'doctor/availability',
+    component: DoctorAvailability,
     canActivate: [doctorOnlyGuard]
   },
   {
     path: 'doctor/appointments/:appointmentId',
-    component: DoctorAppointmentDetailsPage,
+    component: DoctorAppointmentDetails,
     canActivate: [doctorOnlyGuard]
   },
      {

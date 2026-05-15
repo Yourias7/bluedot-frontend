@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { FakeAuthService, UserRole } from '../../services/fake-auth';
-import { Logo } from '../logo/logo';
+import { UserRole } from '../../../../shared/domain/user-role';
+import { AuthenticationServices } from '../../../../shared/services/authentication-services';
+import { Logo } from '../common/logo/logo';
 
 type NavRoute = {
   path: string;
@@ -32,9 +33,9 @@ export class Header {
     { path: 'doctor/availability/2025-09-09', title: 'Ραντεβού ημέρας' }
   ];
 
-  constructor(private fakeAuthService: FakeAuthService) {
-    this.currentUserRole = this.fakeAuthService.getCurrentUserRole();
-    this.currentUserName = this.fakeAuthService.getCurrentUserName();
+  constructor(private authenticationServices: AuthenticationServices) {
+    this.currentUserRole = this.authenticationServices.getCurrentUserRole();
+    this.currentUserName = this.authenticationServices.getCurrentUserName();
   }
 
   get navRoutes(): NavRoute[] {
