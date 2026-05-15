@@ -12,7 +12,7 @@ export class FakeAuthService {
     - reads the role claim from the token
   */
 
-  private isUserLoggedIn = true;
+  private isUserLoggedIn = false;
   private currentUserRole: UserRole = 'doctor';
   private currentUserName = 'Doctor1';
 

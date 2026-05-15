@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Router,RouterLink, RouterLinkActive } from '@angular/router';
 import { FakeAuthService, UserRole } from '../../services/fake-auth';
 import { Logo } from '../logo/logo';
 
@@ -32,7 +32,7 @@ export class Header {
     { path: 'doctor/availability/2025-09-09', title: 'Ραντεβού ημέρας' }
   ];
 
-  constructor(private fakeAuthService: FakeAuthService) {
+  constructor(private fakeAuthService: FakeAuthService, private router: Router) {
     this.currentUserRole = this.fakeAuthService.getCurrentUserRole();
     this.currentUserName = this.fakeAuthService.getCurrentUserName();
   }
@@ -43,5 +43,9 @@ export class Header {
     }
 
     return this.patientNavRoutes;
+  }
+
+  register() {
+    this.router.navigate(['/register']);
   }
 }

@@ -3,6 +3,12 @@ import { DoctorAvailabilityPage } from './features/doctor/doctor-availability-pa
 import { DoctorAppointmentDetailsPage } from './features/doctor/doctor-appointment-details-page/doctor-appointment-details-page';
 import { roleRedirectGuard } from './core/guards/role-redirect.guard';
 import { doctorOnlyGuard } from './core/guards/doctor-only.guard';
+import { Routes } from '@angular/router';
+import { LandingPage } from './features/landing-page/landing-page';
+import { DoctorResultPage } from './features/patient/doctor-result-page/doctor-result-page';
+import { Error404 } from './shared/components/error-404/error-404';
+import { DoctorDetailsPage } from './features/patient/doctor-details-page/doctor-details-page';
+import { RegisterPage } from './core/components/register-page/register-page';
 
 export const routes: Routes = [
   {
@@ -16,12 +22,20 @@ export const routes: Routes = [
     canActivate: [roleRedirectGuard]
   },
   {
+    path:'register',
+    component: RegisterPage
+  },
+  {
     path: 'search-results',
     component: DoctorResultPage
   },
   {
     path: 'map-results',
     component: DoctorResultPage
+  },
+  {
+    path: 'doctor-details/:id',
+    component: DoctorDetailsPage
   },
   {
     path: 'doctor',
@@ -38,8 +52,8 @@ export const routes: Routes = [
     component: DoctorAppointmentDetailsPage,
     canActivate: [doctorOnlyGuard]
   },
-     {
-        path:'404',
-        component:Error404
-    }
+  {
+    path: '404',
+    component: Error404
+  }
 ];
