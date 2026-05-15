@@ -1,7 +1,9 @@
 import { Component } from '@angular/core';
-import { Router,RouterLink, RouterLinkActive } from '@angular/router';
-import { FakeAuthService, UserRole } from '../../services/fake-auth';
-import { Logo } from '../logo/logo';
+import { RouterLink, RouterLinkActive } from '@angular/router';
+import { UserRole } from '../../../../shared/domain/user-role';
+import { AuthenticationServices } from '../../../../shared/services/authentication-services';
+import { Logo } from '../common/logo/logo';
+import { FakeAuthService } from '../../../services/fake-auth';
 
 type NavRoute = {
   path: string;
@@ -10,7 +12,7 @@ type NavRoute = {
 
 @Component({
   selector: 'app-header',
-  imports: [RouterLink, RouterLinkActive, Logo],
+  imports: [RouterLink, RouterLinkActive, Logo, FakeAuthService],
   templateUrl: './header.html',
   styleUrl: './header.scss'
 })
@@ -32,9 +34,9 @@ export class Header {
     { path: 'doctor/availability/2025-09-09', title: 'Ραντεβού ημέρας' }
   ];
 
-  constructor(private fakeAuthService: FakeAuthService, private router: Router) {
-    this.currentUserRole = this.fakeAuthService.getCurrentUserRole();
-    this.currentUserName = this.fakeAuthService.getCurrentUserName();
+  constructor(private authenticationServices: AuthenticationServices) {
+    this.currentUserRole = this.authenticationServices.getCurrentUserRole();
+    this.currentUserName = this.authenticationServices.getCurrentUserName();
   }
 
   get navRoutes(): NavRoute[] {
@@ -45,7 +47,7 @@ export class Header {
     return this.patientNavRoutes;
   }
 
-  register() {
+ /*  register() {
     this.router.navigate(['/register']);
-  }
+  } */
 }

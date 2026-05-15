@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
-import { Header } from '../components/header/header';
-import { Footer } from '../components/footer/footer';
-import { HomeHeroSection } from '../../features/home-hero-section/home-hero-section';
-import { LandingPage } from "../../features/landing-page/landing-page";
+import { Header } from './components/header/header';
+import { Footer } from './components/footer/footer';
+import { HomeHeroSection } from '../../features/visitor/landing-page/components/home-hero-section/home-hero-section';
+import { LandingPage } from "../../features/visitor/landing-page/landing-page";
 import { RouterOutlet } from "@angular/router";
 
 

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { HomeHeroSection } from "../home-hero-section/home-hero-section";
+import { HomeHeroSection } from "./components/home-hero-section/home-hero-section";
 
 @Component({
   selector: 'app-landing-page',
