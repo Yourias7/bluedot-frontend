@@ -6,6 +6,9 @@ import { DoctorAvailability,} from './features/doctor/pages/doctor-availability/
 import { DoctorAppointmentDetails, } from './features/doctor/pages/doctor-appointment-details/doctor-appointment-details';
 import { roleRedirectGuard } from './shared/guards/role-redirect.guard';
 import { doctorOnlyGuard } from './shared/guards/doctor-only.guard';
+import { Error404 } from './shared/components/error-404/error-404';
+import { DoctorDetailsPage } from './features/patient/doctor-details-page/doctor-details-page';
+import { RegisterPage } from './features/visitor/register-page/register-page';
 
 export const routes: Routes = [
   {
@@ -19,12 +22,20 @@ export const routes: Routes = [
     canActivate: [roleRedirectGuard]
   },
   {
+    path:'register',
+    component: RegisterPage
+  },
+  {
     path: 'search-results',
     component: DoctorResultPage
   },
   {
     path: 'map-results',
     component: DoctorResultPage
+  },
+  {
+    path: 'doctor-details/:id',
+    component: DoctorDetailsPage
   },
   {
     path: 'doctor',
@@ -41,8 +52,8 @@ export const routes: Routes = [
     component: DoctorAppointmentDetails,
     canActivate: [doctorOnlyGuard]
   },
-    //  {
-    //     path:'404',
-    //     component:Error404
-    // }
+  {
+    path: '404',
+    component: Error404
+  }
 ];

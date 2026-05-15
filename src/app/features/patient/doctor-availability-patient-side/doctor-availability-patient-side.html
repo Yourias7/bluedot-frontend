@@ -1,0 +1,41 @@
+<section class="availability-page">
+  <div class="page-header">
+    <div>
+      <h2>Διαθεσιμότητες</h2>
+      <p>Selected day:</p>
+    </div>
+  </div>
+
+  <div class="content-card">
+    <div class="date-box">
+      <label>Date</label>
+      <input type="date">
+    </div>
+    <br>
+    <div class="card slots-grid d-flex flex-row gap-3 flex-wrap justify-content-center">
+      @for (slot of availabilitySlots; track slot.id) {
+        <button
+          class="slot-card"
+          [class.free-slot]="slot.status === 'free'"
+          [class.pending-slot]="slot.status === 'pending'"
+          [class.booked-slot]="slot.status === 'booked'"
+          [class.disabled-slot]="slot.status === 'disabled'"
+        >
+          <span class="slot-icon">▣</span>
+          <span>{{ slot.startTime }} - {{ slot.endTime }}</span>
+        </button>
+      }
+    </div>
+  </div>
+
+  @if (showSlotMenu && selectedSlot !== null) {
+  <div
+    class="slot-menu"
+    [style.left.px]="menuX"
+    [style.top.px]="menuY"
+    (click)="$event.stopPropagation()"
+  >
+
+  </div>
+}
+</section>
