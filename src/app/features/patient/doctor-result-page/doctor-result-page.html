@@ -1,7 +1,23 @@
-<section>
-    @if(doctors && doctors.length>0)
+<!--the filter tags-->
+
+<div class="d-flex flex-row mb-3 justify-content-center align-items-center gap-2">
+    <p>Ταξινόμηση κατά:</p>
+    <p-tag value="Σχετικότητα" />
+    <p-tag severity="secondary" value="Κριτικές" />
+    <p-tag severity="secondary" value="Όνομα (Α -Ω)" />
+</div>
+
+<!--The paginator-->
+
+<div class="flex justify-center">
+    <p-paginator (onPageChange)="onPage($event)" [first]="first" [rows]="rows" [totalRecords]="doctors?.length ?? 0"
+        [rowsPerPageOptions]="[10, 20, 30]" />
+</div>
+
+<section class="d-flex flex-row flex-wrap mb-3">
+    @if(pagedDoctors && pagedDoctors.length > 0)
     {
-    @for (doc of doctors; track $index) {
+    @for (doc of pagedDoctors; track $index) {
     <app-doctor-result-card [doctor]=doc (cardClicked)="onCardClicked(doc.id)"></app-doctor-result-card>
     }
     }
@@ -9,3 +25,8 @@
     <p>no doctors found</p>
     }
 </section>
+
+<div class="flex justify-center">
+    <p-paginator (onPageChange)="onPage($event)" [first]="first" [rows]="rows" [totalRecords]="doctors?.length ?? 0"
+        [rowsPerPageOptions]="[10, 20, 30]" />
+</div>

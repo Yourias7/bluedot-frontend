@@ -1,8 +1,47 @@
 @if(userDetailedInfo){
-<section>
-    <h1>{{userDetailedInfo.firstName}} {{userDetailedInfo.lastName}}</h1>
-    <p>{{userDetailedInfo.specialty?.name}}</p>
-    <p>{{userDetailedInfo.clinicAddress}}</p>
-    <p>{{userDetailedInfo.bio}}</p>
+<section class="container mt-4 d-flex flex-row gap-4">
+    <div>
+        <p-avatar icon="pi pi-user" class="mr-2" size="xlarge" />
+    </div>
+    <div>
+        <h1>{{userDetailedInfo.firstName}} {{userDetailedInfo.lastName}}</h1>
+        <p>{{userDetailedInfo.specialty?.name}}</p>
+        <div class="rating-container d-flex flex-row gap-2 align-items-center">
+            @for (n of [1,2,3,4,5]; track $index) {
+            @if(n>getfilledStars()){
+            <i class="pi pi-star"></i>
+            }
+            @else{
+            <i class="pi pi-star-fill"></i>
+            }
+            }
+            <p>{{ review }}/5</p>
+            <p>(39)</p>
+        </div>
+        <br>
+         <p>Διεύθυνση: {{userDetailedInfo.clinicAddress}}</p>
+         <p>Τηλέφωνο: {{userDetailedInfo.phoneNumber}}</p>
+         <p>Email: {{userDetailedInfo.email}}</p>
+    </div>
+</section>
+<section class="container mt-4">
+    <p-tabs value="0" class="mb-3">
+        <p-tablist>
+            <p-tab value="0">Γενικά</p-tab>
+            <p-tab value="1">Αξιολογήσεις</p-tab>
+        </p-tablist>
+        <p-tabpanel value="0">
+            <p>{{userDetailedInfo.bio}}</p>
+        </p-tabpanel>
+        <p-tabpanel value="1">
+            <p>Εδώ θα εμφανίζονται οι κριτικές του γιατρού.</p>
+        </p-tabpanel>
+    </p-tabs>
+</section>
+<section class="container mt-4">
+  <app-doctor-availability-patient-side></app-doctor-availability-patient-side>
+</section>
+<section class="container mt-4">
+    <button class="btn btn-primary">Κλείστε ραντεβού</button>
 </section>
 }

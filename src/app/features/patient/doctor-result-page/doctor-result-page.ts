@@ -1,21 +1,37 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { AvatarModule } from 'primeng/avatar';
+import { Paginator, PaginatorModule, PaginatorState } from 'primeng/paginator';
 import { Doctor } from '../../../shared/domain/doctor';
 import { DoctorResultCard } from "./components/doctor-result-card/doctor-result-card";
-import { DoctorService } from '../../../shared/services/doctor-service';
+import { DoctorSearchService } from '../../../shared/services/doctor-search-service';
 import { Router } from '@angular/router';
+import { PaginatorBasicDemo } from '../../../shared/components/paginator-basic/paginator-basic';
+import { Tag, TagModule } from 'primeng/tag';
 
 @Component({
   selector: 'app-doctor-result-page',
-  imports: [AvatarModule, DoctorResultCard],
+  imports: [CommonModule, AvatarModule, PaginatorModule, DoctorResultCard, PaginatorBasicDemo, Tag, TagModule],
   templateUrl: './doctor-result-page.html',
   styleUrl: './doctor-result-page.scss',
 })
 export class DoctorResultPage {
 
   doctors?: Doctor[];
-  constructor(doctorService: DoctorService, private router: Router) {
+  first = 0;
+  rows = 5;
+
+  constructor(doctorService: DoctorSearchService, private router: Router) {
     this.doctors = doctorService.getDoctors();
+  }
+
+  get pagedDoctors(): Doctor[] {
+    return this.doctors?.slice(this.first, this.first + this.rows) ?? [];
+  }
+
+  onPage(event: PaginatorState) {
+    this.first = event.first ?? 0;
+    this.rows = event.rows ?? 10;
   }
 
   onCardClicked(id?: number) {

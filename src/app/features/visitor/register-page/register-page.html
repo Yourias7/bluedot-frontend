@@ -1,0 +1,45 @@
+<h1>Εγγραφή χρήστη</h1>
+<section class="container mt-4">
+    <p-tabs value="0" class="mb-3">
+        <p-tablist>
+            <p-tab value="0">Ψάχνω γιατρό</p-tab>
+            <p-tab value="1">Είμαι γιατρός</p-tab>
+        </p-tablist>
+        <p-tabpanel value="0">
+            <form [formGroup]="patient_registerForm" (ngSubmit)="onSubmit()">
+                <app-register-common-fields [formGroup]="patient_registerForm"></app-register-common-fields>
+                <div>
+                    <input type="checkbox" formControlName="terms">
+                    <label for="checkbox">Έχω διαβάσει και αποδεχθεί τους Όρους Χρήσης</label>
+                    <br>
+                </div>
+                <button type="submit" [disabled]="patient_registerForm.invalid" class="register-button">Εγγραφή</button>
+            </form>
+        </p-tabpanel>
+        <p-tabpanel value="1">
+            <form [formGroup]="doctor_registerForm" (ngSubmit)="onSubmit()">
+                <app-register-common-fields [formGroup]="doctor_registerForm"></app-register-common-fields>
+                <div class="mb-3">
+                    <label for="specialization" class="form-label">Ειδικότητα</label>
+               <!--      <div class="card flex justify-center">
+                        <p-listbox [options]="items" [(ngModel)]="selectedItems" [selectAll]="selectAll" [filter]="true"
+                            [checkbox]="true" optionLabel="label" [virtualScroll]="true" [virtualScrollItemSize]="40"
+                            [multiple]="true" [metaKeySelection]="false" (onSelectAllChange)="onSelectAllChange($event)"
+                            (onChange)="onChange($event)" scrollHeight="250px" [striped]="true"
+                            class="w-full md:w-56" />
+                    </div> -->
+
+                    <!--FIXME-->>
+                </div>
+                <div>
+                    <input type="checkbox" formControlName="terms">
+                    <label for="checkbox">Έχω διαβάσει και αποδεχθεί τους Όρους Χρήσης</label>
+                    <br>
+                </div>
+                <button type="submit" [disabled]="doctor_registerForm.invalid" class="register-button">Εγγραφή</button>
+            </form>
+        </p-tabpanel>
+    </p-tabs>
+    <!--   -->
+
+</section>
