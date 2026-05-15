@@ -1,45 +1,47 @@
 import { Injectable } from '@angular/core';
-
-export type SlotStatus = 'free' | 'pending' | 'booked' | 'disabled';
-
-export type AppointmentStatus = 'pending' | 'booked' | 'rejected';
-
-export type AvailabilitySlot = {
-  id: number;
-  startTime: string;
-  endTime: string;
-  status: SlotStatus;
-  appointmentId: number | null;
-};
-
-export type ChatMessage = {
-  sender: 'doctor' | 'patient';
-  text: string;
-  sentAt: string;
-};
-
-export type Appointment = {
-  id: number;
-  status: AppointmentStatus;
-
-  specialty: string;
-  date: string;
-  startTime: string;
-  endTime: string;
-
-  patientName: string;
-  patientPhone: string;
-  patientEmail: string;
-
-  patientMessage: string;
-
-  conversation: ChatMessage[];
-};
+import { CalendarDay } from '../domain/calendar-day';
+import { Observable, of } from 'rxjs';
+import { AvailabilitySlot } from '../domain/availability-slot';
+import { Appointment } from '../domain/appointment';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-export class DoctorFakeDataService {
+export class DoctorService {
+  getDaysWithAvailability(): Observable<CalendarDay[]> {
+    return of([
+      { number: 1, date: '2025-09-01', hasActivity: false },
+      { number: 2, date: '2025-09-02', hasActivity: false },
+      { number: 3, date: '2025-09-03', hasActivity: false },
+      { number: 4, date: '2025-09-04', hasActivity: false },
+      { number: 5, date: '2025-09-05', hasActivity: false },
+      { number: 6, date: '2025-09-06', hasActivity: false },
+      { number: 7, date: '2025-09-07', hasActivity: false },
+      { number: 8, date: '2025-09-08', hasActivity: false },
+      { number: 9, date: '2025-09-09', hasActivity: true },
+      { number: 10, date: '2025-09-10', hasActivity: false },
+      { number: 11, date: '2025-09-11', hasActivity: false },
+      { number: 12, date: '2025-09-12', hasActivity: false },
+      { number: 13, date: '2025-09-13', hasActivity: true },
+      { number: 14, date: '2025-09-14', hasActivity: false },
+      { number: 15, date: '2025-09-15', hasActivity: false },
+      { number: 16, date: '2025-09-16', hasActivity: false },
+      { number: 17, date: '2025-09-17', hasActivity: false },
+      { number: 18, date: '2025-09-18', hasActivity: false },
+      { number: 19, date: '2025-09-19', hasActivity: false },
+      { number: 20, date: '2025-09-20', hasActivity: false },
+      { number: 21, date: '2025-09-21', hasActivity: false },
+      { number: 22, date: '2025-09-22', hasActivity: false },
+      { number: 23, date: '2025-09-23', hasActivity: false },
+      { number: 24, date: '2025-09-24', hasActivity: false },
+      { number: 25, date: '2025-09-25', hasActivity: false },
+      { number: 26, date: '2025-09-26', hasActivity: false },
+      { number: 27, date: '2025-09-27', hasActivity: false },
+      { number: 28, date: '2025-09-28', hasActivity: false },
+      { number: 29, date: '2025-09-29', hasActivity: false },
+      { number: 30, date: '2025-09-30', hasActivity: false }
+    ]);
+  }
   availabilitySlots: AvailabilitySlot[] = [
     {
       id: 1,
@@ -193,17 +195,7 @@ export class DoctorFakeDataService {
     if (slot !== undefined) {
       slot.status = 'booked';
     }
-
-    /*
-      TEMPORARY FRONTEND-ONLY LOGIC.
-
-      Later this should call the backend, for example:
-      PATCH /api/appointments/{appointmentId}/accept
-
-      The backend/database should update:
-      - Appointment.Status = booked
-      - Availability status/equivalent = booked
-    */
+    return of(true);
   }
 
   rejectAppointment(appointmentId: number) {
@@ -223,42 +215,25 @@ export class DoctorFakeDataService {
       slot.status = 'free';
       slot.appointmentId = null;
     }
-
-    /*
-      TEMPORARY FRONTEND-ONLY LOGIC.
-
-      Later this should call the backend, for example:
-      PATCH /api/appointments/{appointmentId}/reject
-
-      This version rejects the appointment and makes the slot free again.
-    */
+    return of(true);
   }
 
-  rejectAppointmentAndDisableSlot(appointmentId: number) {
+  rejectAppointmentAndDisableSlot(appointmentId: number): Observable<boolean> {
     const appointment = this.getAppointmentById(appointmentId);
 
-    if (appointment === undefined) {
-      return;
+    if (appointment) {
+      appointment.status = 'rejected';
+
+      const slot = this.availabilitySlots.find(
+        slot => slot.appointmentId === appointmentId
+      );
+
+      if (slot !== undefined) {
+        slot.status = 'disabled';
+        slot.appointmentId = null;
+      }
     }
-
-    appointment.status = 'rejected';
-
-    const slot = this.availabilitySlots.find(
-      slot => slot.appointmentId === appointmentId
-    );
-
-    if (slot !== undefined) {
-      slot.status = 'disabled';
-      slot.appointmentId = null;
-    }
-
-    /*
-      TEMPORARY FRONTEND-ONLY LOGIC.
-
-      Later this should call the backend, for example:
-      PATCH /api/appointments/{appointmentId}/reject-and-disable-slot
-
-      This version rejects the appointment and disables the related slot.
-    */
+    return of(true);
   }
 }
+

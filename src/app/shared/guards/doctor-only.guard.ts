@@ -1,6 +1,5 @@
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { DoctorFakeDataService } from '../services/doctor-fake-data';
 import { AuthenticationServices } from '../services/authentication-services';
 
 export const doctorOnlyGuard = () => {

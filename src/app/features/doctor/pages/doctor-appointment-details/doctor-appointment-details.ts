@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DoctorFakeDataService, Appointment } from '../../../../shared/services/doctor-fake-data';
+import { DoctorService } from '../../../../shared/services/doctor-service';
+import { Appointment } from '../../../../shared/domain/appointment';
 
 @Component({
   selector: 'app-doctor-appointment-details',
@@ -11,17 +12,17 @@ import { DoctorFakeDataService, Appointment } from '../../../../shared/services/
 export class DoctorAppointmentDetails {
   appointmentId: string | null = null;
   appointment: Appointment | undefined;
-
+  backendMessage: string | null = null;
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private doctorFakeDataService: DoctorFakeDataService
+    private doctorservice: DoctorService
   ) {
     this.appointmentId = this.route.snapshot.paramMap.get('appointmentId');
 
     const numericAppointmentId = Number(this.appointmentId);
 
-    this.appointment = this.doctorFakeDataService.getAppointmentById(
+    this.appointment = this.doctorservice.getAppointmentById(
       numericAppointmentId
     );
   }
@@ -31,26 +32,26 @@ export class DoctorAppointmentDetails {
   }
 
   acceptAppointment() {
-    if (this.appointment === undefined) {
-      return;
+    if (this.appointment) {
+      this.doctorservice.acceptAppointment(this.appointment.id)?.subscribe(() => {
+        this.backendMessage = 'Appointment accepted successfully.';
+      });
     }
-
-    this.doctorFakeDataService.acceptAppointment(this.appointment.id);
   }
 
   rejectAppointment() {
-    if (this.appointment === undefined) {
-      return;
+    if (this.appointment) {
+      this.doctorservice.rejectAppointment(this.appointment.id)?.subscribe(() => {
+        this.backendMessage = 'Appointment rejected successfully.';
+      });
     }
-
-    this.doctorFakeDataService.rejectAppointment(this.appointment.id);
   }
 
   rejectAppointmentAndDisableSlot() {
-    if (this.appointment === undefined) {
-      return;
+    if (this.appointment) {
+      this.doctorservice.rejectAppointmentAndDisableSlot(this.appointment.id).subscribe(() => {
+        this.backendMessage = 'Appointment rejected and slot disabled successfully.';
+      });
     }
-
-    this.doctorFakeDataService.rejectAppointmentAndDisableSlot(this.appointment.id);
   }
 }

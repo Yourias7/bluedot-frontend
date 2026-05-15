@@ -32,7 +32,7 @@ export const routes: Routes = [
     canActivate: [doctorOnlyGuard]
   },
   {
-    path: 'doctor/availability/:date',
+    path: 'doctor/availability',
     component: DoctorAvailability,
     canActivate: [doctorOnlyGuard]
   },
