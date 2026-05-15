@@ -4,6 +4,7 @@ import { Doctor } from '../../../shared/domain/doctor';
 import { DoctorResultCard } from "./components/doctor-result-card/doctor-result-card";
 import { DoctorService } from '../../../shared/services/doctor-service';
 import { Router } from '@angular/router';
+import { DoctorDetailsPage } from '../doctor-details-page/doctor-details-page';
 
 @Component({
   selector: 'app-doctor-result-page',

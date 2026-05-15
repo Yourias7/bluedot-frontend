@@ -8,6 +8,9 @@ import { Appointment } from '../domain/appointment';
   providedIn: 'root',
 })
 export class DoctorService {
+  getDoctors(): import("../domain/doctor").Doctor[] {
+    throw new Error('Method not implemented.');
+  }
   getDaysWithAvailability(): Observable<CalendarDay[]> {
     return of([
       { number: 1, date: '2025-09-01', hasActivity: false },

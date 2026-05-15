@@ -20,7 +20,10 @@ export class DoctorDetailsPage {
     } 
     else {
       // call the backend with the userId to get the user details
-      this.userDetailedInfo = this.doctorService.getDoctorById(userId);
+      const doctorResult = this.doctorService.getDoctors();
+      this.userDetailedInfo = Array.isArray(doctorResult)
+        ? doctorResult.find(doctor => doctor.id === userId)
+        : doctorResult;
 
       /////test code to be removed when backend is ready
       if(!this.userDetailedInfo){

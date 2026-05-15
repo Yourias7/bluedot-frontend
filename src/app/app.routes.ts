@@ -41,8 +41,8 @@ export const routes: Routes = [
     component: DoctorAppointmentDetails,
     canActivate: [doctorOnlyGuard]
   },
-     {
-        path:'404',
-        component:Error404
-    }
+    //  {
+    //     path:'404',
+    //     component:Error404
+    // }
 ];
