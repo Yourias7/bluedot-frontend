@@ -4,7 +4,7 @@ import { AvatarModule } from 'primeng/avatar';
 import { Paginator, PaginatorModule, PaginatorState } from 'primeng/paginator';
 import { Doctor } from '../../../shared/domain/doctor';
 import { DoctorResultCard } from "./components/doctor-result-card/doctor-result-card";
-import { DoctorService } from '../../../shared/services/doctor-service';
+import { DoctorSearchService } from '../../../shared/services/doctor-search-service';
 import { Router } from '@angular/router';
 import { PaginatorBasicDemo } from '../../../shared/components/paginator-basic/paginator-basic';
 import { Tag, TagModule } from 'primeng/tag';
@@ -21,7 +21,7 @@ export class DoctorResultPage {
   first = 0;
   rows = 5;
 
-  constructor(doctorService: DoctorService, private router: Router) {
+  constructor(doctorService: DoctorSearchService, private router: Router) {
     this.doctors = doctorService.getDoctors();
   }
 

@@ -3,7 +3,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 import { UserRole } from '../../../../shared/domain/user-role';
 import { AuthenticationServices } from '../../../../shared/services/authentication-services';
 import { Logo } from '../common/logo/logo';
-import { FakeAuthService } from '../../../services/fake-auth';
+import { Router } from '@angular/router';
 
 type NavRoute = {
   path: string;
@@ -12,7 +12,7 @@ type NavRoute = {
 
 @Component({
   selector: 'app-header',
-  imports: [RouterLink, RouterLinkActive, Logo, FakeAuthService],
+  imports: [RouterLink, RouterLinkActive, Logo],
   templateUrl: './header.html',
   styleUrl: './header.scss'
 })
@@ -34,7 +34,7 @@ export class Header {
     { path: 'doctor/availability/2025-09-09', title: 'Ραντεβού ημέρας' }
   ];
 
-  constructor(private authenticationServices: AuthenticationServices) {
+  constructor(private authenticationServices: AuthenticationServices, private router: Router) {
     this.currentUserRole = this.authenticationServices.getCurrentUserRole();
     this.currentUserName = this.authenticationServices.getCurrentUserName();
   }
@@ -47,7 +47,7 @@ export class Header {
     return this.patientNavRoutes;
   }
 
- /*  register() {
+  register() {
     this.router.navigate(['/register']);
-  } */
+  }
 }

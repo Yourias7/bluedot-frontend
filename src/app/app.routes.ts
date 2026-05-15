@@ -8,7 +8,7 @@ import { roleRedirectGuard } from './shared/guards/role-redirect.guard';
 import { doctorOnlyGuard } from './shared/guards/doctor-only.guard';
 import { Error404 } from './shared/components/error-404/error-404';
 import { DoctorDetailsPage } from './features/patient/doctor-details-page/doctor-details-page';
-
+import { RegisterPage } from './features/visitor/register-page/register-page';
 
 export const routes: Routes = [
   {
@@ -21,10 +21,10 @@ export const routes: Routes = [
     component: LandingPage,
     canActivate: [roleRedirectGuard]
   },
- /*  {
+  {
     path:'register',
     component: RegisterPage
-  }, */
+  },
   {
     path: 'search-results',
     component: DoctorResultPage

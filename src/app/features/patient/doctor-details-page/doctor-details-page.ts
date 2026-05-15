@@ -6,6 +6,7 @@ import { Specialty } from '../../../shared/domain/specialty';
 import { AvatarModule } from 'primeng/avatar';
 import { TabsModule } from 'primeng/tabs';
 import { DoctorAvailabilityPatientSide } from "../doctor-availability-patient-side/doctor-availability-patient-side";
+import { DoctorSearchService } from '../../../shared/services/doctor-search-service';
 
 @Component({
   selector: 'app-doctor-details-page',
@@ -16,7 +17,7 @@ import { DoctorAvailabilityPatientSide } from "../doctor-availability-patient-si
 export class DoctorDetailsPage {
 
   userDetailedInfo?: Doctor;
-  constructor(private activatedRoute: ActivatedRoute, private router: Router, private doctorService: DoctorService) {
+  constructor(private activatedRoute: ActivatedRoute, private router: Router, private doctorService: DoctorSearchService) {
     let userId = Number(this.activatedRoute.snapshot.paramMap.get('id'));
 
     if (Number.isNaN(userId)) {
