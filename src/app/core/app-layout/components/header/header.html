@@ -7,34 +7,32 @@
 
   <nav class="header-nav">
     @for (route of navRoutes; track route.path + route.title) {
-      <a
-        [routerLink]="route.path"
-        routerLinkActive="active-link"
-        class="nav-link"
-      >
-        {{ route.title }}
-      </a>
+    <a [routerLink]="route.path" routerLinkActive="active-link" class="nav-link">
+      {{ route.title }}
+    </a>
     }
   </nav>
 
   <div class="header-right">
     @if (currentUserRole === 'doctor') {
-      <div class="doctor-profile">
-        <span class="doctor-name">{{ currentUserName }}</span>
-        <span class="doctor-avatar">👤</span>
-      </div>
+    <div class="doctor-profile">
+      <span class="doctor-name">{{ currentUserName }}</span>
+      <span class="doctor-avatar">👤</span>
+    </div>
     }
 
     @if (currentUserRole !== 'doctor') {
-  <div class="patient-actions">
-    <button type="button" class="login-button">
-      Σύνδεση
-    </button>
+    <div class="patient-actions">
+      <button type="button" class="login-button" (click)="isLoginModalOpen = true"> <!--  -->
+        Σύνδεση
+      </button>
 
-    <button type="button" class="register-button" (click)="register()"> <!--  -->
-      Εγγραφή
-    </button>
-  </div>
-}
+      <button type="button" class="register-button" (click)="register()"> <!--  -->
+        Εγγραφή
+      </button>
+
+      <app-login [isOpen]="isLoginModalOpen"></app-login> <!--  -->
+    </div>
+    }
   </div>
 </header>

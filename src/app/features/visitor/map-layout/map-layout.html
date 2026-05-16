@@ -1,0 +1,20 @@
+<div class="position-relative">
+  <div id="map"></div>
+  <div class="offcanvas offcanvas-end" tabindex="-1" id="markerOffcanvas" aria-labelledby="markerOffcanvasLabel"
+        [ngClass]="sidebarOpen ? 'offcanvas offcanvas-end' : 'offcanvas.show offcanvas-end'"
+       [style.visibility]="sidebarOpen ? 'visible' : 'hidden'"
+       [attr.aria-hidden]="sidebarOpen ? 'false' : 'true'">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title" id="markerOffcanvasLabel">{{ selectedMarker?.name }}</h5>
+      <button type="button" class="btn-close text-reset" aria-label="Close" (click)="closeSidebar()"></button>
+    </div>
+    <div class="offcanvas-body">
+      <ng-container *ngIf="selectedMarker">
+        <p><strong>Location:</strong> {{ selectedMarker.lat }}, {{ selectedMarker.lng }}</p>
+        <p class="mb-0">{{ selectedMarker.description }}</p>
+      </ng-container>
+      <p>the fuk</p>
+    </div>
+  </div>
+  <div class="offcanvas-backdrop fade show" *ngIf="sidebarOpen"></div>
+</div>

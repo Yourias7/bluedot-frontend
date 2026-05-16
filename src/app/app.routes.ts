@@ -9,6 +9,7 @@ import { doctorOnlyGuard } from './shared/guards/doctor-only.guard';
 import { Error404 } from './shared/components/error-404/error-404';
 import { DoctorDetailsPage } from './features/patient/doctor-details-page/doctor-details-page';
 import { RegisterPage } from './features/visitor/register-page/register-page';
+import { MapLayout } from './features/visitor/map-layout/map-layout';
 
 export const routes: Routes = [
   {
@@ -31,7 +32,7 @@ export const routes: Routes = [
   },
   {
     path: 'map-results',
-    component: DoctorResultPage
+    component: MapLayout
   },
   {
     path: 'doctor-details/:id',

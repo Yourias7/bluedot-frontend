@@ -4,6 +4,9 @@ import { UserRole } from '../../../../shared/domain/user-role';
 import { AuthenticationServices } from '../../../../shared/services/authentication-services';
 import { Logo } from '../common/logo/logo';
 import { Router } from '@angular/router';
+import { DialogModule } from 'primeng/dialog';
+import { Button } from 'primeng/button';
+import { Login } from '../../../../features/visitor/login/login';
 
 type NavRoute = {
   path: string;
@@ -12,7 +15,7 @@ type NavRoute = {
 
 @Component({
   selector: 'app-header',
-  imports: [RouterLink, RouterLinkActive, Logo],
+  imports: [RouterLink, RouterLinkActive, Logo, DialogModule, Button, Login],
   templateUrl: './header.html',
   styleUrl: './header.scss'
 })
@@ -20,10 +23,12 @@ export class Header {
   currentUserRole: UserRole;
   currentUserName: string;
 
+  isLoginModalOpen = false;
+
   patientNavRoutes: NavRoute[] = [
   { path: 'landing-page', title: 'Αρχική' },
-  { path: 'search-results', title: 'Ιατροί κοντά μου' },
-  { path: 'search-results', title: 'Συνεργαζόμενοι ιατροί' },
+  { path: 'map-results', title: 'Ιατροί κοντά μου'},
+  { path: 'search-results', title: 'Συνεργαζόμενοι ιατροί'},
   { path: 'landing-page', title: 'Σχετικά' },
   { path: 'landing-page', title: 'Βοήθεια' }
 ];
