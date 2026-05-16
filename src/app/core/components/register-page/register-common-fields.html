@@ -1,0 +1,41 @@
+<div class="mb-3">
+    <label for="email" class="form-label">Email</label>
+    <input id="email" formControlName="email" type="text" class="form-control" />
+</div>
+<div class="mb-3">
+    <label for="password" class="form-label">Κωδικός πρόσβασης (Password)</label>
+    <input id="password" formControlName="pass" type="text" class="form-control" />
+</div>
+<div class="mb-3">
+    <label for="confirmPassword" class="form-label">Επιβεβαίωση κωδικού</label>
+    <input id="confirmPassword" formControlName="confirmPass" type="text" class="form-control" />
+</div>
+<div class="mb-3 d-flex gap-3">
+    <div>
+        <label for="first-name" class="form-label">Όνομα</label>
+        <input id="first-name" formControlName="firstName" type="text" class="form-control" />
+    </div>
+    <div>
+        <label for="last-name" class="form-label">Επώνυμο</label>
+        <input id="last-name" formControlName="lastName" type="text" class="form-control" />
+    </div>
+</div>
+<div class="mb-3">
+    <label for="telephone" class="form-label">Τηλέφωνο</label>
+    <input id="telephone" formControlName="phone" type="text" class="form-control" />
+</div>
+<div class="mb-3">
+    <label for="birth-date" class="form-label">Ημερομηνία γέννησης</label>
+    <input id="birth-date" formControlName="birthDate" type="date" class="form-control" />
+</div>
+<div class="mb-3">
+    <p>Φύλο</p>
+    <input type="radio" id="male" name="male" value="male" formControlName="gender">
+    <label for="male">Άνδρας</label><br>
+    <input type="radio" id="female" name="female" value="60" formControlName="gender">
+    <label for="female">Γυναίκα</label><br>
+    <input type="radio" id="other" name="other" value="100" formControlName="gender">
+    <label for="other">Άλλο</label><br>
+    <input type="radio" id="none" name="none" value="100" formControlName="gender">
+    <label for="none">Προτιμώ να μη δηλώσω</label><br>
+</div>

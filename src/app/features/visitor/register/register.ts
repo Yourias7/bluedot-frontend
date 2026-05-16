@@ -1,20 +1,18 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormControl, FormsModule } from '@angular/forms';
+import { FormGroup, ReactiveFormsModule, Validators, FormControl, FormsModule } from '@angular/forms';
 import { TabsModule } from 'primeng/tabs';
 import { RegisterCommonFields } from './components/register-common-fields/register-common-fields';
-import { first } from 'rxjs';
-import { validate } from '@angular/forms/signals';
 import { ListboxModule } from 'primeng/listbox';
 import { DoctorSearchService } from '../../../shared/services/doctor-search-service';
 import { Specialty } from '../../../shared/domain/specialty';
 
 @Component({
-  selector: 'app-register-page',
-  imports: [ReactiveFormsModule, TabsModule, RegisterCommonFields, FormsModule, ListboxModule],
-  templateUrl: './register-page.html',
-  styleUrl: './register-page.scss',
+  selector: 'app-register',
+  imports: [ReactiveFormsModule, TabsModule, FormsModule, ListboxModule, RegisterCommonFields],
+  templateUrl: './register.html',
+  styleUrl: './register.scss',
 })
-export class RegisterPage {
+export class Register {
   items: Specialty[] = [];
   selected_items: Specialty[] = [];
   patient_registerForm: FormGroup;

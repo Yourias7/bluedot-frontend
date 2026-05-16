@@ -8,8 +8,10 @@ import { roleRedirectGuard } from './shared/guards/role-redirect.guard';
 import { doctorOnlyGuard } from './shared/guards/doctor-only.guard';
 import { Error404 } from './shared/components/error-404/error-404';
 import { DoctorDetailsPage } from './features/patient/doctor-details-page/doctor-details-page';
-import { RegisterPage } from './features/visitor/register-page/register-page';
+import { Register } from './features/visitor/register/register';
 import { MapLayout } from './features/visitor/map-layout/map-layout';
+import { BookAppointment } from './features/patient/book-appointment/book-appointment';
+import { AppointmentConfirm } from './features/patient/appointment-confirm/appointment-confirm';
 
 export const routes: Routes = [
   {
@@ -24,7 +26,7 @@ export const routes: Routes = [
   },
   {
     path:'register',
-    component: RegisterPage
+    component: Register
   },
   {
     path: 'search-results',
@@ -37,6 +39,14 @@ export const routes: Routes = [
   {
     path: 'doctor-details/:id',
     component: DoctorDetailsPage
+  },
+  {
+    path: 'book-appointment/:id',
+    component: BookAppointment
+  },
+  {
+    path: 'appointment-confirmation',
+    component: AppointmentConfirm
   },
   {
     path: 'doctor',

@@ -23,15 +23,15 @@
         <p-tabpanel value="1">
             <form [formGroup]="doctor_registerForm" (ngSubmit)="onSubmit()">
                 <app-register-common-fields [formGroup]="doctor_registerForm"></app-register-common-fields>
-                <div class="mb-3">
+                <div>
                     <label for="specialization" class="form-label">Ειδικότητα</label>
                     <div class="card flex justify-center">
                         <p-listbox [options]="items" [(ngModel)]="selected_items" [filter]="true" [checkbox]="true"
-                            optionLabel="label" [virtualScroll]="true" [virtualScrollItemSize]="40" [multiple]="true"
+                            optionLabel="label" [virtualScroll]="true" [virtualScrollItemSize]='40'
                             [metaKeySelection]="false" scrollHeight="250px" [striped]="true" class="w-full md:w-56" />
                     </div>
 
-                    <!--FIXME-->>
+                    <!--FIXME-->
                     <div class="mb-3">
                         <label for="telephone" class="form-label">Τηλέφωνο</label>
                         <input id="telephone" formControlName="phone" type="text" class="form-control" />
