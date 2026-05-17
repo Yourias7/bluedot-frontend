@@ -20,7 +20,9 @@
       @if(formGroup.get("pass")?.hasError("required")) {
         <div class="form-error">Ο κωδικός είναι υποχρεωτικός.</div>
       } @else if (formGroup.get("pass")?.hasError("minlength")) {
-        <div class="form-error">Ο κωδικός πρέπει να έχει τουλάχιστον 6 χαρακτήρες.</div>
+        <div class="form-error">Ο κωδικός πρέπει να έχει τουλάχιστον 8 χαρακτήρες.</div>
+      } @else if (formGroup.get("pass")?.hasError("pattern")) {
+        <div class="form-error">Ο κωδικός πρέπει να περιέχει τουλάχιστον ένα γράμμα και έναν αριθμό.</div>
       }
     }
   </div>

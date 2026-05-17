@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormGroup, ReactiveFormsModule, Validators, FormControl, FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 import { TabsModule } from 'primeng/tabs';
 import { ListboxModule } from 'primeng/listbox';
@@ -9,14 +10,17 @@ import { RegisterCommonFields } from './components/register-common-fields/regist
 import { DoctorSearchService } from '../../../shared/services/doctor-search-service';
 import { Specialty } from '../../../shared/domain/specialty';
 import { AuthenticationServices } from '../../../shared/services/authentication-services';
+import { NominatimService, NominatimResponse } from '../../../shared/services/nominatim.service';
+import { debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'app-register',
-  imports: [ReactiveFormsModule, TabsModule, FormsModule, ListboxModule, RegisterCommonFields],
+  imports: [ReactiveFormsModule, TabsModule, FormsModule, ListboxModule, RegisterCommonFields, CommonModule],
   templateUrl: './register.html',
   styleUrl: './register.scss',
 })
-export class Register {
+export class Register implements OnInit {
   items: Specialty[] = [];
 
   patient_registerForm: FormGroup;
@@ -26,16 +30,22 @@ export class Register {
   successMessage = '';
   errorMessage = '';
 
+  // Autocomplete state variables
+  addressSuggestions: NominatimResponse[] = [];
+  isSearchingAddress = false;
+  showSuggestions = false;
+
   constructor(
     private doctorSearchService: DoctorSearchService,
     private authenticationServices: AuthenticationServices,
-    private router: Router
+    private router: Router,
+    private nominatimService: NominatimService
   ) {
     this.items = this.doctorSearchService.getSpecialties();
 
     this.patient_registerForm = new FormGroup({
       email: new FormControl('', [Validators.required, Validators.email]),
-      pass: new FormControl('', [Validators.required, Validators.minLength(8), Validators.pattern('^(?=.[A-Z]).$')]),
+      pass: new FormControl('', [Validators.required, Validators.minLength(8), Validators.pattern('^(?=.*[A-Z])(?=.*[0-9]).*$')]),
       confirmPass: new FormControl('', [Validators.required]),
       firstName: new FormControl('', [Validators.required]),
       lastName: new FormControl('', [Validators.required]),
@@ -47,7 +57,7 @@ export class Register {
 
     this.doctor_registerForm = new FormGroup({
       email: new FormControl('', [Validators.required, Validators.email]),
-      pass: new FormControl('', [Validators.required, Validators.minLength(8), Validators.pattern('^(?=.[A-Z]).$')]),
+      pass: new FormControl('', [Validators.required, Validators.minLength(8), Validators.pattern('^(?=.*[A-Z])(?=.*[0-9]).*$')]),
       confirmPass: new FormControl('', [Validators.required]),
       firstName: new FormControl('', [Validators.required]),
       lastName: new FormControl('', [Validators.required]),
@@ -59,6 +69,53 @@ export class Register {
       terms: new FormControl(false, Validators.requiredTrue),
       bio: new FormControl('')
     });
+  }
+
+  ngOnInit() {
+    this.setupAddressAutocomplete();
+  }
+
+  // Set up reactive listener for the clinic address field
+  setupAddressAutocomplete() {
+    this.doctor_registerForm.get('clinicAddress')?.valueChanges.pipe(
+      debounceTime(500), // Wait 500ms after the user stops typing
+      distinctUntilChanged(),
+      tap(value => {
+        this.isSearchingAddress = typeof value === 'string' && value.length > 2;
+      }),
+      switchMap(value => {
+        if (typeof value === 'string' && value.length > 2) {
+          return this.nominatimService.searchAddress(value);
+        }
+        return of([]);
+      })
+    ).subscribe({
+      next: (results) => {
+        this.addressSuggestions = results;
+        this.isSearchingAddress = false;
+        this.showSuggestions = results.length > 0;
+      },
+      error: () => {
+        this.isSearchingAddress = false;
+        this.addressSuggestions = [];
+      }
+    });
+  }
+
+  // Handle user selecting an address from the dropdown
+  selectAddress(address: NominatimResponse) {
+    // We emitEvent: false to prevent the valueChanges subscription from firing again
+    this.doctor_registerForm.patchValue({
+      clinicAddress: address.display_name
+    }, { emitEvent: false }); 
+    
+    this.showSuggestions = false;
+  }
+
+  // Hide suggestions when clicking outside the input
+  hideSuggestions() {
+    // Small timeout to allow mousedown event on dropdown to fire first
+    setTimeout(() => this.showSuggestions = false, 200);
   }
 
   submitPatient() {
