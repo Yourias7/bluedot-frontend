@@ -67,6 +67,27 @@
                             </span>
                         </div>
                     </div>
+
+                    <!--FIXME-->
+                    <div class="mb-3">
+                        <label for="phone" class="form-label">Τηλέφωνο</label>
+                        <input id="phone" formControlName="phone" type="text" class="form-control" />
+                        @if(doctor_registerForm.get("phone")?.touched){
+                        @if(doctor_registerForm.get("phone")?.hasError("required")) {
+                        <div class="form-error">Υποχρεωτικό πεδίο.</div>
+                        } @else if (doctor_registerForm.get("phone")?.hasError("pattern")) {
+                        <div class="form-error">Παρακαλώ εισάγετε ένα έγκυρο τηλεφωνο (10 αριθμοί από το 0 έως το 9).
+                        </div>
+                        }
+                        }
+                    </div>
+                     <div class="mb-3">
+                        <label for="bio" class="form-label">Γενικές πληροφορίες</label>
+                        <textarea id="bio" formControlName="bio" type="text" class="form-control"></textarea>
+                        @if(doctor_registerForm.get("bio")?.hasError("required") &&
+                        doctor_registerForm.get("bio")?.touched) {
+                        <div class="form-error">Υποχρεωτικό πεδίο.</div>}
+                    </div>
                 </div>
 
                 <div class="mb-3">
@@ -84,11 +105,38 @@
 
                 <div class="mb-3">
                     <label for="clinicAddress" class="form-label">Διεύθυνση ιατρείου</label>
-                    <input id="clinicAddress" formControlName="clinicAddress" type="text" class="form-control" />
+                    <input 
+                        id="clinicAddress" 
+                        formControlName="clinicAddress" 
+                        type="text" 
+                        class="form-control" 
+                        autocomplete="off"
+                        (blur)="hideSuggestions()"
+                        (focus)="addressSuggestions.length > 0 ? showSuggestions = true : null"
+                    />
 
-                    @if(doctor_registerForm.get("clinicAddress")?.touched &&
-                    doctor_registerForm.get("clinicAddress")?.hasError("required")) {
-                    <div class="form-error">Η διεύθυνση ιατρείου είναι υποχρεωτική.</div>
+                    <!-- Address Suggestions Dropdown -->
+                    @if(showSuggestions) {
+                        <div class="list-group position-absolute w-100 shadow-sm" style="z-index: 1000; max-height: 200px; overflow-y: auto;">
+                            @for (addr of addressSuggestions; track addr.place_id) {
+                                <!-- Using mousedown instead of click to fire before input blur -->
+                                <button 
+                                    type="button" 
+                                    class="list-group-item list-group-item-action text-start" 
+                                    (mousedown)="selectAddress(addr)"
+                                >
+                                    {{ addr.display_name }}
+                                </button>
+                            }
+                        </div>
+                    }
+
+                    @if(isSearchingAddress) {
+                        <div class="form-text text-muted">Αναζήτηση διεύθυνσης...</div>
+                    }
+
+                    @if(doctor_registerForm.get("clinicAddress")?.touched && doctor_registerForm.get("clinicAddress")?.hasError("required")) {
+                        <div class="form-error">Η διεύθυνση ιατρείου είναι υποχρεωτική.</div>
                     }
                 </div>
 

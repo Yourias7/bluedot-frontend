@@ -9,6 +9,9 @@ import { RegisterCommonFields } from './components/register-common-fields/regist
 import { DoctorSearchService } from '../../../shared/services/doctor-search-service';
 import { Specialty } from '../../../shared/domain/specialty';
 import { AuthenticationServices } from '../../../shared/services/authentication-services';
+import { NominatimService, NominatimResponse } from '../../../shared/services/nominatim.service';
+import { debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'app-register',
@@ -26,10 +29,16 @@ export class Register implements OnInit {
   successMessage = '';
   errorMessage = '';
 
+  // Autocomplete state variables
+  addressSuggestions: NominatimResponse[] = [];
+  isSearchingAddress = false;
+  showSuggestions = false;
+
   constructor(
     private doctorSearchService: DoctorSearchService,
     private authenticationServices: AuthenticationServices,
-    private router: Router
+    private router: Router,
+    private nominatimService: NominatimService
   ) {
     //this.items = this.doctorSearchService.getSpecialties();
 
@@ -66,6 +75,50 @@ export class Register implements OnInit {
       console.log(data)
       this.items=data;
     })
+    this.setupAddressAutocomplete();
+  }
+
+  // Set up reactive listener for the clinic address field
+  setupAddressAutocomplete() {
+    this.doctor_registerForm.get('clinicAddress')?.valueChanges.pipe(
+      debounceTime(500), // Wait 500ms after the user stops typing
+      distinctUntilChanged(),
+      tap(value => {
+        this.isSearchingAddress = typeof value === 'string' && value.length > 2;
+      }),
+      switchMap(value => {
+        if (typeof value === 'string' && value.length > 2) {
+          return this.nominatimService.searchAddress(value);
+        }
+        return of([]);
+      })
+    ).subscribe({
+      next: (results) => {
+        this.addressSuggestions = results;
+        this.isSearchingAddress = false;
+        this.showSuggestions = results.length > 0;
+      },
+      error: () => {
+        this.isSearchingAddress = false;
+        this.addressSuggestions = [];
+      }
+    });
+  }
+
+  // Handle user selecting an address from the dropdown
+  selectAddress(address: NominatimResponse) {
+    // We emitEvent: false to prevent the valueChanges subscription from firing again
+    this.doctor_registerForm.patchValue({
+      clinicAddress: address.display_name
+    }, { emitEvent: false }); 
+    
+    this.showSuggestions = false;
+  }
+
+  // Hide suggestions when clicking outside the input
+  hideSuggestions() {
+    // Small timeout to allow mousedown event on dropdown to fire first
+    setTimeout(() => this.showSuggestions = false, 200);
   }
 
   submitPatient() {
