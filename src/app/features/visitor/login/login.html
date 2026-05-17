@@ -1,22 +1,67 @@
-<p-dialog header="Σύνδεση χρήστη" [modal]="true" [(visible)]="isOpen" [style]="{ width: '25rem' }" (onHide)="handleHide()">
-    @if (hasFailedLogin) {
-        <p>Λανθασμένο email ή κωδικός.</p>
-    }
-    <form class="d-flex flex-column">
-        <div class="p-field d-flex flex-column">
-            <label for="username">Όνομα χρήστη </label>
-            <input id="username" type="text" name="username" />
-        </div>
-        <div class="p-field d-flex flex-column">
-            <label for="password">Κωδικός πρόσβασης (Password)</label>
-            <input id="password" type="password" name="password" />
-        </div>
-        <br>
-        <div class="p-field">
-            <button type="submit" class="p-button p-button-primary">Σύνδεση</button>
-        </div>
-    </form>
-    <div>
-        <a (click)="redirect()">Δεν έχεις λογαριασμό; Εγγράψου</a>
+<p-dialog
+  header="Σύνδεση χρήστη"
+  [modal]="true"
+  [(visible)]="isOpen"
+  [style]="{ width: '25rem' }"
+  (onHide)="closeModal()"
+>
+  <form class="login-form" [formGroup]="loginForm" (ngSubmit)="submitLogin()">
+    <div class="p-field d-flex flex-column">
+      <label for="email">Email</label>
+      <input
+        id="email"
+        type="email"
+        formControlName="email"
+        autocomplete="email"
+      >
+
+      @if (loginForm.controls.email.invalid && loginForm.controls.email.touched) {
+        <small class="error-text">
+          Συμπληρώστε ένα έγκυρο email.
+        </small>
+      }
     </div>
+
+    <div class="p-field d-flex flex-column">
+      <label for="password">Κωδικός πρόσβασης</label>
+      <input
+        id="password"
+        type="password"
+        formControlName="password"
+        autocomplete="current-password"
+      >
+
+      @if (loginForm.controls.password.invalid && loginForm.controls.password.touched) {
+        <small class="error-text">
+          Συμπληρώστε τον κωδικό πρόσβασης.
+        </small>
+      }
+    </div>
+
+    @if (errorMessage) {
+      <p class="login-error">
+        {{ errorMessage }}
+      </p>
+    }
+
+    <div class="p-field">
+      <button
+        type="submit"
+        class="p-button p-button-primary login-submit-button"
+        [disabled]="isLoading"
+      >
+        @if (isLoading) {
+          Σύνδεση...
+        } @else {
+          Σύνδεση
+        }
+      </button>
+    </div>
+  </form>
+
+  <div class="register-link-wrapper">
+    <a routerLink="/register" (click)="closeModal()">
+      Δεν έχεις λογαριασμό; Εγγράψου
+    </a>
+  </div>
 </p-dialog>

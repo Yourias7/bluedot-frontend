@@ -1,21 +1,77 @@
-import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, map, of, tap } from 'rxjs';
 
+import { environment } from '../../../environments/environment.development';
 import { CalendarDay } from '../domain/calendar-day';
 import { AvailabilitySlot } from '../domain/availability-slot';
 import { Appointment } from '../domain/appointment';
 import { Doctor } from '../domain/doctor';
+import { AppointmentStatus } from '../domain/appointment-status';
+
+type BackendAppointmentStatus = 'Pending' | 'Confirmed' | 'Cancelled' | 'Completed';
+
+type BackendAppointmentDto = {
+  id: number;
+  status: BackendAppointmentStatus | string;
+  appointmentNotes?: string | null;
+  createdAt?: string;
+  expiredDateTime?: string | null;
+  patientId: number;
+  patientFullName: string;
+  doctorId: number;
+  doctorFullName: string;
+  availabilityId: number;
+  startTime: string;
+  endTime: string;
+};
+
+type PagedResultDto<T> = {
+  totalCount: number;
+  page: number;
+  pageSize: number;
+  items: T[];
+};
 
 @Injectable({
   providedIn: 'root',
 })
 export class DoctorService {
+  private http = inject(HttpClient);
+  private baseUrl = environment.apiUrl;
+
+  doctorProfile: Doctor = {
+    id: 1,
+    firstName: 'Doctor',
+    lastName: 'One',
+    email: 'doctor1@example.com',
+    password: 'password123',
+    role: 'doctor' as any,
+    bio: 'Καρδιολόγος με εμπειρία στην πρόληψη και παρακολούθηση καρδιαγγειακών παθήσεων.',
+    clinicAddress: 'Λεωφόρος Συγγρού 100, Αθήνα',
+    phoneNumber: '2101234567',
+    yearsOfExperience: 8,
+    specialty: {
+      id: 1,
+      name: 'Καρδιολόγος'
+    }
+  };
+
+  appointments: Appointment[] = [];
+
   getDoctors(): Doctor[] {
-    /*
-      Temporary placeholder.
-      Later this can return real doctors from the backend.
-    */
     return [];
+  }
+
+  loadDoctorAppointments(): Observable<Appointment[]> {
+    return this.http
+      .get<PagedResultDto<BackendAppointmentDto>>(`${this.baseUrl}/appointments?page=1&pageSize=200`)
+      .pipe(
+        map(response => response.items.map(appointment => this.mapBackendAppointment(appointment))),
+        tap(appointments => {
+          this.appointments = appointments;
+        })
+      );
   }
 
   getDaysWithAvailability(): Observable<CalendarDay[]> {
@@ -35,167 +91,11 @@ export class DoctorService {
     return of(daysWithAppointments);
   }
 
-  doctorProfile: Doctor = {
-    id: 1,
-    firstName: 'Doctor',
-    lastName: 'One',
-    email: 'doctor1@example.com',
-    password: 'password123',
-    role: 'doctor' as any,
-    bio: 'Καρδιολόγος με εμπειρία στην πρόληψη και παρακολούθηση καρδιαγγειακών παθήσεων.',
-    clinicAddress: 'Λεωφόρος Συγγρού 100, Αθήνα',
-    phoneNumber: '2101234567',
-    yearsOfExperience: 8,
-    specialty: {
-      id: 1,
-      name: 'Καρδιολόγος'
-    }
-  };
-
-  availabilitySlots: AvailabilitySlot[] = [
-    {
-      id: 1,
-      startTime: '10:00',
-      endTime: '11:00',
-      status: 'free',
-      appointmentId: null
-    },
-    {
-      id: 2,
-      startTime: '11:00',
-      endTime: '12:00',
-      status: 'pending',
-      appointmentId: 45
-    },
-    {
-      id: 3,
-      startTime: '12:00',
-      endTime: '13:00',
-      status: 'booked',
-      appointmentId: 82
-    },
-    {
-      id: 4,
-      startTime: '13:00',
-      endTime: '14:00',
-      status: 'free',
-      appointmentId: null
-    },
-    {
-      id: 5,
-      startTime: '14:00',
-      endTime: '15:00',
-      status: 'disabled',
-      appointmentId: null
-    },
-    {
-      id: 6,
-      startTime: '15:00',
-      endTime: '16:00',
-      status: 'free',
-      appointmentId: null
-    },
-    {
-      id: 7,
-      startTime: '16:00',
-      endTime: '17:00',
-      status: 'pending',
-      appointmentId: 91
-    },
-    {
-      id: 8,
-      startTime: '17:00',
-      endTime: '18:00',
-      status: 'booked',
-      appointmentId: 92
-    }
-  ];
-
-  appointments: Appointment[] = [
-    {
-      id: 45,
-      status: 'pending',
-      specialty: 'Καρδιολόγος',
-      date: '2026-05-24',
-      startTime: '11:00',
-      endTime: '12:00',
-      patientName: 'Ασθενής Ασθενόπουλος',
-      patientPhone: '2103321456',
-      patientEmail: 'asthp@gmail.com',
-      patientMessage:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus viverra dapibus leo. In at interdum lectus. Duis eget sagittis mauris, ac vehicula turpis.',
-      conversation: []
-    },
-    {
-      id: 82,
-      status: 'booked',
-      specialty: 'Καρδιολόγος',
-      date: '2026-05-24',
-      startTime: '12:00',
-      endTime: '13:00',
-      patientName: 'Διδώ Ακριβοπούλου',
-      patientPhone: '2103321456',
-      patientEmail: 'asthp@gmail.com',
-      patientMessage:
-        'Καλησπέρα σας, θα ήθελα να σας ενημερώσω ότι θα μεταφέρω το ραντεβού μου ένα τέταρτο μετά.',
-      conversation: []
-    },
-    {
-      id: 91,
-      status: 'pending',
-      specialty: 'Καρδιολόγος',
-      date: '2026-05-24',
-      startTime: '16:00',
-      endTime: '17:00',
-      patientName: 'Μαρία Παπαδοπούλου',
-      patientPhone: '2100000000',
-      patientEmail: 'maria@gmail.com',
-      patientMessage: 'Θα ήθελα να κλείσω ραντεβού για έναν έλεγχο.',
-      conversation: []
-    },
-    {
-      id: 92,
-      status: 'booked',
-      specialty: 'Καρδιολόγος',
-      date: '2026-05-24',
-      startTime: '17:00',
-      endTime: '18:00',
-      patientName: 'Νίκος Νικολάου',
-      patientPhone: '2110000000',
-      patientEmail: 'nikos@gmail.com',
-      patientMessage: 'Έχω ήδη επιβεβαιωμένο ραντεβού.',
-      conversation: []
-    },
-    {
-      id: 93,
-      status: 'rejected',
-      specialty: 'Καρδιολόγος',
-      date: '2026-05-24',
-      startTime: '18:00',
-      endTime: '19:00',
-      patientName: 'Άννα Ιωάννου',
-      patientPhone: '2101111111',
-      patientEmail: 'anna@gmail.com',
-      patientMessage: 'Θα ήθελα να κλείσω ραντεβού για έλεγχο.',
-      conversation: []
-    }
-  ];
-
   getAvailabilitySlots(): AvailabilitySlot[] {
-    return this.availabilitySlots;
+    return this.getAvailabilitySlotsByDate(this.formatDate(new Date()));
   }
 
   getAvailabilitySlotsByDate(date: string): AvailabilitySlot[] {
-    /*
-      For now, this builds the visible day schedule from the mock appointments.
-      Later, this method can become:
-      GET /api/Doctors/{doctorId}/slots?date=YYYY-MM-DD
-
-      The component will not need to change.
-    */
-
-    console.log('Loading availability slots for date:', date);
-
     const baseSlots: AvailabilitySlot[] = [
       {
         id: 1,
@@ -281,6 +181,24 @@ export class DoctorService {
     );
   }
 
+  loadAppointmentById(appointmentId: number): Observable<Appointment> {
+    return this.http
+      .get<BackendAppointmentDto>(`${this.baseUrl}/appointments/${appointmentId}`)
+      .pipe(
+        map(appointment => this.mapBackendAppointment(appointment)),
+        tap(appointment => {
+          const index = this.appointments.findIndex(currentAppointment => currentAppointment.id === appointment.id);
+
+          if (index === -1) {
+            this.appointments.push(appointment);
+            return;
+          }
+
+          this.appointments[index] = appointment;
+        })
+      );
+  }
+
   getDoctorAppointments(): Appointment[] {
     return this.appointments;
   }
@@ -306,30 +224,18 @@ export class DoctorService {
   }
 
   acceptAppointment(appointmentId: number): Observable<boolean> {
-    const appointment = this.getAppointmentById(appointmentId);
-
-    if (appointment === undefined) {
-      return of(false);
-    }
-
-    appointment.status = 'booked';
-
-    return of(true);
+    return this.updateAppointmentStatus(appointmentId, 'Confirmed');
   }
 
   rejectAppointment(appointmentId: number): Observable<boolean> {
-    const appointment = this.getAppointmentById(appointmentId);
-
-    if (appointment === undefined) {
-      return of(false);
-    }
-
-    appointment.status = 'rejected';
-
-    return of(true);
+    return this.updateAppointmentStatus(appointmentId, 'Cancelled');
   }
 
   restoreRejectedAppointment(appointmentId: number): Observable<boolean> {
+    /*
+      The backend currently does not allow doctors to set status back to Pending.
+      So keep this as frontend-only for now.
+    */
     const appointment = this.getAppointmentById(appointmentId);
 
     if (appointment === undefined) {
@@ -342,33 +248,14 @@ export class DoctorService {
   }
 
   rejectAppointmentAndDisableSlot(appointmentId: number): Observable<boolean> {
-    const appointment = this.getAppointmentById(appointmentId);
-
-    if (appointment === undefined) {
-      return of(false);
-    }
-
-    appointment.status = 'rejected';
-
     /*
-      Later this should also call/update the backend availability endpoint.
-      For now, the appointment becomes rejected.
+      First backend step: reject/cancel the appointment.
+      Later we can also call PUT /api/doctors/me/slots to disable the slot.
     */
-
-    return of(true);
+    return this.updateAppointmentStatus(appointmentId, 'Cancelled');
   }
 
   getTransferSlotsByDate(date: string): AvailabilitySlot[] {
-    /*
-      Temporary mock logic.
-
-      Later this can become:
-      GET /api/Doctors/{doctorId}/slots?date=YYYY-MM-DD
-
-      The modal will already be ready, because it calls this method
-      every time the doctor selects a new transfer date.
-    */
-
     return this.getAvailabilitySlotsByDate(date).filter(slot => slot.status === 'free');
   }
 
@@ -377,6 +264,10 @@ export class DoctorService {
     newDate: string,
     newSlot: AvailabilitySlot
   ): Observable<boolean> {
+    /*
+      Backend does not currently expose an appointment transfer endpoint.
+      Keep this frontend-only until backend supports changing availabilityId.
+    */
     const appointment = this.getAppointmentById(appointmentId);
 
     if (appointment === undefined) {
@@ -390,8 +281,78 @@ export class DoctorService {
 
     return of(true);
   }
-  
+
   getDoctorProfile(): Doctor {
     return this.doctorProfile;
+  }
+
+  private updateAppointmentStatus(
+    appointmentId: number,
+    backendStatus: BackendAppointmentStatus
+  ): Observable<boolean> {
+    return this.http
+      .patch<void>(`${this.baseUrl}/appointments/${appointmentId}/status`, {
+        status: backendStatus
+      })
+      .pipe(
+        tap(() => {
+          const appointment = this.getAppointmentById(appointmentId);
+
+          if (appointment !== undefined) {
+            appointment.status = this.mapBackendStatus(backendStatus);
+          }
+        }),
+        map(() => true)
+      );
+  }
+
+  private mapBackendAppointment(appointment: BackendAppointmentDto): Appointment {
+    const startDate = new Date(appointment.startTime);
+    const endDate = new Date(appointment.endTime);
+
+    return {
+      id: appointment.id,
+      status: this.mapBackendStatus(appointment.status),
+      specialty: 'Ιατρός',
+      date: this.formatDate(startDate),
+      startTime: this.formatTime(startDate),
+      endTime: this.formatTime(endDate),
+      patientName: appointment.patientFullName,
+      patientPhone: '-',
+      patientEmail: '-',
+      patientMessage: appointment.appointmentNotes ?? '',
+      conversation: []
+    };
+  }
+
+  private mapBackendStatus(status: string): AppointmentStatus {
+    if (status === 'Pending') {
+      return 'pending';
+    }
+
+    if (status === 'Confirmed' || status === 'Completed') {
+      return 'booked';
+    }
+
+    return 'rejected';
+  }
+
+  private formatDate(date: Date): string {
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+
+    const format = (num: number) => num.toString().padStart(2, '0');
+
+    return `${year}-${format(month)}-${format(day)}`;
+  }
+
+  private formatTime(date: Date): string {
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+
+    const format = (num: number) => num.toString().padStart(2, '0');
+
+    return `${format(hours)}:${format(minutes)}`;
   }
 }

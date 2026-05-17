@@ -1,5 +1,19 @@
 <section class="appointment-details-page">
-  @if (appointment !== undefined) {
+  @if (isLoading) {
+  <div class="not-found-card">
+    <h1>Φόρτωση ραντεβού...</h1>
+  </div>
+  }
+  @if (errorMessage) {
+  <div class="not-found-card">
+    <h1>{{ errorMessage }}</h1>
+
+    <button type="button" class="back-button" (click)="goBack()">
+      Επιστροφή στα ραντεβού
+    </button>
+  </div>
+  }
+  @if (!isLoading && !errorMessage && appointment !== undefined) {
   <div class="page-header">
     <button type="button" class="back-button" (click)="goBack()">
       ← Πίσω στα ραντεβού
@@ -101,7 +115,7 @@
     </div>
     }
   </div>
-  } @else {
+ } @else if (!isLoading && !errorMessage) { 
   <div class="not-found-card">
     <h1>Το ραντεβού δεν βρέθηκε</h1>
 

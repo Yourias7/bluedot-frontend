@@ -1,66 +1,99 @@
 <section class="doctor-appointments-page">
-    <div class="page-header">
-        <h1>Τα ραντεβού μου</h1>
+  <div class="page-header">
+    <h1>Τα ραντεβού μου</h1>
 
-        @if (selectedDate !== null) {
-        <p>Προβολή για την ημερομηνία: {{ selectedDate }}</p>
+    @if (selectedDate !== null) {
+      <p>Προβολή για την ημερομηνία: {{ selectedDate }}</p>
+    } @else {
+      <p>Προβολή όλων των ραντεβού και αιτημάτων.</p>
+    }
+  </div>
+
+  <div class="appointments-card">
+    <div class="tabs">
+      <button
+        type="button"
+        class="tab-button"
+        [class.active-tab]="selectedTab === 'appointments'"
+        (click)="selectTab('appointments')"
+      >
+        Τα ραντεβού μου
+      </button>
+
+      <button
+        type="button"
+        class="tab-button"
+        [class.active-tab]="selectedTab === 'requests'"
+        (click)="selectTab('requests')"
+      >
+        Τα αιτήματά μου
+      </button>
+
+      <button
+        type="button"
+        class="tab-button"
+        [class.active-tab]="selectedTab === 'rejected'"
+        (click)="selectTab('rejected')"
+      >
+        Απορριφθέντα
+      </button>
+    </div>
+
+    <div class="appointment-list">
+      @if (isLoading) {
+        <div class="empty-state">
+          Φόρτωση ραντεβού...
+        </div>
+      }
+
+      @if (errorMessage) {
+        <div class="empty-state">
+          {{ errorMessage }}
+        </div>
+      }
+
+      @if (!isLoading && !errorMessage) {
+        @if (visibleAppointments.length > 0) {
+          @for (appointment of visibleAppointments; track appointment.id) {
+            <button
+              type="button"
+              class="appointment-row"
+              (click)="openAppointment(appointment)"
+            >
+              <div>
+                <h2>{{ appointment.patientName }}</h2>
+                <p>
+                  {{ appointment.date }}
+                  Ώρα {{ appointment.startTime }} - {{ appointment.endTime }}
+                </p>
+              </div>
+
+              <span
+                class="status-pill"
+                [class.pending-status]="appointment.status === 'pending'"
+                [class.confirmed-status]="appointment.status === 'booked'"
+                [class.rejected-status]="appointment.status === 'rejected'"
+              >
+                @if (appointment.status === 'pending') {
+                  Σε αναμονή
+                }
+
+                @if (appointment.status === 'booked') {
+                  Επιβεβαιωμένο
+                }
+
+                @if (appointment.status === 'rejected') {
+                  Απορρίφθηκε
+                }
+              </span>
+            </button>
+          }
         } @else {
-        <p>Προβολή όλων των ραντεβού και αιτημάτων.</p>
+          <div class="empty-state">
+            Δεν υπάρχουν διαθέσιμα στοιχεία για αυτή την καρτέλα.
+          </div>
         }
+      }
     </div>
-
-    <div class="appointments-card">
-        <div class="tabs">
-            <button type="button" class="tab-button" [class.active-tab]="selectedTab === 'appointments'"
-                (click)="selectTab('appointments')">
-                Τα ραντεβού μου
-            </button>
-
-            <button type="button" class="tab-button" [class.active-tab]="selectedTab === 'requests'"
-                (click)="selectTab('requests')">
-                Τα αιτήματά μου
-            </button>
-
-            <button type="button" class="tab-button" [class.active-tab]="selectedTab === 'rejected'"
-                (click)="selectTab('rejected')">
-                Απορριφθέντα
-            </button>
-        </div>
-
-        <div class="appointment-list">
-            @if (visibleAppointments.length > 0) {
-            @for (appointment of visibleAppointments; track appointment.id) {
-            <button type="button" class="appointment-row" (click)="openAppointment(appointment)">
-                <div>
-                    <h2>{{ appointment.patientName }}</h2>
-                    <p>
-                        {{ appointment.date }}
-                        Ώρα {{ appointment.startTime }} - {{ appointment.endTime }}
-                    </p>
-                </div>
-
-                <span class="status-pill" [class.pending-status]="appointment.status === 'pending'"
-                    [class.confirmed-status]="appointment.status === 'booked'"
-                    [class.rejected-status]="appointment.status === 'rejected'">
-                    @if (appointment.status === 'pending') {
-                    Σε αναμονή
-                    }
-
-                    @if (appointment.status === 'booked') {
-                    Επιβεβαιωμένο
-                    }
-
-                    @if (appointment.status === 'rejected') {
-                    Απορρίφθηκε
-                    }
-                </span>
-            </button>
-            }
-            } @else {
-            <div class="empty-state">
-                Δεν υπάρχουν διαθέσιμα στοιχεία για αυτή την καρτέλα.
-            </div>
-            }
-        </div>
-    </div>
+  </div>
 </section>

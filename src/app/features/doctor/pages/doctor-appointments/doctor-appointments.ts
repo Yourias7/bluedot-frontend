@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+
 import { Appointment } from '../../../../shared/domain/appointment';
 import { DoctorService } from '../../../../shared/services/doctor-service';
 
@@ -18,10 +19,14 @@ export class DoctorAppointments {
 
   allAppointments: Appointment[] = [];
 
+  isLoading = false;
+  errorMessage = '';
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private doctorservice: DoctorService
+    private doctorservice: DoctorService,
+    private changeDetectorRef: ChangeDetectorRef
   ) {
     const date = this.route.snapshot.queryParams['date'];
     const tab = this.route.snapshot.queryParams['tab'];
@@ -36,12 +41,28 @@ export class DoctorAppointments {
   }
 
   loadAppointments() {
-    if (this.selectedDate !== null) {
-      this.allAppointments = this.doctorservice.getDoctorAppointmentsByDate(this.selectedDate);
-      return;
-    }
+    this.isLoading = true;
+    this.errorMessage = '';
 
-    this.allAppointments = this.doctorservice.getDoctorAppointments();
+    this.doctorservice.loadDoctorAppointments().subscribe({
+      next: () => {
+        if (this.selectedDate !== null) {
+          this.allAppointments = this.doctorservice.getDoctorAppointmentsByDate(this.selectedDate);
+        } else {
+          this.allAppointments = this.doctorservice.getDoctorAppointments();
+        }
+
+        this.isLoading = false;
+        this.changeDetectorRef.detectChanges();
+      },
+      error: error => {
+        console.error('Could not load doctor appointments:', error);
+
+        this.isLoading = false;
+        this.errorMessage = 'Δεν ήταν δυνατή η φόρτωση των ραντεβού.';
+        this.changeDetectorRef.detectChanges();
+      }
+    });
   }
 
   get confirmedAppointments(): Appointment[] {
@@ -53,6 +74,12 @@ export class DoctorAppointments {
   get pendingRequests(): Appointment[] {
     return this.allAppointments.filter(appointment =>
       appointment.status === 'pending'
+    );
+  }
+
+  get rejectedAppointments(): Appointment[] {
+    return this.allAppointments.filter(appointment =>
+      appointment.status === 'rejected'
     );
   }
 
@@ -68,14 +95,9 @@ export class DoctorAppointments {
     return this.rejectedAppointments;
   }
 
-  get rejectedAppointments(): Appointment[] {
-    return this.allAppointments.filter(appointment =>
-      appointment.status === 'rejected'
-    );
-  }
-
   selectTab(tab: AppointmentTab) {
     this.selectedTab = tab;
+    this.changeDetectorRef.detectChanges();
   }
 
   openAppointment(appointment: Appointment) {
