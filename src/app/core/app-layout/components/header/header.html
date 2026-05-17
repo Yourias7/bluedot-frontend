@@ -40,8 +40,7 @@
         Εγγραφή
       </button>
 
-      <app-login [isOpen]="isLoginModalOpen" (loginSucceeded)="refreshCurrentUser()"
-        (modalClosed)="isLoginModalOpen = false"></app-login>
+      <app-login [(isOpen)]="isLoginModalOpen"></app-login> <!--  -->
     </div>
     }
 
