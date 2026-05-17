@@ -1,4 +1,4 @@
-<header class="app-header">
+<header class="app-header collapse navbar-collapse">
   <div class="header-left">
     <a routerLink="/" class="logo-link">
       <app-logo></app-logo>
@@ -21,7 +21,7 @@
     </div>
     }
 
-    @if (currentUserRole !== 'doctor') {
+    @if (currentUserRole === 'guest') {
     <div class="patient-actions">
       <button type="button" class="login-button" (click)="isLoginModalOpen = true"> <!--  -->
         Σύνδεση
@@ -34,5 +34,15 @@
       <app-login [isOpen]="isLoginModalOpen"></app-login> <!--  -->
     </div>
     }
+
+
+    @if(currentUserRole === 'patient') {
+    <div>
+      <p-menu #menu [model]="loggedInOptions" [popup]="true" />
+      <p-avatar (click)="menu.toggle($event)" icon="pi pi-user" class="mr-2" size="large"></p-avatar>
+      {{ currentUserName }}
+    </div>
+    }
+
   </div>
 </header>

@@ -7,6 +7,10 @@ import { Router } from '@angular/router';
 import { DialogModule } from 'primeng/dialog';
 import { Button } from 'primeng/button';
 import { Login } from '../../../../features/visitor/login/login';
+import { Avatar } from "primeng/avatar";
+import { SplitButtonModule } from 'primeng/splitbutton';
+import { MenuItem } from 'primeng/api';
+import {MenuModule} from "primeng/menu";
 
 type NavRoute = {
   path: string;
@@ -15,7 +19,7 @@ type NavRoute = {
 
 @Component({
   selector: 'app-header',
-  imports: [RouterLink, RouterLinkActive, Logo, DialogModule, Button, Login],
+  imports: [RouterLink, RouterLinkActive, Logo, DialogModule, Button, Login, Avatar, MenuModule],
   templateUrl: './header.html',
   styleUrl: './header.scss'
 })
@@ -39,9 +43,30 @@ export class Header {
     { path: 'doctor/availability/2025-09-09', title: 'Ραντεβού ημέρας' }
   ];
 
+  loggedInOptions:MenuItem[];
+  
+
   constructor(private authenticationServices: AuthenticationServices, private router: Router) {
     this.currentUserRole = this.authenticationServices.getCurrentUserRole();
     this.currentUserName = this.authenticationServices.getCurrentUserName();
+
+     this.loggedInOptions = [
+                    {
+                        label: 'Ο λογαριασμός μου',
+                        command: () => {
+                            this.router.navigate(['/patient-account-details/1']);
+                        }
+                    },
+                    {
+                        label: 'Τα ραντεβού μου',
+                        command: () => {
+                            console.log('Navigating to appointments page');
+                        }
+                    },
+                    { label: 'Angular.dev', url: 'https://angular.dev' },
+                    { separator: true },
+                    { label: 'Αποσύνδεση', routerLink: ['/404'] }
+                ];
   }
 
   get navRoutes(): NavRoute[] {
