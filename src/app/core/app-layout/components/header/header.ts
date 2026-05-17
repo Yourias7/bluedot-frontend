@@ -38,11 +38,10 @@ export class Header {
   ];
 
   doctorNavRoutes: NavRoute[] = [
-    { path: 'doctor', title: 'Αρχική σελίδα' },
-    { path: 'doctor/availability', title: 'Διαθεσιμότητα' },
-    { path: 'doctor/appointments', title: 'Τα ραντεβού μου' }
+    { path: '/doctor', title: 'Αρχική σελίδα' },
+    { path: '/doctor/availability', title: 'Διαθεσιμότητα' },
+    { path: '/doctor/appointments', title: 'Τα ραντεβού μου' }
   ];
-
   loggedInOptions: MenuItem[];
 
 

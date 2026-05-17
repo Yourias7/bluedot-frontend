@@ -30,21 +30,12 @@ export class DoctorAppointments {
   }
 
   loadAppointments() {
-    /*
-      For now, we use the existing mock appointments from DoctorService.
-      Later, this method can call the backend through DoctorService
-      without changing the template logic.
-    */
-
     if (this.selectedDate !== null) {
-      this.allAppointments = this.doctorservice.appointments.filter(
-        appointment => appointment.date === this.selectedDate
-      );
-
+      this.allAppointments = this.doctorservice.getDoctorAppointmentsByDate(this.selectedDate);
       return;
     }
 
-    this.allAppointments = this.doctorservice.appointments;
+    this.allAppointments = this.doctorservice.getDoctorAppointments();
   }
 
   get confirmedAppointments(): Appointment[] {
@@ -82,10 +73,10 @@ export class DoctorAppointments {
   }
 
   openAppointment(appointment: Appointment) {
-  this.router.navigate(['/doctor/appointments', appointment.id], {
-    queryParams: this.selectedDate !== null
-      ? { date: this.selectedDate }
-      : {}
-  });
-}
+    this.router.navigate(['/doctor/appointments', appointment.id], {
+      queryParams: this.selectedDate !== null
+        ? { date: this.selectedDate }
+        : {}
+    });
+  }
 }

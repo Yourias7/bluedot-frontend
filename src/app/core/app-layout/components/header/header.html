@@ -7,8 +7,12 @@
 
   <nav class="header-nav">
     @for (route of navRoutes; track route.path + route.title) {
-    <a [routerLink]="route.path" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }"
-      class="nav-link">
+    <a [routerLink]="route.path" routerLinkActive="active-link" [routerLinkActiveOptions]="{
+    paths: 'exact',
+    queryParams: 'ignored',
+    fragment: 'ignored',
+    matrixParams: 'ignored'
+  }" class="nav-link">
       {{ route.title }}
     </a>
     }

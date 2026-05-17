@@ -98,30 +98,13 @@ export class DoctorHome {
   }
 
   buildCalendar() {
-    /*
-      Temporary mock dates.
-      Later these will come from backend appointments:
-      Pending = yellow
-      Confirmed/booked = green
-    */
-    const pendingAppointmentDates = [
-      this.formatDate(new Date()),
-      '2026-05-24'
-    ];
-
-    const confirmedAppointmentDates = [
-      '2026-05-24',
-      '2026-05-26'
-    ];
-
+    const pendingAppointmentDates = this.doctorService.getPendingAppointmentDates();
+    const confirmedAppointmentDates = this.doctorService.getBookedAppointmentDates();
     const year = this.currentDate.getFullYear();
     const month = this.currentDate.getMonth();
-
     const firstDayOfMonth = new Date(year, month, 1);
     const firstWeekDay = firstDayOfMonth.getDay();
-
     const daysInMonth = new Date(year, month + 1, 0).getDate();
-
     const days: CalendarDay[] = [];
 
     for (let i = 0; i < firstWeekDay; i++) {
@@ -136,7 +119,6 @@ export class DoctorHome {
     for (let dayNumber = 1; dayNumber <= daysInMonth; dayNumber++) {
       const date = new Date(year, month, dayNumber);
       const formattedDate = this.formatDate(date);
-
       const hasPendingAppointment = pendingAppointmentDates.includes(formattedDate);
       const hasConfirmedAppointment = confirmedAppointmentDates.includes(formattedDate);
 
@@ -159,11 +141,7 @@ export class DoctorHome {
       return;
     }
 
-    if (!day.hasPendingAppointment && !day.hasConfirmedAppointment) {
-      return;
-    }
-
-    this.router.navigate(['/doctor/appointments'], {
+    this.router.navigate(['/doctor/availability'], {
       queryParams: { date: day.date }
     });
   }
