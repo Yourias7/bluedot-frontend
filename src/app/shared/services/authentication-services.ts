@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { UserRole } from '../domain/user-role';
+import { User } from '../domain/user';
 
 @Injectable({
   providedIn: 'root',
@@ -23,6 +24,19 @@ export class AuthenticationServices {
 
   getCurrentUserName(): string {
     return this.currentUserName;
+  }
+
+  setCurrentUserRole(role:UserRole):void{
+    this.currentUserRole = role;
+  }
+
+  setCurrentUserName(_name:string):void{
+    this.currentUserName = _name;
+  }
+
+  logIn(user:User):void{
+    this.setCurrentUserName(user.firstName + user.lastName);
+    //this.setCurrentUserRole(user.role);
   }
 }
 
