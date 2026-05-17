@@ -1,20 +1,26 @@
 import { Component } from '@angular/core';
-import { FormGroup, ReactiveFormsModule, Validators, FormControl, FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { FormGroup, ReactiveFormsModule, Validators, FormControl, FormsModule, AbstractControl, ValidationErrors } from '@angular/forms';
 import { TabsModule } from 'primeng/tabs';
 import { RegisterCommonFields } from './components/register-common-fields/register-common-fields';
 import { ListboxModule } from 'primeng/listbox';
 import { DoctorSearchService } from '../../../shared/services/doctor-search-service';
 import { Specialty } from '../../../shared/domain/specialty';
 
+function passwordsMatchValidator(control: AbstractControl): ValidationErrors | null {
+  const pass = control.get('pass')?.value;
+  const confirmPass = control.get('confirmPass')?.value;
+  return pass && confirmPass && pass !== confirmPass ? { passwordMismatch: true } : null;
+}
+
 @Component({
   selector: 'app-register',
-  imports: [ReactiveFormsModule, TabsModule, FormsModule, ListboxModule, RegisterCommonFields],
+  imports: [CommonModule, ReactiveFormsModule, TabsModule, FormsModule, ListboxModule, RegisterCommonFields],
   templateUrl: './register.html',
   styleUrl: './register.scss',
 })
 export class Register {
   items: Specialty[] = [];
-  selected_items: Specialty[] = [];
   patient_registerForm: FormGroup;
   doctor_registerForm: FormGroup;
 
@@ -32,7 +38,7 @@ export class Register {
       birthDate: new FormControl('', Validators.required),
       gender: new FormControl(''),
       terms: new FormControl(false, Validators.requiredTrue),
-    });
+    }, { validators: passwordsMatchValidator });
 
     this.doctor_registerForm = new FormGroup({
       email: new FormControl('', [Validators.required, Validators.email]),
@@ -45,8 +51,8 @@ export class Register {
       gender: new FormControl(''),
       specialization: new FormControl([], Validators.required),
       terms: new FormControl(false, Validators.requiredTrue),
-      bio: new FormControl('', Validators.required)
-    });
+      bio: new FormControl('', [Validators.required, Validators.maxLength(1000)])
+    }, { validators: passwordsMatchValidator });
   }
 
   //listbox stuff
@@ -60,6 +66,7 @@ export class Register {
     if (this.doctor_registerForm.valid) {
       const formData = this.doctor_registerForm.value;
       console.log('Doctor Data:', formData);
+      console.log('Selected specializations:', formData.specialization);
     }
   }
 }

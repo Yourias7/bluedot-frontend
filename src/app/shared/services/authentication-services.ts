@@ -1,13 +1,18 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, Type } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, tap } from 'rxjs';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
 import { UserRole } from '../domain/user-role';
 import { User } from '../domain/user';
 
+export interface LoginDto { email: string; password: string; }
+export interface RegisterPatientDto { firstName: string; lastName: string; email: string; pass: string; phone: string; birthDate: string; gender: string; }
+export interface RegisterDoctorDto { firstName: string; lastName: string; email: string; pass: string; phone: string; birthDate: string; gender: string; specialization: number[]; }
+
 @Injectable({
   providedIn: 'root',
 })
+
 export class AuthenticationServices {
   private isUserLoggedIn = false;
   private currentUserRole: UserRole = 'guest';
@@ -15,6 +20,7 @@ export class AuthenticationServices {
   private http = inject(HttpClient);
   private baseUrl = environment.apiUrl; 
 
+ 
   /**
    * Logs the user in, retrieves the UserDto, and stores the JWT.
    */

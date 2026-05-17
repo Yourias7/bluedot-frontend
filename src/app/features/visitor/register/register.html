@@ -1,4 +1,4 @@
-<h1>Εγγραφή χρήστη</h1>
+<h1 class="text-center">Εγγραφή χρήστη</h1>
 <section class="container mt-4">
     <p-tabs value="0" class="mb-3">
         <p-tablist>
@@ -9,8 +9,8 @@
             <form [formGroup]="patient_registerForm" (ngSubmit)="onSubmit()">
                 <app-register-common-fields [formGroup]="patient_registerForm"></app-register-common-fields>
                 <div class="mb-3">
-                    <label for="telephone" class="form-label">Τηλέφωνο</label>
-                    <input id="telephone" formControlName="phone" type="text" class="form-control" />
+                    <label for="phone" class="form-label">Τηλέφωνο</label>
+                    <input id="phone" formControlName="phone" type="text" class="form-control" />
                 </div>
                 <div>
                     <input type="checkbox" formControlName="terms">
@@ -31,26 +31,42 @@
                     <label for="specialization" class="form-label">Ειδικότητα</label>
                     <div class="card flex justify-center">
                         <p-listbox [options]="items" id="specialization" formControlName="specialization"
-                            [filter]="true" [checkbox]="true" optionLabel="name" [virtualScroll]="true"
-                            [virtualScrollItemSize]='40' [metaKeySelection]="false" scrollHeight="250px"
-                            [striped]="true" class="w-full md:w-56" />
+                            [filter]="true" [checkbox]="true" [multiple]="true" optionLabel="name"
+                            [virtualScroll]="true" [virtualScrollItemSize]='40' [metaKeySelection]="false"
+                            scrollHeight="250px" [striped]="true" class="w-full md:w-56"></p-listbox>
+                    </div>
+                    @if(doctor_registerForm.get("specialization")?.hasError("required") &&
+                    doctor_registerForm.get("specialization")?.touched) {
+                    <div class="form-error">Υποχρεωτικό πεδίο.</div>}
+                    <div *ngIf="doctor_registerForm.get('specialization')?.value?.length" class="mt-3">
+                        <p class="mb-2">Επιλεγμένες ειδικότητες:</p>
+                        <div class="d-flex flex-wrap gap-2">
+                            <span *ngFor="let spec of doctor_registerForm.get('specialization')?.value"
+                                class="badge bg-secondary">
+                                {{ spec.name }}
+                            </span>
+                        </div>
                     </div>
 
                     <!--FIXME-->
                     <div class="mb-3">
-                        <label for="telephone" class="form-label">Τηλέφωνο</label>
-                        <input id="telephone" formControlName="phone" type="text" class="form-control" />
+                        <label for="phone" class="form-label">Τηλέφωνο</label>
+                        <input id="phone" formControlName="phone" type="text" class="form-control" />
                         @if(doctor_registerForm.get("phone")?.touched){
                         @if(doctor_registerForm.get("phone")?.hasError("required")) {
-                        <div class="form-error">Email is required.</div>
+                        <div class="form-error">Υποχρεωτικό πεδίο.</div>
                         } @else if (doctor_registerForm.get("phone")?.hasError("pattern")) {
-                        <div class="form-error">Please enter a valid email address.</div>
+                        <div class="form-error">Παρακαλώ εισάγετε ένα ακριβές τηλεφωνο (10 αριθμοί από το 0 έως το 9).
+                        </div>
                         }
                         }
                     </div>
                     <div class="mb-3">
                         <label for="bio" class="form-label">Γενικές πληροφορίες</label>
                         <textarea id="bio" formControlName="bio" type="text" class="form-control"></textarea>
+                        @if(doctor_registerForm.get("bio")?.hasError("required") &&
+                        doctor_registerForm.get("bio")?.touched) {
+                        <div class="form-error">Υποχρεωτικό πεδίο.</div>}
                     </div>
                 </div>
                 <div>

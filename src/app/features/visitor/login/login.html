@@ -1,4 +1,7 @@
-<p-dialog header="Σύνδεση χρήστη" [modal]="true" [(visible)]="isOpen" [style]="{ width: '25rem' }" (onHide)="isOpen=false">
+<p-dialog header="Σύνδεση χρήστη" [modal]="true" [(visible)]="isOpen" [style]="{ width: '25rem' }" (onHide)="handleHide()">
+    @if (hasFailedLogin) {
+        <p>Λανθασμένο email ή κωδικός.</p>
+    }
     <form class="d-flex flex-column">
         <div class="p-field d-flex flex-column">
             <label for="username">Όνομα χρήστη </label>
@@ -14,6 +17,6 @@
         </div>
     </form>
     <div>
-        <a href="http://">Δεν έχεις λογαριασμό; Εγγράψου</a>
+        <a (click)="redirect()">Δεν έχεις λογαριασμό; Εγγράψου</a>
     </div>
 </p-dialog>
