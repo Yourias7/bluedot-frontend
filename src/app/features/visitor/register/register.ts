@@ -1,8 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 import { FormGroup, ReactiveFormsModule, Validators, FormControl, FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-
 import { TabsModule } from 'primeng/tabs';
 import { ListboxModule } from 'primeng/listbox';
 
@@ -41,11 +40,11 @@ export class Register implements OnInit {
     private router: Router,
     private nominatimService: NominatimService
   ) {
-    this.items = this.doctorSearchService.getSpecialties();
+    //this.items = this.doctorSearchService.getSpecialties();
 
     this.patient_registerForm = new FormGroup({
       email: new FormControl('', [Validators.required, Validators.email]),
-      pass: new FormControl('', [Validators.required, Validators.minLength(8), Validators.pattern('^(?=.*[A-Z])(?=.*[0-9]).*$')]),
+      pass: new FormControl('', [Validators.required, Validators.minLength(8), Validators.pattern('^(?=.*[A-Z]).*$')]),
       confirmPass: new FormControl('', [Validators.required]),
       firstName: new FormControl('', [Validators.required]),
       lastName: new FormControl('', [Validators.required]),
@@ -57,7 +56,7 @@ export class Register implements OnInit {
 
     this.doctor_registerForm = new FormGroup({
       email: new FormControl('', [Validators.required, Validators.email]),
-      pass: new FormControl('', [Validators.required, Validators.minLength(8), Validators.pattern('^(?=.*[A-Z])(?=.*[0-9]).*$')]),
+      pass: new FormControl('', [Validators.required, Validators.minLength(8), Validators.pattern('^(?=.*[A-Z]).*$')]),
       confirmPass: new FormControl('', [Validators.required]),
       firstName: new FormControl('', [Validators.required]),
       lastName: new FormControl('', [Validators.required]),
@@ -72,6 +71,10 @@ export class Register implements OnInit {
   }
 
   ngOnInit() {
+    this.doctorSearchService.getSpecialties().subscribe((data) => {
+      console.log(data)
+      this.items=data;
+    })
     this.setupAddressAutocomplete();
   }
 
@@ -142,10 +145,7 @@ export class Register implements OnInit {
       firstName: formData.firstName,
       lastName: formData.lastName,
       email: formData.email,
-      password: formData.pass,
-      dateOfBirth: formData.birthDate,
-      gender: formData.gender,
-      phoneNumber: formData.phone
+      password: formData.pass
     }).subscribe({
       next: () => {
         this.isLoading = false;

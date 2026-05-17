@@ -143,6 +143,10 @@
                 <div class="mb-3">
                     <label for="bio" class="form-label">Γενικές πληροφορίες</label>
                     <textarea id="bio" formControlName="bio" class="form-control"></textarea>
+                     @if(doctor_registerForm.get("bio")?.touched &&
+                    doctor_registerForm.get("bio")?.hasError("required")) {
+                    <div class="form-error">Το πεδίο γενικών πληροφοριών είναι υποχρεωτικό.</div>
+                    }
                 </div>
 
                 <div>
