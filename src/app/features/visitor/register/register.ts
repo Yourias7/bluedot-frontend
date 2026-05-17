@@ -41,14 +41,14 @@ export class Register {
 
     this.doctor_registerForm = new FormGroup({
       email: new FormControl('', [Validators.required, Validators.email]),
-      pass: new FormControl('', [Validators.required, Validators.minLength(6)]),
+      pass: new FormControl('', [Validators.required, Validators.minLength(8), Validators.pattern("^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$")]),
       confirmPass: new FormControl('', [Validators.required]),
       firstName: new FormControl('', [Validators.required]),
       lastName: new FormControl('', [Validators.required]),
-      phone: new FormControl('', Validators.required),
+      phone: new FormControl('', [Validators.required, Validators.pattern("^[0-9]{10}$")]),
       birthDate: new FormControl('', Validators.required),
       gender: new FormControl(''),
-      specialization: new FormControl('', Validators.required),
+      specialization: new FormControl('', [Validators.required]),
       terms: new FormControl(false, Validators.requiredTrue),
     });
   }

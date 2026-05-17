@@ -12,7 +12,7 @@
     </div>
     <div class="mb-3">
         <label for="password" class="form-label">Κωδικός πρόσβασης (Password)</label>
-        <input id="password" formControlName="pass" type="text" class="form-control" />
+        <input id="password" formControlName="pass" type="password" class="form-control" />
         @if( formGroup.get("password")?.touched) {
         @if(formGroup.get("password")?.hasError("required")) {
         <div class="form-error">Password is required.</div>
@@ -26,7 +26,7 @@
     </div>
     <div class="mb-3">
         <label for="confirmPassword" class="form-label">Επιβεβαίωση κωδικού</label>
-        <input id="confirmPassword" formControlName="confirmPass" type="text" class="form-control" />
+        <input id="confirmPassword" formControlName="confirmPass" type="password" class="form-control" />
     </div>
     <div class="mb-3 d-flex gap-3">
         <div>
@@ -53,13 +53,13 @@
     </div>
     <div class="mb-3">
         <p>Φύλο</p>
-        <input type="radio" id="male" name="male" value="male" formControlName="gender">
+        <input type="radio" id="male" name="gender" value="male" formControlName="gender">
         <label for="male">Άνδρας</label><br>
-        <input type="radio" id="female" name="female" value="60" formControlName="gender">
+        <input type="radio" id="female" name="gender" value="female" formControlName="gender">
         <label for="female">Γυναίκα</label><br>
-        <input type="radio" id="other" name="other" value="100" formControlName="gender">
+        <input type="radio" id="other" name="gender" value="other" formControlName="gender">
         <label for="other">Άλλο</label><br>
-        <input type="radio" id="none" name="none" value="100" formControlName="gender">
+        <input type="radio" id="none" name="gender" value="none" formControlName="gender">
         <label for="none">Προτιμώ να μη δηλώσω</label><br>
     </div>
 </ng-container>

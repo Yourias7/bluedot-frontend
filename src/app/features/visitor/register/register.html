@@ -26,15 +26,15 @@
                 <div>
                     <label for="specialization" class="form-label">Ειδικότητα</label>
                     <div class="card flex justify-center">
-                        <p-listbox [options]="items" [(ngModel)]="selected_items" [filter]="true" [checkbox]="true"
-                            optionLabel="label" [virtualScroll]="true" [virtualScrollItemSize]='40'
-                            [metaKeySelection]="false" scrollHeight="250px" [striped]="true" class="w-full md:w-56" />
+                        <p-listbox [options]="items" formControlName="specialization" [filter]="true" [checkbox]="true"
+                            optionLabel="name" [virtualScroll]="true" [virtualScrollItemSize]='40'
+                            [metaKeySelection]="false" scrollHeight="250px" [striped]="true" class="w-full md:w-56"></p-listbox>
                     </div>
 
                     <!--FIXME-->
                     <div class="mb-3">
-                        <label for="telephone" class="form-label">Τηλέφωνο</label>
-                        <input id="telephone" formControlName="phone" type="text" class="form-control" />
+                        <label for="phone" class="form-label">Τηλέφωνο</label>
+                        <input id="phone" formControlName="phone" type="text" class="form-control" />
                         @if(doctor_registerForm.get("phone")?.touched){
                         @if(doctor_registerForm.get("phone")?.hasError("required")) {
                         <div class="form-error">Email is required.</div>
@@ -43,10 +43,10 @@
                         }
                         }
                     </div>
-                    <div class="mb-3">
+                   <!--  <div class="mb-3">
                         <label for="bio" class="form-label">Γενικές πληροφορίες</label>
                         <textarea id="bio" formControlName="bio" type="text" class="form-control"></textarea>
-                    </div>
+                    </div> -->
                 </div>
                 <div>
                     <input type="checkbox" formControlName="terms">

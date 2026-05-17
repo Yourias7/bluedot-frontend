@@ -3,6 +3,7 @@ import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
 import { AuthenticationServices } from '../../../shared/services/authentication-services';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -15,7 +16,7 @@ export class Login implements OnInit {
   @Input() isOpen: boolean = false;
   loginForm!: FormGroup;
 
-  constructor(private authService: AuthenticationServices) {}
+  constructor(private authService: AuthenticationServices, private router:Router) {}
 
   ngOnInit() {
     this.loginForm = new FormGroup({
@@ -31,6 +32,7 @@ export class Login implements OnInit {
           console.log('Login successful', res);
           this.isOpen = false; // Close the dialog
           // TODO: Use Angular Router to redirect to dashboard
+          this.router.navigate(['/landing-page']);
         },
         error: (err) => {
           console.error('Login failed', err);
@@ -38,5 +40,9 @@ export class Login implements OnInit {
         }
       });
     }
+  }
+
+  goToRegister(){
+    this.router.navigate(['/register']);
   }
 }
