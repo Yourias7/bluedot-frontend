@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { DatePickerModule } from 'primeng/datepicker';
+
 import { AvailabilitySlot } from '../../../../shared/domain/availability-slot';
 import { DoctorService } from '../../../../shared/services/doctor-service';
 
@@ -7,12 +10,13 @@ type UserRole = 'patient' | 'doctor' | 'manager';
 
 @Component({
   selector: 'app-doctor-availability',
-  imports: [],
+  imports: [FormsModule, DatePickerModule],
   templateUrl: './doctor-availability.html',
   styleUrl: './doctor-availability.scss'
 })
 export class DoctorAvailability {
   selectedDate: string | null = null;
+  selectedDateObject: Date = new Date();
 
   /*
     TEMPORARY TESTING ROLE.
@@ -36,31 +40,52 @@ export class DoctorAvailability {
     private doctorservice: DoctorService
   ) {
     let selectedDate = this.route.snapshot.queryParams['date'];
+
     if (!selectedDate) {
       selectedDate = this.getFormattedDate();
     }
+
     this.selectedDate = selectedDate;
+    this.selectedDateObject = this.parseDate(selectedDate);
+
     console.log('Selected date:', selectedDate);
-    this.availabilitySlots = this.doctorservice.getAvailabilitySlots();
+
+    this.loadSlotsForSelectedDate();
   }
+
+  onDateChanged(date: Date | null) {
+    console.log('Date clicked:', date);
+
+    if (date === null) {
+      return;
+    }
+
+    this.selectedDateObject = date;
+    this.selectedDate = this.formatDate(date);
+
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { date: this.selectedDate },
+      queryParamsHandling: 'merge'
+    });
+
+    this.loadSlotsForSelectedDate();
+  }
+
+  loadSlotsForSelectedDate() {
+    if (this.selectedDate === null) {
+      return;
+    }
+
+    this.availabilitySlots = this.doctorservice.getAvailabilitySlotsByDate(this.selectedDate);
+  }
+
   openSlot(slot: AvailabilitySlot) {
     if (slot.appointmentId !== null) {
       this.router.navigate(['/doctor/appointments', slot.appointmentId]);
     }
   }
-  getFormattedDate(): string  {
-    const date = new Date();
 
-    const year = date.getFullYear();
-    // Adding 1 because getMonth() is 0-indexed
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
-
-    // Pad with leading zeros if you want consistent 2-digit lengths (e.g., 04 instead of 4)
-    const format = (num: number) => num.toString().padStart(2, '0');
-
-    return `${year}/${format(month)}/${format(day)}`;
-  };
   openSlotMenu(event: MouseEvent, slot: AvailabilitySlot) {
     event.preventDefault();
 
@@ -91,17 +116,13 @@ export class DoctorAvailability {
     /*
       TEMPORARY FRONTEND-ONLY LOGIC.
 
-      Later this should call the backend, for example:
-      PATCH /api/availabilities/{availabilityId}/disable
-
-      The backend should verify that:
-      - the logged-in user is a doctor
-      - this availability slot belongs to that doctor
-      - the slot is not already booked or pending
+      Later this should call the backend.
+      For now, it only updates the selected slot visually.
     */
     this.selectedSlot.status = 'disabled';
     this.closeSlotMenu();
   }
+
   enableSlot() {
     if (this.selectedSlot === null) {
       return;
@@ -109,16 +130,37 @@ export class DoctorAvailability {
 
     /*
       TEMPORARY FRONTEND-ONLY LOGIC.
-  
-      Later this should call the backend, for example:
-      PATCH /api/availabilities/{availabilityId}/enable
-  
-      The backend should verify that:
-      - the logged-in user is a doctor
-      - this availability slot belongs to that doctor
-      - the slot is currently disabled
+
+      Later this should call the backend.
+      For now, it only updates the selected slot visually.
     */
     this.selectedSlot.status = 'free';
     this.closeSlotMenu();
+  }
+
+  getFormattedDate(): string {
+    const date = new Date();
+
+    return this.formatDate(date);
+  }
+
+  formatDate(date: Date): string {
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+
+    const format = (num: number) => num.toString().padStart(2, '0');
+
+    return `${year}-${format(month)}-${format(day)}`;
+  }
+
+  parseDate(dateText: string): Date {
+    const parts = dateText.split('-');
+
+    const year = Number(parts[0]);
+    const month = Number(parts[1]) - 1;
+    const day = Number(parts[2]);
+
+    return new Date(year, month, day);
   }
 }

@@ -2,8 +2,9 @@ import { Routes } from '@angular/router';
 import { LandingPage } from './features/visitor/landing-page/landing-page';
 import { DoctorResultPage } from './features/patient/doctor-result-page/doctor-result-page';
 import { DoctorHome } from './features/doctor/pages/doctor-home/doctor-home';
-import { DoctorAvailability,} from './features/doctor/pages/doctor-availability/doctor-availability';
+import { DoctorAvailability, } from './features/doctor/pages/doctor-availability/doctor-availability';
 import { DoctorAppointmentDetails, } from './features/doctor/pages/doctor-appointment-details/doctor-appointment-details';
+import { DoctorAppointments } from './features/doctor/pages/doctor-appointments/doctor-appointments';
 import { roleRedirectGuard } from './shared/guards/role-redirect.guard';
 import { doctorOnlyGuard } from './shared/guards/doctor-only.guard';
 import { Error404 } from './shared/components/error-404/error-404';
@@ -12,7 +13,7 @@ import { Register } from './features/visitor/register/register';
 import { MapLayout } from './features/visitor/map-layout/map-layout';
 import { BookAppointment } from './features/patient/book-appointment/book-appointment';
 import { AppointmentConfirm } from './features/patient/appointment-confirm/appointment-confirm';
-import {AccountDetails} from "./features/patient/account-details/account-details";
+import { AccountDetails } from "./features/patient/account-details/account-details";
 import { PatientAppointments } from './features/patient/patient-appointments/patient-appointments';
 import { Error403 } from './shared/components/error-403/error-403';
 import { Error500 } from './shared/components/error-500/error-500';
@@ -30,7 +31,7 @@ export const routes: Routes = [
     canActivate: [roleRedirectGuard]
   },
   {
-    path:'register',
+    path: 'register',
     component: Register
   },
   {
@@ -55,7 +56,7 @@ export const routes: Routes = [
   },
   {
     path: 'patient-account-details/:id',
-    component:AccountDetails
+    component: AccountDetails
   },
   {
     path: 'patient-appointments/:id',
@@ -76,6 +77,11 @@ export const routes: Routes = [
     canActivate: [doctorOnlyGuard]
   },
   {
+    path: 'doctor/appointments',
+    component: DoctorAppointments,
+    canActivate: [doctorOnlyGuard]
+  },
+  {
     path: 'doctor/appointments/:appointmentId',
     component: DoctorAppointmentDetails,
     canActivate: [doctorOnlyGuard]
@@ -93,7 +99,7 @@ export const routes: Routes = [
     component: Error403
   },
   {
-    path:'500',
+    path: '500',
     component: Error500
   }
 ];

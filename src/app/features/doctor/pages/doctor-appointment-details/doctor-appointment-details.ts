@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DoctorService } from '../../../../shared/services/doctor-service';
+
 import { Appointment } from '../../../../shared/domain/appointment';
+import { DoctorService } from '../../../../shared/services/doctor-service';
 
 @Component({
   selector: 'app-doctor-appointment-details',
@@ -10,48 +11,70 @@ import { Appointment } from '../../../../shared/domain/appointment';
   styleUrl: './doctor-appointment-details.scss'
 })
 export class DoctorAppointmentDetails {
-  appointmentId: string | null = null;
   appointment: Appointment | undefined;
-  backendMessage: string | null = null;
+  returnDate: string | null = null;
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private doctorservice: DoctorService
   ) {
-    this.appointmentId = this.route.snapshot.paramMap.get('appointmentId');
-
-    const numericAppointmentId = Number(this.appointmentId);
-
-    this.appointment = this.doctorservice.getAppointmentById(
-      numericAppointmentId
-    );
+    const appointmentId = Number(this.route.snapshot.paramMap.get('appointmentId'));
+    this.returnDate = this.route.snapshot.queryParams['date'] ?? null;
+    this.appointment = this.doctorservice.getAppointmentById(appointmentId);
   }
 
-  goBack() {
-    this.router.navigate(['/doctor']);
+  get isPendingAppointment(): boolean {
+    return this.appointment?.status === 'pending';
+  }
+
+  get isRejectedAppointment(): boolean {
+    return this.appointment?.status === 'rejected';
   }
 
   acceptAppointment() {
-    if (this.appointment) {
-      this.doctorservice.acceptAppointment(this.appointment.id)?.subscribe(() => {
-        this.backendMessage = 'Appointment accepted successfully.';
-      });
+    if (this.appointment === undefined) {
+      return;
     }
+
+    this.doctorservice.acceptAppointment(this.appointment.id).subscribe(() => {
+      this.goBack();
+    });
   }
 
   rejectAppointment() {
-    if (this.appointment) {
-      this.doctorservice.rejectAppointment(this.appointment.id)?.subscribe(() => {
-        this.backendMessage = 'Appointment rejected successfully.';
-      });
+    if (this.appointment === undefined) {
+      return;
     }
+
+    this.doctorservice.rejectAppointment(this.appointment.id).subscribe(() => {
+      this.goBack();
+    });
   }
 
   rejectAppointmentAndDisableSlot() {
-    if (this.appointment) {
-      this.doctorservice.rejectAppointmentAndDisableSlot(this.appointment.id).subscribe(() => {
-        this.backendMessage = 'Appointment rejected and slot disabled successfully.';
-      });
+    if (this.appointment === undefined) {
+      return;
     }
+
+    this.doctorservice.rejectAppointmentAndDisableSlot(this.appointment.id).subscribe(() => {
+      this.goBack();
+    });
+  }
+
+  restoreRejectedAppointment() {
+    if (this.appointment === undefined) {
+      return;
+    }
+
+    this.doctorservice.restoreRejectedAppointment(this.appointment.id).subscribe(() => {
+      this.goBack();
+    });
+  }
+  goBack() {
+    this.router.navigate(['/doctor/appointments'], {
+      queryParams: this.returnDate !== null
+        ? { date: this.returnDate }
+        : {}
+    });
   }
 }

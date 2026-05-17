@@ -1,0 +1,253 @@
+.appointment-details-page {
+  min-height: 100vh;
+  padding: 48px 24px;
+  background-color: #eef1ff;
+}
+
+.page-header {
+  max-width: 900px;
+  margin: 0 auto 32px;
+}
+
+.back-button {
+  margin-bottom: 18px;
+  padding: 10px 16px;
+  border: 1px solid #d6d6d6;
+  border-radius: 12px;
+  background-color: #ffffff;
+  color: #1f2a44;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.back-button:hover {
+  background-color: #f4f6ff;
+}
+
+.page-header h1 {
+  margin: 0 0 8px;
+  color: #1f2a44;
+  font-size: 36px;
+  font-weight: 700;
+}
+
+.page-header p {
+  margin: 0;
+  color: #7c8499;
+  font-size: 18px;
+}
+
+.details-card,
+.not-found-card {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 34px 38px;
+  background-color: #ffffff;
+  border: 1px solid #d6d6d6;
+  border-radius: 18px;
+  box-shadow: 0 8px 18px rgba(31, 42, 68, 0.12);
+}
+
+.appointment-summary {
+  padding-bottom: 24px;
+  margin-bottom: 28px;
+  border-bottom: 1px solid #ececec;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.appointment-summary h2 {
+  margin: 0 0 6px;
+  color: #1f2a44;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.appointment-summary p {
+  margin: 0;
+  color: #7c8499;
+  font-size: 16px;
+}
+
+.status-pill {
+  padding: 9px 16px;
+  border-radius: 999px;
+  color: #1f2a44;
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.pending-status {
+  background-color: #ffe79a;
+}
+
+.booked-status {
+  background-color: #d8f5dd;
+}
+
+.rejected-status {
+  background-color: #ffb3b3;
+}
+
+.patient-section {
+  margin-bottom: 28px;
+
+  display: grid;
+  grid-template-columns: 96px 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+.patient-avatar {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background-color: #eef1ff;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.patient-avatar span {
+  font-size: 38px;
+}
+
+.patient-info h3,
+.message-section h3 {
+  margin: 0 0 14px;
+  color: #1f2a44;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.patient-info p {
+  margin: 0 0 8px;
+  color: #4c556b;
+  font-size: 16px;
+}
+
+.message-section {
+  margin-bottom: 28px;
+}
+
+.message-section p {
+  min-height: 96px;
+  margin: 0;
+  padding: 18px 20px;
+  border-radius: 16px;
+  background-color: #f7f8ff;
+  color: #4c556b;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.actions {
+  padding-top: 24px;
+  border-top: 1px solid #ececec;
+
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.actions button {
+  padding: 13px 22px;
+  border: none;
+  border-radius: 14px;
+  color: #1f2a44;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.accept-button {
+  background-color: #d8f5dd;
+}
+
+.accept-button:hover {
+  background-color: #c8efcf;
+}
+
+.reject-button {
+  background-color: #ffb3b3;
+}
+
+.reject-button:hover {
+  background-color: #ff9f9f;
+}
+
+.actions button.reject-disable-button {
+  background-color: #ffffff;
+  border: 1px solid #d6d6d6;
+  color: #1f2a44;
+}
+
+.actions button.reject-disable-button:hover {
+  background-color: #f4f6ff;
+  border-color: #c8cde0;
+}
+
+button.restore-button,
+.actions button.restore-button {
+  appearance: none !important;
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  border: 1px solid #d6d6d6 !important;
+  color: #1f2a44 !important;
+  box-shadow: none !important;
+}
+
+button.restore-button:hover,
+.actions button.restore-button:hover {
+  background: #f4f6ff !important;
+  background-color: #f4f6ff !important;
+  border-color: #c8cde0 !important;
+  color: #1f2a44 !important;
+}
+
+.not-found-card h1 {
+  margin: 0 0 20px;
+  color: #1f2a44;
+}
+
+@media (max-width: 768px) {
+  .appointment-details-page {
+    padding: 32px 20px;
+  }
+
+  .page-header {
+    max-width: 100%;
+  }
+
+  .page-header h1 {
+    font-size: 28px;
+  }
+
+  .details-card,
+  .not-found-card {
+    padding: 26px 20px;
+  }
+
+  .appointment-summary {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .patient-section {
+    grid-template-columns: 1fr;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+
+  .actions button {
+    width: 100%;
+  }
+}

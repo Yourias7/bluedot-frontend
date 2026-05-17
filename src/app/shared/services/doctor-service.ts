@@ -1,16 +1,23 @@
 import { Injectable } from '@angular/core';
-import { CalendarDay } from '../domain/calendar-day';
 import { Observable, of } from 'rxjs';
+
+import { CalendarDay } from '../domain/calendar-day';
 import { AvailabilitySlot } from '../domain/availability-slot';
 import { Appointment } from '../domain/appointment';
+import { Doctor } from '../domain/doctor';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DoctorService {
-  getDoctors(): import("../domain/doctor").Doctor[] {
-    throw new Error('Method not implemented.');
+  getDoctors(): Doctor[] {
+    /*
+      Temporary placeholder.
+      This can later return real doctors from the backend.
+    */
+    return [];
   }
+
   getDaysWithAvailability(): Observable<CalendarDay[]> {
     return of([
       { number: 1, date: '2025-09-01', hasActivity: false },
@@ -45,6 +52,7 @@ export class DoctorService {
       { number: 30, date: '2025-09-30', hasActivity: false }
     ]);
   }
+
   availabilitySlots: AvailabilitySlot[] = [
     {
       id: 1,
@@ -109,7 +117,7 @@ export class DoctorService {
       id: 45,
       status: 'pending',
       specialty: 'Καρδιολόγος',
-      date: 'Τρίτη 24/5/26',
+      date: '2026-05-24',
       startTime: '11:00',
       endTime: '12:00',
       patientName: 'Ασθενής Ασθενόπουλος',
@@ -123,7 +131,7 @@ export class DoctorService {
       id: 82,
       status: 'booked',
       specialty: 'Καρδιολόγος',
-      date: 'Τρίτη 24/5/26',
+      date: '2026-05-24',
       startTime: '12:00',
       endTime: '13:00',
       patientName: 'Διδώ Ακριβοπούλου',
@@ -131,24 +139,14 @@ export class DoctorService {
       patientEmail: 'asthp@gmail.com',
       patientMessage:
         'Καλησπέρα σας, θα ήθελα να σας ενημερώσω ότι θα μεταφέρω το ραντεβού μου ένα τέταρτο μετά.',
-      conversation: [
-        {
-          sender: 'patient',
-          text: 'Καλησπέρα σας, θα ήθελα να σας ενημερώσω ότι θα μεταφέρω το ραντεβού μου ένα τέταρτο μετά.',
-          sentAt: 'Παραδόθηκε 23/5/26, 12:00'
-        },
-        {
-          sender: 'doctor',
-          text: 'Καλησπέρα σας! Ευχαριστώ για την ενημέρωση.',
-          sentAt: 'Εστάλη 23/5/26, 12:05'
-        }
-      ]
+      conversation: []
+
     },
     {
       id: 91,
       status: 'pending',
       specialty: 'Καρδιολόγος',
-      date: 'Τρίτη 24/5/26',
+      date: '2026-05-24',
       startTime: '16:00',
       endTime: '17:00',
       patientName: 'Μαρία Παπαδοπούλου',
@@ -161,13 +159,26 @@ export class DoctorService {
       id: 92,
       status: 'booked',
       specialty: 'Καρδιολόγος',
-      date: 'Τρίτη 24/5/26',
+      date: '2026-05-24',
       startTime: '17:00',
       endTime: '18:00',
       patientName: 'Νίκος Νικολάου',
       patientPhone: '2110000000',
       patientEmail: 'nikos@gmail.com',
       patientMessage: 'Έχω ήδη επιβεβαιωμένο ραντεβού.',
+      conversation: []
+    },
+    {
+      id: 93,
+      status: 'rejected',
+      specialty: 'Καρδιολόγος',
+      date: '2026-05-24',
+      startTime: '18:00',
+      endTime: '19:00',
+      patientName: 'Άννα Ιωάννου',
+      patientPhone: '2101111111',
+      patientEmail: 'anna@gmail.com',
+      patientMessage: 'Θα ήθελα να κλείσω ραντεβού για έλεγχο.',
       conversation: []
     }
   ];
@@ -176,17 +187,57 @@ export class DoctorService {
     return this.availabilitySlots;
   }
 
+  getAvailabilitySlotsByDate(date: string): AvailabilitySlot[] {
+    /*
+      TEMPORARY MOCK LOGIC.
+
+      Later, when we connect the backend, this method can become:
+      GET /api/Doctors/{doctorId}/slots?date=YYYY-MM-DD
+
+      The doctor availability page will not need to change again,
+      because it already calls this method whenever the selected date changes.
+    */
+
+    console.log('Loading availability slots for date:', date);
+
+    /*
+      For now, only 2026-05-24 has the mocked pending/booked data.
+      Other dates appear as free, so you can see that changing the calendar day works.
+    */
+    if (date === '2026-05-24') {
+      return this.availabilitySlots;
+    }
+
+    return this.availabilitySlots.map(slot => ({
+      ...slot,
+      status: 'free',
+      appointmentId: null
+    }));
+  }
+
   getAppointmentById(appointmentId: number): Appointment | undefined {
     return this.appointments.find(
       appointment => appointment.id === appointmentId
     );
   }
 
-  acceptAppointment(appointmentId: number) {
+  getDoctorAppointments(): Appointment[] {
+    return this.appointments;
+  }
+
+  getDoctorAppointmentsByDate(date: string): Appointment[] {
+    return this.appointments.filter(appointment => appointment.date === date);
+  }
+
+  getDoctorAppointmentById(id: number): Appointment | undefined {
+    return this.getAppointmentById(id);
+  }
+
+  acceptAppointment(appointmentId: number): Observable<boolean> {
     const appointment = this.getAppointmentById(appointmentId);
 
     if (appointment === undefined) {
-      return;
+      return of(false);
     }
 
     appointment.status = 'booked';
@@ -198,14 +249,15 @@ export class DoctorService {
     if (slot !== undefined) {
       slot.status = 'booked';
     }
+
     return of(true);
   }
 
-  rejectAppointment(appointmentId: number) {
+  rejectAppointment(appointmentId: number): Observable<boolean> {
     const appointment = this.getAppointmentById(appointmentId);
 
     if (appointment === undefined) {
-      return;
+      return of(false);
     }
 
     appointment.status = 'rejected';
@@ -218,25 +270,49 @@ export class DoctorService {
       slot.status = 'free';
       slot.appointmentId = null;
     }
+
+    return of(true);
+  }
+  
+  restoreRejectedAppointment(appointmentId: number): Observable<boolean> {
+    const appointment = this.getAppointmentById(appointmentId);
+
+    if (appointment === undefined) {
+      return of(false);
+    }
+
+    appointment.status = 'pending';
+
+    const slot = this.availabilitySlots.find(
+      slot => slot.id === appointmentId || slot.appointmentId === appointmentId
+    );
+
+    if (slot !== undefined) {
+      slot.status = 'pending';
+      slot.appointmentId = appointmentId;
+    }
+
     return of(true);
   }
 
   rejectAppointmentAndDisableSlot(appointmentId: number): Observable<boolean> {
     const appointment = this.getAppointmentById(appointmentId);
 
-    if (appointment) {
-      appointment.status = 'rejected';
-
-      const slot = this.availabilitySlots.find(
-        slot => slot.appointmentId === appointmentId
-      );
-
-      if (slot !== undefined) {
-        slot.status = 'disabled';
-        slot.appointmentId = null;
-      }
+    if (appointment === undefined) {
+      return of(false);
     }
+
+    appointment.status = 'rejected';
+
+    const slot = this.availabilitySlots.find(
+      slot => slot.appointmentId === appointmentId
+    );
+
+    if (slot !== undefined) {
+      slot.status = 'disabled';
+      slot.appointmentId = null;
+    }
+
     return of(true);
   }
 }
-
