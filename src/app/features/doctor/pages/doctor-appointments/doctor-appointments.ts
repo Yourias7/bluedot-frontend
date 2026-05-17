@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+
 import { Appointment } from '../../../../shared/domain/appointment';
 import { DoctorService } from '../../../../shared/services/doctor-service';
 
@@ -24,7 +25,8 @@ export class DoctorAppointments {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private doctorservice: DoctorService
+    private doctorservice: DoctorService,
+    private changeDetectorRef: ChangeDetectorRef
   ) {
     const date = this.route.snapshot.queryParams['date'];
     const tab = this.route.snapshot.queryParams['tab'];
@@ -44,18 +46,21 @@ export class DoctorAppointments {
 
     this.doctorservice.loadDoctorAppointments().subscribe({
       next: () => {
-        this.isLoading = false;
-
         if (this.selectedDate !== null) {
           this.allAppointments = this.doctorservice.getDoctorAppointmentsByDate(this.selectedDate);
-          return;
+        } else {
+          this.allAppointments = this.doctorservice.getDoctorAppointments();
         }
 
-        this.allAppointments = this.doctorservice.getDoctorAppointments();
+        this.isLoading = false;
+        this.changeDetectorRef.detectChanges();
       },
-      error: () => {
+      error: error => {
+        console.error('Could not load doctor appointments:', error);
+
         this.isLoading = false;
         this.errorMessage = 'Δεν ήταν δυνατή η φόρτωση των ραντεβού.';
+        this.changeDetectorRef.detectChanges();
       }
     });
   }
@@ -72,6 +77,12 @@ export class DoctorAppointments {
     );
   }
 
+  get rejectedAppointments(): Appointment[] {
+    return this.allAppointments.filter(appointment =>
+      appointment.status === 'rejected'
+    );
+  }
+
   get visibleAppointments(): Appointment[] {
     if (this.selectedTab === 'appointments') {
       return this.confirmedAppointments;
@@ -84,14 +95,9 @@ export class DoctorAppointments {
     return this.rejectedAppointments;
   }
 
-  get rejectedAppointments(): Appointment[] {
-    return this.allAppointments.filter(appointment =>
-      appointment.status === 'rejected'
-    );
-  }
-
   selectTab(tab: AppointmentTab) {
     this.selectedTab = tab;
+    this.changeDetectorRef.detectChanges();
   }
 
   openAppointment(appointment: Appointment) {

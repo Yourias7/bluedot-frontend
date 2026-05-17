@@ -11,6 +11,24 @@ export type LoginDto = {
   password: string;
 };
 
+export type RegisterPatientDto = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+};
+
+export type RegisterDoctorDto = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  gender: string;
+  phoneNumber: string;
+  clinicAddress: string;
+  specialtyIds: number[];
+};
+
 type LoginResponseDto = {
   emailAddress: string;
   token: string;
@@ -51,6 +69,14 @@ export class AuthenticationServices {
         this.currentUserName = displayName;
       })
     );
+  }
+
+  registerPatient(model: RegisterPatientDto): Observable<unknown> {
+    return this.http.post(`${this.baseUrl}/account/register/patient`, model);
+  }
+
+  registerDoctor(model: RegisterDoctorDto): Observable<unknown> {
+    return this.http.post(`${this.baseUrl}/account/register/doctor`, model);
   }
 
   isLoggedIn(): boolean {

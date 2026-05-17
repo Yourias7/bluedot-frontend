@@ -187,6 +187,28 @@ export class DoctorHome implements OnInit {
     });
   }
 
+  getDayButtonClass(day: CalendarDay): string {
+    const classes = ['day-button'];
+
+    if (!day.isCurrentMonth) {
+      classes.push('empty-day');
+    }
+
+    if (day.hasConfirmedAppointment) {
+      classes.push('confirmed-day');
+    }
+
+    if (day.hasPendingAppointment) {
+      classes.push('pending-day');
+    }
+
+    if (day.isToday) {
+      classes.push('today-day');
+    }
+
+    return classes.join(' ');
+  }
+
   goToRequests() {
     this.router.navigate(['/doctor/appointments'], {
       queryParams: { tab: 'requests' }

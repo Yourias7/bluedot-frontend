@@ -192,7 +192,7 @@
 }
 
 .day-button.pending-day {
-  background-color: #ffe79a;
+  background-color: #ffe79a !important;
   border-color: #f3d574;
   color: #252525;
 }
@@ -207,6 +207,10 @@
   border-color: #ecc95b;
 }
 
+.day-button.today-day.pending-day,
+.day-button.today-day.confirmed-day {
+  border: 2px solid #69bdfd;
+}
 /* Smaller screens */
 
 @media (max-width: 900px) {
