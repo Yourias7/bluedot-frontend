@@ -41,4 +41,8 @@ export class DoctorDetailsPage {
   getfilledStars(): number {
     return Math.min(Math.max(Math.round(this.review), 1), 5);
   }
+
+  closeAppointment(id: number) {
+    this.router.navigate(['/book-appointment', id]);
+  }
 }

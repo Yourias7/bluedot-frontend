@@ -107,4 +107,8 @@ export class DoctorSearchService {
   getDoctorById(id: number): Doctor | undefined {
     return this.doctors.find(doctor => doctor.id === id);
   }
+
+  getSpecialties(): Specialty[] {
+    return this.specialties;
+  }
 }

@@ -1,0 +1,19 @@
+<div class="position-relative map-wrapper">
+  <div id="map"></div>
+  @if(selectedMarker) {
+  <section class="map-drawer card shadow">
+    <div class="card-header d-flex justify-content-between align-items-start gap-2">
+      <div>
+        <h5 class="card-title mb-1">{{ selectedMarker.name }}</h5>
+        <p class="text-muted mb-0 small">{{ selectedMarker.lat }}, {{ selectedMarker.lng }}</p>
+      </div>
+      <button type="button" class="btn btn-sm btn-outline-secondary" (click)="closeSidebar()">
+        Close
+      </button>
+    </div>
+    <div class="card-body">
+      <p class="card-text mb-0">{{ selectedMarker.description }}</p>
+    </div>
+  </section>
+  }
+</div>
