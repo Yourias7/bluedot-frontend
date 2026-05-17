@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Appointment } from '../../domain/appointment';
 
 @Component({
@@ -9,4 +9,10 @@ import { Appointment } from '../../domain/appointment';
 })
 export class AppointmentCard {
   @Input() appointment!: Appointment;
+  @Output() messageEvent = new EventEmitter<number>();
+
+  sendMessage(){
+    console.log(this.appointment.id);
+    this.messageEvent.emit(this.appointment.id);
+  }
 }

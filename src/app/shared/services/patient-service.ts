@@ -67,4 +67,10 @@ export class PatientService {
   getAppointments(): Appointment[] {
     return this._appointments;
   }
+
+  getAppointmentById(appointmentId: number): Appointment | undefined {
+    return this._appointments.find(
+      appointment => appointment.id == appointmentId
+    );
+  }
 }

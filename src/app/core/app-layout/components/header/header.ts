@@ -60,7 +60,7 @@ export class Header {
                     {
                         label: 'Τα ραντεβού μου',
                         command: () => {
-                            console.log('Navigating to appointments page');
+                            this.router.navigate(['patient-appointments/:id'])
                         }
                     },
                     { label: 'Angular.dev', url: 'https://angular.dev' },

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, NgZone, OnChanges, OnInit, SimpleChanges, ChangeDetectionStrategy} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import * as L from 'leaflet';
 
@@ -13,7 +13,8 @@ interface MarkerData {
   selector: 'app-map-layout',
   imports: [CommonModule],
   templateUrl: './map-layout.html',
-  styleUrl: './map-layout.scss',
+  styleUrls: ['./map-layout.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MapLayout implements OnInit, AfterViewInit {
 
@@ -34,7 +35,7 @@ export class MapLayout implements OnInit, AfterViewInit {
     }
   };
   
-  constructor() {
+  constructor(private ngZone: NgZone) {
 
   }
 
@@ -65,14 +66,16 @@ export class MapLayout implements OnInit, AfterViewInit {
     // Add click listeners to markers
     this.markers.forEach((marker, index) => {
       marker.addTo(this.map).addEventListener('click', () => {
-        this.openSidebar(index);
+       this.openSidebar(index);
       });
     });
   }
 
   openSidebar(markerIndex: number) {
+   
     this.selectedMarker = this.markerData[markerIndex];
     this.sidebarOpen = true;
+    console.log('sidebar open', this.markerData.valueOf());
   }
 
   closeSidebar() {
