@@ -1,19 +1,19 @@
 <p-dialog header="Σύνδεση χρήστη" [modal]="true" [(visible)]="isOpen" [style]="{ width: '25rem' }" (onHide)="isOpen=false">
-    <form class="d-flex flex-column">
-        <div class="p-field d-flex flex-column">
-            <label for="username">Όνομα χρήστη </label>
-            <input id="username" type="text" name="username" />
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="d-flex flex-column">
+        <div class="p-field d-flex flex-column mb-3">
+            <label for="email">Email</label>
+            <input id="email" type="email" formControlName="email" class="p-inputtext" />
         </div>
-        <div class="p-field d-flex flex-column">
+        <div class="p-field d-flex flex-column mb-3">
             <label for="password">Κωδικός πρόσβασης (Password)</label>
-            <input id="password" type="password" name="password" />
+            <input id="password" type="password" formControlName="password" class="p-inputtext" />
         </div>
-        <br>
-        <div class="p-field">
-            <button type="submit" class="p-button p-button-primary">Σύνδεση</button>
+        
+        <div class="p-field mt-3">
+            <button type="submit" pButton class="p-button p-button-primary w-100" [disabled]="loginForm.invalid">Σύνδεση</button>
         </div>
     </form>
-    <div>
-        <a href="http://">Δεν έχεις λογαριασμό; Εγγράψου</a>
+    <div class="mt-3 text-center">
+        <a href="#">Δεν έχεις λογαριασμό; Εγγράψου</a>
     </div>
 </p-dialog>

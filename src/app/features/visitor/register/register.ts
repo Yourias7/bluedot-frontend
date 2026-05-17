@@ -5,6 +5,7 @@ import { RegisterCommonFields } from './components/register-common-fields/regist
 import { ListboxModule } from 'primeng/listbox';
 import { DoctorSearchService } from '../../../shared/services/doctor-search-service';
 import { Specialty } from '../../../shared/domain/specialty';
+import { AuthenticationServices } from '../../../shared/services/authentication-services'; // <-- Add this import
 
 @Component({
   selector: 'app-register',
@@ -18,7 +19,11 @@ export class Register {
   patient_registerForm: FormGroup;
   doctor_registerForm: FormGroup;
 
-  constructor(private doctorSearchService: DoctorSearchService) {
+  // Inject the auth service
+  constructor(
+    private doctorSearchService: DoctorSearchService,
+    private authService: AuthenticationServices 
+  ) {
 
     this.items = this.doctorSearchService.getSpecialties();
 
@@ -52,13 +57,34 @@ export class Register {
 
 
   onSubmit() {
+    // 1. Handle Patient Registration
     if (this.patient_registerForm.valid) {
       const formData = this.patient_registerForm.value;
-      console.log('Patient Data:', formData);
+      
+      this.authService.registerPatient(formData).subscribe({
+        next: (response) => {
+          console.log('Patient registered successfully!', response);
+          // TODO: Show success message, close dialog, or auto-login
+        },
+        error: (err) => {
+          console.error('Patient registration failed', err);
+        }
+      });
     }
+
+    // 2. Handle Doctor Registration
     if (this.doctor_registerForm.valid) {
       const formData = this.doctor_registerForm.value;
-      console.log('Doctor Data:', formData);
+      
+      this.authService.registerDoctor(formData).subscribe({
+        next: (response) => {
+          console.log('Doctor registered successfully!', response);
+          // TODO: Show success message
+        },
+        error: (err) => {
+          console.error('Doctor registration failed', err);
+        }
+      });
     }
   }
 }
