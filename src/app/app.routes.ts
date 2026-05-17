@@ -12,6 +12,11 @@ import { Register } from './features/visitor/register/register';
 import { MapLayout } from './features/visitor/map-layout/map-layout';
 import { BookAppointment } from './features/patient/book-appointment/book-appointment';
 import { AppointmentConfirm } from './features/patient/appointment-confirm/appointment-confirm';
+import {AccountDetails} from "./features/patient/account-details/account-details";
+import { PatientAppointments } from './features/patient/patient-appointments/patient-appointments';
+import { Error403 } from './shared/components/error-403/error-403';
+import { Error500 } from './shared/components/error-500/error-500';
+import { AppointmentDetails } from './shared/components/appointment-details/appointment-details';
 
 export const routes: Routes = [
   {
@@ -49,6 +54,18 @@ export const routes: Routes = [
     component: AppointmentConfirm
   },
   {
+    path: 'patient-account-details/:id',
+    component:AccountDetails
+  },
+  {
+    path: 'patient-appointments/:id',
+    component: PatientAppointments
+  },
+  {
+    path: 'patient-appointments/:id/:appointmentId',
+    component: AppointmentDetails
+  },
+  {
     path: 'doctor',
     component: DoctorHome,
     canActivate: [doctorOnlyGuard]
@@ -66,5 +83,17 @@ export const routes: Routes = [
   {
     path: '404',
     component: Error404
+  },
+  {
+    path: '**',
+    redirectTo: '404'
+  },
+  {
+    path: '403',
+    component: Error403
+  },
+  {
+    path:'500',
+    component: Error500
   }
 ];
