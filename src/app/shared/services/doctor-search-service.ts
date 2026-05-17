@@ -2,11 +2,20 @@ import { Injectable } from '@angular/core';
 import { Doctor } from '../domain/doctor';
 import { UserRole } from '../domain/user';
 import { Specialty } from '../domain/specialty';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment.development';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DoctorSearchService {
+
+  private baseUrl = environment.apiUrl
+  constructor(private httpClient:HttpClient){
+
+  }
+
 
   private specialties:Specialty[]=[
     {
@@ -100,6 +109,8 @@ export class DoctorSearchService {
     },
   ]
 
+
+
   getDoctors(): Doctor[] {
     return this.doctors;
   }
@@ -108,7 +119,9 @@ export class DoctorSearchService {
     return this.doctors.find(doctor => doctor.id === id);
   }
 
-  getSpecialties(): Specialty[] {
-    return this.specialties;
+  //TODO: Test meee
+  getSpecialties(): Observable<Specialty[]> {
+    //return this.specialties;
+    return this.httpClient.get<Specialty[]>(`${this.baseUrl}/specialty`);
   }
 }

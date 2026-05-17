@@ -20,7 +20,9 @@
       @if(formGroup.get("pass")?.hasError("required")) {
         <div class="form-error">Ο κωδικός είναι υποχρεωτικός.</div>
       } @else if (formGroup.get("pass")?.hasError("minlength")) {
-        <div class="form-error">Ο κωδικός πρέπει να έχει τουλάχιστον 6 χαρακτήρες.</div>
+        <div class="form-error">Ο κωδικός πρέπει να έχει τουλάχιστον 8 χαρακτήρες.</div>
+      } @else if (formGroup.get("pass")?.hasError("pattern")) {
+        <div class="form-error">Ο κωδικός πρέπει να περιέχει τουλάχιστον ένα κεφαλαίο γράμμα.</div>
       }
     }
   </div>
@@ -29,8 +31,12 @@
     <label for="confirmPassword" class="form-label">Επιβεβαίωση κωδικού</label>
     <input id="confirmPassword" formControlName="confirmPass" type="password" class="form-control" />
 
-    @if(formGroup.get("confirmPass")?.touched && formGroup.get("confirmPass")?.hasError("required")) {
-      <div class="form-error">Η επιβεβαίωση κωδικού είναι υποχρεωτική.</div>
+    @if(formGroup.get("confirmPass")?.touched) {
+      @if(formGroup.get("confirmPass")?.hasError("required")) {
+        <div class="form-error">Η επιβεβαίωση κωδικού είναι υποχρεωτική.</div>
+      } @else if (formGroup.parent?.hasError("passwordMismatch")) {
+        <div class="form-error">Οι κωδικοί δεν ταιριάζουν.</div>
+      }
     }
   </div>
 

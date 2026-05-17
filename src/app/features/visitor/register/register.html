@@ -67,27 +67,6 @@
                             </span>
                         </div>
                     </div>
-
-                    <!--FIXME-->
-                    <div class="mb-3">
-                        <label for="phone" class="form-label">Τηλέφωνο</label>
-                        <input id="phone" formControlName="phone" type="text" class="form-control" />
-                        @if(doctor_registerForm.get("phone")?.touched){
-                        @if(doctor_registerForm.get("phone")?.hasError("required")) {
-                        <div class="form-error">Υποχρεωτικό πεδίο.</div>
-                        } @else if (doctor_registerForm.get("phone")?.hasError("pattern")) {
-                        <div class="form-error">Παρακαλώ εισάγετε ένα ακριβές τηλεφωνο (10 αριθμοί από το 0 έως το 9).
-                        </div>
-                        }
-                        }
-                    </div>
-                    <div class="mb-3">
-                        <label for="bio" class="form-label">Γενικές πληροφορίες</label>
-                        <textarea id="bio" formControlName="bio" type="text" class="form-control"></textarea>
-                        @if(doctor_registerForm.get("bio")?.hasError("required") &&
-                        doctor_registerForm.get("bio")?.touched) {
-                        <div class="form-error">Υποχρεωτικό πεδίο.</div>}
-                    </div>
                 </div>
 
                 <div class="mb-3">
@@ -116,6 +95,10 @@
                 <div class="mb-3">
                     <label for="bio" class="form-label">Γενικές πληροφορίες</label>
                     <textarea id="bio" formControlName="bio" class="form-control"></textarea>
+                     @if(doctor_registerForm.get("bio")?.touched &&
+                    doctor_registerForm.get("bio")?.hasError("required")) {
+                    <div class="form-error">Το πεδίο γενικών πληροφοριών είναι υποχρεωτικό.</div>
+                    }
                 </div>
 
                 <div>
