@@ -26,40 +26,29 @@
                 Απορριφθέντα
             </button>
         </div>
-
         <div class="appointment-list">
+            @if (isLoading) {
+            <div class="empty-state">
+                Φόρτωση ραντεβού...
+            </div>
+            }
+
+            @if (errorMessage) {
+            <div class="empty-state">
+                {{ errorMessage }}
+            </div>
+            }
+
+            @if (!isLoading && !errorMessage) {
             @if (visibleAppointments.length > 0) {
             @for (appointment of visibleAppointments; track appointment.id) {
-            <button type="button" class="appointment-row" (click)="openAppointment(appointment)">
-                <div>
-                    <h2>{{ appointment.patientName }}</h2>
-                    <p>
-                        {{ appointment.date }}
-                        Ώρα {{ appointment.startTime }} - {{ appointment.endTime }}
-                    </p>
-                </div>
-
-                <span class="status-pill" [class.pending-status]="appointment.status === 'pending'"
-                    [class.confirmed-status]="appointment.status === 'booked'"
-                    [class.rejected-status]="appointment.status === 'rejected'">
-                    @if (appointment.status === 'pending') {
-                    Σε αναμονή
-                    }
-
-                    @if (appointment.status === 'booked') {
-                    Επιβεβαιωμένο
-                    }
-
-                    @if (appointment.status === 'rejected') {
-                    Απορρίφθηκε
-                    }
-                </span>
-            </button>
+            <!-- keep your existing appointment-row button exactly as it is -->
             }
             } @else {
             <div class="empty-state">
                 Δεν υπάρχουν διαθέσιμα στοιχεία για αυτή την καρτέλα.
             </div>
+            }
             }
         </div>
     </div>

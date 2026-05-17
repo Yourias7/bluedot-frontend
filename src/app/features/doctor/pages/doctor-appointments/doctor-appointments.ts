@@ -18,6 +18,9 @@ export class DoctorAppointments {
 
   allAppointments: Appointment[] = [];
 
+  isLoading = false;
+  errorMessage = '';
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -36,12 +39,25 @@ export class DoctorAppointments {
   }
 
   loadAppointments() {
-    if (this.selectedDate !== null) {
-      this.allAppointments = this.doctorservice.getDoctorAppointmentsByDate(this.selectedDate);
-      return;
-    }
+    this.isLoading = true;
+    this.errorMessage = '';
 
-    this.allAppointments = this.doctorservice.getDoctorAppointments();
+    this.doctorservice.loadDoctorAppointments().subscribe({
+      next: () => {
+        this.isLoading = false;
+
+        if (this.selectedDate !== null) {
+          this.allAppointments = this.doctorservice.getDoctorAppointmentsByDate(this.selectedDate);
+          return;
+        }
+
+        this.allAppointments = this.doctorservice.getDoctorAppointments();
+      },
+      error: () => {
+        this.isLoading = false;
+        this.errorMessage = 'Δεν ήταν δυνατή η φόρτωση των ραντεβού.';
+      }
+    });
   }
 
   get confirmedAppointments(): Appointment[] {
