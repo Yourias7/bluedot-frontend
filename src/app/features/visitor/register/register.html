@@ -1,70 +1,128 @@
 <h1>Εγγραφή χρήστη</h1>
+
 <section class="container mt-4">
     <p-tabs value="0" class="mb-3">
         <p-tablist>
             <p-tab value="0">Ψάχνω γιατρό</p-tab>
             <p-tab value="1">Είμαι γιατρός</p-tab>
         </p-tablist>
+
         <p-tabpanel value="0">
-            <form [formGroup]="patient_registerForm" (ngSubmit)="onSubmit()">
+            <form [formGroup]="patient_registerForm" (ngSubmit)="submitPatient()">
                 <app-register-common-fields [formGroup]="patient_registerForm"></app-register-common-fields>
+
                 <div class="mb-3">
-                    <label for="telephone" class="form-label">Τηλέφωνο</label>
-                    <input id="telephone" formControlName="phone" type="text" class="form-control" />
-                </div>
-                <div>
-                    <input type="checkbox" formControlName="terms">
-                    <label for="checkbox">Έχω διαβάσει και αποδεχθεί τους Όρους Χρήσης</label>
-                    <br>
+                    <label for="patient-telephone" class="form-label">Τηλέφωνο</label>
+                    <input id="patient-telephone" formControlName="phone" type="text" class="form-control" />
+
+                    @if(patient_registerForm.get("phone")?.touched &&
+                    patient_registerForm.get("phone")?.hasError("pattern")) {
+                    <div class="form-error">Το τηλέφωνο πρέπει να έχει 10 ψηφία.</div>
+                    }
                 </div>
 
-                <div class=" container mt-4 d-flex justify-content-center">
-                    <button type="submit" [disabled]="patient_registerForm.invalid"
-                        class="register-button btn btn-primary">Εγγραφή</button>
+                <div>
+                    <input id="patient-terms" type="checkbox" formControlName="terms">
+                    <label for="patient-terms">Έχω διαβάσει και αποδεχθεί τους Όρους Χρήσης</label>
+
+                    @if(patient_registerForm.get("terms")?.touched &&
+                    patient_registerForm.get("terms")?.hasError("required")) {
+                    <div class="form-error">Πρέπει να αποδεχθείτε τους όρους χρήσης.</div>
+                    }
+                </div>
+
+                <div class="container mt-4 d-flex justify-content-center">
+                    <button type="submit" [disabled]="isLoading" class="register-button btn btn-primary">
+                        @if (isLoading) {
+                        Εγγραφή...
+                        } @else {
+                        Εγγραφή
+                        }
+                    </button>
                 </div>
             </form>
         </p-tabpanel>
+
         <p-tabpanel value="1">
-            <form [formGroup]="doctor_registerForm" (ngSubmit)="onSubmit()">
+            <form [formGroup]="doctor_registerForm" (ngSubmit)="submitDoctor()">
                 <app-register-common-fields [formGroup]="doctor_registerForm"></app-register-common-fields>
-                <div>
+
+                <div class="mb-3">
                     <label for="specialization" class="form-label">Ειδικότητα</label>
+
                     <div class="card flex justify-center">
                         <p-listbox [options]="items" id="specialization" formControlName="specialization"
-                            [filter]="true" [checkbox]="true" optionLabel="name" [virtualScroll]="true"
-                            [virtualScrollItemSize]='40' [metaKeySelection]="false" scrollHeight="250px"
-                            [striped]="true" class="w-full md:w-56" />
+                            [filter]="true" [checkbox]="true" [multiple]="true" optionLabel="name"
+                            [virtualScroll]="true" [virtualScrollItemSize]="40" [metaKeySelection]="false"
+                            scrollHeight="250px" [striped]="true" class="w-full md:w-56"></p-listbox>
                     </div>
 
-                    <!--FIXME-->
-                    <div class="mb-3">
-                        <label for="telephone" class="form-label">Τηλέφωνο</label>
-                        <input id="telephone" formControlName="phone" type="text" class="form-control" />
-                        @if(doctor_registerForm.get("phone")?.touched){
-                        @if(doctor_registerForm.get("phone")?.hasError("required")) {
-                        <div class="form-error">Email is required.</div>
-                        } @else if (doctor_registerForm.get("phone")?.hasError("pattern")) {
-                        <div class="form-error">Please enter a valid email address.</div>
-                        }
-                        }
-                    </div>
-                    <div class="mb-3">
-                        <label for="bio" class="form-label">Γενικές πληροφορίες</label>
-                        <textarea id="bio" formControlName="bio" type="text" class="form-control"></textarea>
-                    </div>
+                    @if(doctor_registerForm.get("specialization")?.touched &&
+                    doctor_registerForm.get("specialization")?.hasError("required")) {
+                    <div class="form-error">Επιλέξτε τουλάχιστον μία ειδικότητα.</div>
+                    }
                 </div>
+
+                <div class="mb-3">
+                    <label for="doctor-telephone" class="form-label">Τηλέφωνο</label>
+                    <input id="doctor-telephone" formControlName="phone" type="text" class="form-control" />
+
+                    @if(doctor_registerForm.get("phone")?.touched) {
+                    @if(doctor_registerForm.get("phone")?.hasError("required")) {
+                    <div class="form-error">Το τηλέφωνο είναι υποχρεωτικό.</div>
+                    } @else if (doctor_registerForm.get("phone")?.hasError("pattern")) {
+                    <div class="form-error">Το τηλέφωνο πρέπει να έχει 10 ψηφία.</div>
+                    }
+                    }
+                </div>
+
+                <div class="mb-3">
+                    <label for="clinicAddress" class="form-label">Διεύθυνση ιατρείου</label>
+                    <input id="clinicAddress" formControlName="clinicAddress" type="text" class="form-control" />
+
+                    @if(doctor_registerForm.get("clinicAddress")?.touched &&
+                    doctor_registerForm.get("clinicAddress")?.hasError("required")) {
+                    <div class="form-error">Η διεύθυνση ιατρείου είναι υποχρεωτική.</div>
+                    }
+                </div>
+
+                <div class="mb-3">
+                    <label for="bio" class="form-label">Γενικές πληροφορίες</label>
+                    <textarea id="bio" formControlName="bio" class="form-control"></textarea>
+                </div>
+
                 <div>
-                    <input type="checkbox" formControlName="terms">
-                    <label for="checkbox">Έχω διαβάσει και αποδεχθεί τους Όρους Χρήσης</label>
-                    <br>
+                    <input id="doctor-terms" type="checkbox" formControlName="terms">
+                    <label for="doctor-terms">Έχω διαβάσει και αποδεχθεί τους Όρους Χρήσης</label>
+
+                    @if(doctor_registerForm.get("terms")?.touched &&
+                    doctor_registerForm.get("terms")?.hasError("required")) {
+                    <div class="form-error">Πρέπει να αποδεχθείτε τους όρους χρήσης.</div>
+                    }
                 </div>
-                <div class=" container mt-4 d-flex justify-content-center">
-                    <button type="submit" [disabled]="doctor_registerForm.invalid"
-                        class="register-button btn btn-primary">Εγγραφή</button>
+
+                <div class="container mt-4 d-flex justify-content-center">
+                    <button type="submit" [disabled]="isLoading" class="register-button btn btn-primary">
+                        @if (isLoading) {
+                        Εγγραφή...
+                        } @else {
+                        Εγγραφή
+                        }
+                    </button>
                 </div>
             </form>
         </p-tabpanel>
     </p-tabs>
-    <!--   -->
 
+    @if (successMessage) {
+    <div class="alert alert-success mt-3">
+        {{ successMessage }}
+    </div>
+    }
+
+    @if (errorMessage) {
+    <div class="alert alert-danger mt-3">
+        {{ errorMessage }}
+    </div>
+    }
 </section>

@@ -14,11 +14,19 @@
         </p>
 
         <div class="quick-actions">
-          <button type="button" class="quick-action-button primary-action" (click)="goToRequests()">
+          <button
+            type="button"
+            class="quick-action-button primary-action"
+            (click)="goToRequests()"
+          >
             Προβολή αιτημάτων
           </button>
 
-          <button type="button" class="quick-action-button" (click)="goToAvailability()">
+          <button
+            type="button"
+            class="quick-action-button"
+            (click)="goToAvailability()"
+          >
             Διαχείριση διαθεσιμότητας
           </button>
         </div>
@@ -33,7 +41,11 @@
 
     <h2>{{ currentMonthTitle }}</h2>
 
-    <button class="month-button" [disabled]="!canGoToNextMonth" (click)="goToNextMonth()">
+    <button
+      class="month-button"
+      [disabled]="!canGoToNextMonth"
+      (click)="goToNextMonth()"
+    >
       &gt;
     </button>
   </div>
@@ -47,13 +59,9 @@
   </div>
 
   <div class="days-grid">
-    @for (day of calendarDays; track day.date) {
+    @for (day of calendarDays; track $index) {
       <button
-        class="day-button"
-        [class.empty-day]="!day.isCurrentMonth"
-        [class.today-day]="day.isToday"
-        [class.confirmed-day]="day.hasConfirmedAppointment"
-        [class.pending-day]="day.hasPendingAppointment"
+        [class]="getDayButtonClass(day)"
         (click)="openDay(day)"
       >
         @if (day.isCurrentMonth) {

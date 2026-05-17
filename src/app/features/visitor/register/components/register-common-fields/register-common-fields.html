@@ -1,65 +1,81 @@
 <ng-container [formGroup]="formGroup">
-    <div class="mb-3">
-        <label for="email" class="form-label">Email</label>
-        <input id="email" formControlName="email" type="text" class="form-control" />
-        @if(formGroup.get("email")?.touched){
-        @if(formGroup.get("email")?.hasError("required")) {
-        <div class="form-error">Email is required.</div>
-        } @else if (formGroup.get("email")?.hasError("email")) {
-        <div class="form-error">Please enter a valid email address.</div>
-        }
-        }
+  <div class="mb-3">
+    <label for="email" class="form-label">Email</label>
+    <input id="email" formControlName="email" type="email" class="form-control" />
+
+    @if(formGroup.get("email")?.touched) {
+      @if(formGroup.get("email")?.hasError("required")) {
+        <div class="form-error">Το email είναι υποχρεωτικό.</div>
+      } @else if (formGroup.get("email")?.hasError("email")) {
+        <div class="form-error">Συμπληρώστε ένα έγκυρο email.</div>
+      }
+    }
+  </div>
+
+  <div class="mb-3">
+    <label for="password" class="form-label">Κωδικός πρόσβασης</label>
+    <input id="password" formControlName="pass" type="password" class="form-control" />
+
+    @if(formGroup.get("pass")?.touched) {
+      @if(formGroup.get("pass")?.hasError("required")) {
+        <div class="form-error">Ο κωδικός είναι υποχρεωτικός.</div>
+      } @else if (formGroup.get("pass")?.hasError("minlength")) {
+        <div class="form-error">Ο κωδικός πρέπει να έχει τουλάχιστον 6 χαρακτήρες.</div>
+      }
+    }
+  </div>
+
+  <div class="mb-3">
+    <label for="confirmPassword" class="form-label">Επιβεβαίωση κωδικού</label>
+    <input id="confirmPassword" formControlName="confirmPass" type="password" class="form-control" />
+
+    @if(formGroup.get("confirmPass")?.touched && formGroup.get("confirmPass")?.hasError("required")) {
+      <div class="form-error">Η επιβεβαίωση κωδικού είναι υποχρεωτική.</div>
+    }
+  </div>
+
+  <div class="mb-3 d-flex gap-3">
+    <div>
+      <label for="first-name" class="form-label">Όνομα</label>
+      <input id="first-name" formControlName="firstName" type="text" class="form-control" />
+
+      @if(formGroup.get("firstName")?.hasError("required") && formGroup.get("firstName")?.touched) {
+        <div class="form-error">Το όνομα είναι υποχρεωτικό.</div>
+      }
     </div>
-    <div class="mb-3">
-        <label for="password" class="form-label">Κωδικός πρόσβασης (Password)</label>
-        <input id="password" formControlName="pass" type="text" class="form-control" />
-        @if( formGroup.get("password")?.touched) {
-        @if(formGroup.get("password")?.hasError("required")) {
-        <div class="form-error">Password is required.</div>
-        } @else if (formGroup.get("password")?.hasError("minlength")) {
-        <div class="form-error">Password must be at least 8 characters long.</div>
-        } @else if (formGroup.get("password")?.hasError("pattern")) {
-        <div class="form-error">Password must contain at least one uppercase letter, one lowercase letter,
-            and one number.</div>
-        }
-        }
+
+    <div>
+      <label for="last-name" class="form-label">Επώνυμο</label>
+      <input id="last-name" formControlName="lastName" type="text" class="form-control" />
+
+      @if(formGroup.get("lastName")?.hasError("required") && formGroup.get("lastName")?.touched) {
+        <div class="form-error">Το επώνυμο είναι υποχρεωτικό.</div>
+      }
     </div>
-    <div class="mb-3">
-        <label for="confirmPassword" class="form-label">Επιβεβαίωση κωδικού</label>
-        <input id="confirmPassword" formControlName="confirmPass" type="text" class="form-control" />
-    </div>
-    <div class="mb-3 d-flex gap-3">
-        <div>
-            <label for="first-name" class="form-label">Όνομα</label>
-            <input id="first-name" formControlName="firstName" type="text" class="form-control" />
-            @if(formGroup.get("firstName")?.hasError("required") && formGroup.get("firstName")?.touched) {
-            <div class="form-error">First name is required.</div>}
-        </div>
-        <div>
-            <label for="last-name" class="form-label">Επώνυμο</label>
-            <input id="last-name" formControlName="lastName" type="text" class="form-control" />
-            @if(formGroup.get("lastName")?.hasError("required") && formGroup.get("lastName")?.touched) {
-            <div class="form-error">Last name is required.</div>
-            }
-        </div>
-    </div>
-   
-    <div class="mb-3">
-        <label for="birth-date" class="form-label">Ημερομηνία γέννησης</label>
-        <input id="birth-date" formControlName="birthDate" type="date" class="form-control" />
-        @if(formGroup.get("birthDate")?.hasError("required") && formGroup.get("birthDate")?.touched) {
-            <div class="form-error">Last name is required.</div>
-            }
-    </div>
-    <div class="mb-3">
-        <p>Φύλο</p>
-        <input type="radio" id="male" name="gender" value="male" formControlName="gender">
-        <label for="male">Άνδρας</label><br>
-        <input type="radio" id="female" name="gender" value="female" formControlName="gender">
-        <label for="female">Γυναίκα</label><br>
-        <input type="radio" id="other" name="gender" value="other" formControlName="gender">
-        <label for="other">Άλλο</label><br>
-        <input type="radio" id="none" name="gender" value="none" formControlName="gender">
-        <label for="none">Προτιμώ να μη δηλώσω</label><br>
-    </div>
+  </div>
+
+  <div class="mb-3">
+    <label for="birth-date" class="form-label">Ημερομηνία γέννησης</label>
+    <input id="birth-date" formControlName="birthDate" type="date" class="form-control" />
+  </div>
+
+  <div class="mb-3">
+    <p>Φύλο</p>
+
+    <input type="radio" id="male" value="male" formControlName="gender">
+    <label for="male">Άνδρας</label><br>
+
+    <input type="radio" id="female" value="female" formControlName="gender">
+    <label for="female">Γυναίκα</label><br>
+
+    <input type="radio" id="other" value="other" formControlName="gender">
+    <label for="other">Άλλο</label><br>
+
+    <input type="radio" id="none" value="none" formControlName="gender">
+    <label for="none">Προτιμώ να μη δηλώσω</label><br>
+
+    @if(formGroup.get("gender")?.hasError("required") && formGroup.get("gender")?.touched) {
+      <div class="form-error">Το φύλο είναι υποχρεωτικό.</div>
+    }
+  </div>
 </ng-container>
