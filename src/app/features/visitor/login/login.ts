@@ -1,48 +1,92 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Router } from '@angular/router';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
-import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
+
 import { AuthenticationServices } from '../../../shared/services/authentication-services';
-import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-login',
-  standalone: true,
   imports: [DialogModule, ButtonModule, ReactiveFormsModule],
   templateUrl: './login.html',
   styleUrl: './login.scss',
 })
-export class Login implements OnInit {
-  @Input() isOpen: boolean = false;
-  loginForm!: FormGroup;
+export class Login {
+  @Input() isOpen = false;
 
-  constructor(private authService: AuthenticationServices, private router:Router) {}
+  @Output() loginSucceeded = new EventEmitter<void>();
+  @Output() modalClosed = new EventEmitter<void>();
 
-  ngOnInit() {
-    this.loginForm = new FormGroup({
-      email: new FormControl('', [Validators.required, Validators.email]),
-      password: new FormControl('', [Validators.required])
-    });
+  isLoading = false;
+  errorMessage = '';
+
+  loginForm = new FormGroup({
+    email: new FormControl('', [Validators.required, Validators.email]),
+    password: new FormControl('', [Validators.required])
+  });
+
+  constructor(
+    private authenticationServices: AuthenticationServices,
+    private router: Router
+  ) {}
+
+  closeModal() {
+    this.isOpen = false;
+    this.errorMessage = '';
+    this.modalClosed.emit();
   }
 
-  onSubmit() {
-    if (this.loginForm.valid) {
-      this.authService.login(this.loginForm.value).subscribe({
-        next: (res) => {
-          console.log('Login successful', res);
-          this.isOpen = false; // Close the dialog
-          // TODO: Use Angular Router to redirect to dashboard
-          this.router.navigate(['/landing-page']);
-        },
-        error: (err) => {
-          console.error('Login failed', err);
-          // TODO: Show an error message to the user
-        }
-      });
+  submitLogin() {
+    this.loginForm.markAllAsTouched();
+
+    if (this.loginForm.invalid) {
+      return;
     }
-  }
 
-  goToRegister(){
-    this.router.navigate(['/register']);
+    const email = this.loginForm.controls.email.value;
+    const password = this.loginForm.controls.password.value;
+
+    if (email === null || password === null) {
+      return;
+    }
+
+    this.isLoading = true;
+    this.errorMessage = '';
+
+    this.authenticationServices.login({
+      email,
+      password
+    }).subscribe({
+      next: () => {
+        this.isLoading = false;
+        this.loginSucceeded.emit();
+        this.closeModal();
+
+        const role = this.authenticationServices.getCurrentUserRole();
+
+        if (role === 'doctor') {
+          this.router.navigate(['/doctor']);
+          return;
+        }
+
+        if (role === 'patient') {
+          this.router.navigate(['/landing-page']);
+          return;
+        }
+
+        if (role === 'manager') {
+          this.router.navigate(['/landing-page']);
+          return;
+        }
+
+        this.router.navigate(['/landing-page']);
+      },
+      error: () => {
+        this.isLoading = false;
+        this.errorMessage = 'Λάθος email ή κωδικός πρόσβασης.';
+      }
+    });
   }
 }

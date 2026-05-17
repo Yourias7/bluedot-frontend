@@ -1,24 +1,67 @@
-<p-dialog header="Σύνδεση χρήστη" [modal]="true" [(visible)]="isOpen" [style]="{ width: '25rem' }"
-    (onHide)="isOpen=false">
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="d-flex flex-column">
-        <div class="p-field d-flex flex-column mb-3">
-            <label for="email">Email</label>
-            <input id="email" type="email" formControlName="email" class="p-inputtext" />
-        </div>
-        <div class="p-field d-flex flex-column mb-3">
-            <label for="password">Κωδικός πρόσβασης (Password)</label>
-            <input id="password" type="password" formControlName="password" class="p-inputtext" />
-        </div>
+<p-dialog
+  header="Σύνδεση χρήστη"
+  [modal]="true"
+  [(visible)]="isOpen"
+  [style]="{ width: '25rem' }"
+  (onHide)="closeModal()"
+>
+  <form class="login-form" [formGroup]="loginForm" (ngSubmit)="submitLogin()">
+    <div class="p-field d-flex flex-column">
+      <label for="email">Email</label>
+      <input
+        id="email"
+        type="email"
+        formControlName="email"
+        autocomplete="email"
+      >
 
-        <div class="p-field mt-3">
-            <button type="submit" pButton class="p-button p-button-primary w-100"
-                [disabled]="loginForm.invalid">Σύνδεση</button>
-        </div>
-    </form>
-    <div class="mt-3 text-center">
-        <a routerLink="/register" (click)="goToRegister()"
-            style="cursor: pointer; text-decoration: none; color: var(--primary-color);">
-            Δεν έχεις λογαριασμό; Εγγράψου
-        </a>
+      @if (loginForm.controls.email.invalid && loginForm.controls.email.touched) {
+        <small class="error-text">
+          Συμπληρώστε ένα έγκυρο email.
+        </small>
+      }
     </div>
+
+    <div class="p-field d-flex flex-column">
+      <label for="password">Κωδικός πρόσβασης</label>
+      <input
+        id="password"
+        type="password"
+        formControlName="password"
+        autocomplete="current-password"
+      >
+
+      @if (loginForm.controls.password.invalid && loginForm.controls.password.touched) {
+        <small class="error-text">
+          Συμπληρώστε τον κωδικό πρόσβασης.
+        </small>
+      }
+    </div>
+
+    @if (errorMessage) {
+      <p class="login-error">
+        {{ errorMessage }}
+      </p>
+    }
+
+    <div class="p-field">
+      <button
+        type="submit"
+        class="p-button p-button-primary login-submit-button"
+        [disabled]="isLoading"
+      >
+        @if (isLoading) {
+          Σύνδεση...
+        } @else {
+          Σύνδεση
+        }
+      </button>
+    </div>
+  </form>
+
+  <div class="register-link-wrapper">
+    <a routerLink="/register" (click)="closeModal()">
+      Δεν έχεις λογαριασμό; Εγγράψου
+    </a>
+  </div>
 </p-dialog>

@@ -1,18 +1,53 @@
 <div class="position-relative map-wrapper">
-  <div id="map"></div>
-  @if(selectedMarker) {
-  <section class="map-drawer card shadow">
-    <div class="card-header d-flex justify-content-between align-items-start gap-2">
-      <div>
-        <h5 class="card-title mb-1">{{ selectedMarker.name }}</h5>
-        <p class="text-muted mb-0 small">{{ selectedMarker.lat }}, {{ selectedMarker.lng }}</p>
+  <div class="map-search-overlay d-flex align-items-center p-2">
+    <div class="flex-grow-1">
+      <div class="input-group">
+        <p-autoComplete [(ngModel)]="selectedSpecialty" [suggestions]="filteredSpecialties"
+          (completeMethod)="filterSpecialties($event)" [minLength]="1" placeholder="Ειδικότητα"
+          inputStyleClass="form-control border-end-0"></p-autoComplete>
+        <button pButton type="button" class="btn btn-outline-primary">
+          <i class="pi pi-search"></i>
+        </button>
       </div>
+    </div>
+    <div class="nested-search ms-3">
+      <div class="input-group">
+        <p-autoComplete [(ngModel)]="selectedLocation" [suggestions]="filteredLocations"
+          (completeMethod)="filterLocations($event)" [minLength]="1" placeholder="Τοποθεσία"
+          inputStyleClass="form-control border-end-0"></p-autoComplete>
+        <button pButton type="button" class="btn btn-primary">
+          <i class="pi pi-search"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div id="map"></div>
+  @if (sidebarOpen) {
+  <section class="map-drawer card shadow p-3">
+    <div class="d-flex justify-content-end align-items-start gap-2 p-2">
       <button type="button" class="btn btn-sm btn-outline-secondary" (click)="closeSidebar()">
         Close
       </button>
     </div>
-    <div class="card-body">
-      <p class="card-text mb-0">{{ selectedMarker.description }}</p>
+    <div class="card-body card-shadow d-flex justify-content-start align-items-start gap-2">
+      <div>
+        <p-avatar icon="pi pi-user" class="mr-2" size="xlarge" />
+      </div>
+      <div>
+        <h5 class="mb-1">{{ selectedDoctor?.firstName }} {{selectedDoctor?.lastName}}</h5>
+        <p class="text-muted mb-0 small">{{selectedDoctor?.specialty?.name}}</p>
+        <div>
+          <p-rating [(ngModel)]="review" [readonly]="true" cancel="false"></p-rating>
+          <span class="p-2">(45)</span>
+        </div>
+      </div>
+    </div>
+    <div class="card card-body text-bg-light mt-4 card-shadow">
+      <h6 class="fw-semibold">Γενικές πληροφορίες</h6>
+      <p class="card-text mb-0">{{ selectedDoctor?.bio }}</p>
+    </div>
+    <div class="container mt-4 d-flex justify-content-center p-4">
+      <button class="btn btn-primary" (click)="showDoctorInfo(selectedDoctor?.id)">Περισσότερα</button>
     </div>
   </section>
   }

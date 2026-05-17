@@ -55,6 +55,11 @@ export class Header {
   loggedInOptions: MenuItem[];
   doctorOptions: MenuItem[];
 
+  refreshCurrentUser() {
+    this.currentUserRole = this.authenticationServices.getCurrentUserRole();
+    this.currentUserName = this.authenticationServices.getCurrentUserName();
+  }
+
   constructor(
     private authenticationServices: AuthenticationServices,
     private router: Router

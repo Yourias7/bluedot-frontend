@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { DatePickerModule } from 'primeng/datepicker';
@@ -17,28 +17,27 @@ export class DoctorAppointmentDetails {
   appointment: Appointment | undefined;
   returnDate: string | null = null;
 
+  isLoading = false;
+  errorMessage = '';
+
   showTransferModal = false;
 
   transferDateObject: Date = new Date();
-  transferDate: string = '';
+  transferDate = '';
   transferSlots: AvailabilitySlot[] = [];
   selectedTransferSlot: AvailabilitySlot | null = null;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private doctorservice: DoctorService
+    private doctorservice: DoctorService,
+    private changeDetectorRef: ChangeDetectorRef
   ) {
     const appointmentId = Number(this.route.snapshot.paramMap.get('appointmentId'));
 
     this.returnDate = this.route.snapshot.queryParams['date'] ?? null;
-    this.appointment = this.doctorservice.getAppointmentById(appointmentId);
 
-    if (this.appointment !== undefined) {
-      this.transferDate = this.appointment.date;
-      this.transferDateObject = this.parseDate(this.appointment.date);
-      this.loadTransferSlots();
-    }
+    this.loadAppointment(appointmentId);
   }
 
   get isPendingAppointment(): boolean {
@@ -55,6 +54,35 @@ export class DoctorAppointmentDetails {
 
   get availableTransferSlots(): AvailabilitySlot[] {
     return this.transferSlots.filter(slot => slot.status === 'free');
+  }
+
+  loadAppointment(appointmentId: number) {
+    this.isLoading = true;
+    this.errorMessage = '';
+
+    console.log('Loading appointment details for id:', appointmentId);
+
+    this.doctorservice.loadAppointmentById(appointmentId).subscribe({
+      next: appointment => {
+        console.log('Loaded appointment details:', appointment);
+
+        this.appointment = appointment;
+
+        this.transferDate = appointment.date;
+        this.transferDateObject = this.parseDate(appointment.date);
+        this.loadTransferSlots();
+
+        this.isLoading = false;
+        this.changeDetectorRef.detectChanges();
+      },
+      error: error => {
+        console.error('Appointment details loading failed:', error);
+
+        this.isLoading = false;
+        this.errorMessage = 'Δεν ήταν δυνατή η φόρτωση του ραντεβού.';
+        this.changeDetectorRef.detectChanges();
+      }
+    });
   }
 
   acceptAppointment() {
@@ -149,11 +177,11 @@ export class DoctorAppointmentDetails {
       this.transferDate,
       this.selectedTransferSlot
     ).subscribe(success => {
-      if (!success) {
+      if (!success || this.appointment === undefined) {
         return;
       }
 
-      this.appointment = this.doctorservice.getAppointmentById(this.appointment!.id);
+      this.loadAppointment(this.appointment.id);
       this.closeTransferModal();
     });
   }

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { CalendarDay } from '../../../../shared/domain/calendar-day';
@@ -10,13 +10,15 @@ import { DoctorService } from '../../../../shared/services/doctor-service';
   templateUrl: './doctor-home.html',
   styleUrl: './doctor-home.scss'
 })
-export class DoctorHome {
+export class DoctorHome implements OnInit {
   weekDays = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
 
   calendarDays: CalendarDay[] = [];
 
   currentDate = new Date();
   maxCalendarDate = new Date();
+
+  isLoadingAppointments = false;
 
   monthNames = [
     'January',
@@ -44,6 +46,10 @@ export class DoctorHome {
     this.maxCalendarDate.setMonth(this.maxCalendarDate.getMonth() + 1);
 
     this.buildCalendar();
+  }
+
+  ngOnInit() {
+    this.loadAppointmentsForCalendar();
   }
 
   get currentMonthTitle(): string {
@@ -79,6 +85,25 @@ export class DoctorHome {
     return this.pendingAppointmentCount > 0;
   }
 
+  loadAppointmentsForCalendar() {
+    this.isLoadingAppointments = true;
+
+    this.doctorService.loadDoctorAppointments().subscribe({
+      next: appointments => {
+        console.log('Homepage appointments loaded:', appointments);
+
+        this.isLoadingAppointments = false;
+        this.buildCalendar();
+      },
+      error: error => {
+        console.error('Could not load doctor appointments for homepage:', error);
+
+        this.isLoadingAppointments = false;
+        this.buildCalendar();
+      }
+    });
+  }
+
   goToPreviousMonth() {
     this.currentDate = new Date(
       this.currentDate.getFullYear(),
@@ -105,8 +130,10 @@ export class DoctorHome {
 
   buildCalendar() {
     const pendingAppointmentDates = this.doctorService.getPendingAppointmentDates();
-
     const confirmedAppointmentDates = this.doctorService.getBookedAppointmentDates();
+
+    console.log('Pending dates for homepage calendar:', pendingAppointmentDates);
+    console.log('Confirmed dates for homepage calendar:', confirmedAppointmentDates);
 
     const year = this.currentDate.getFullYear();
     const month = this.currentDate.getMonth();
@@ -124,7 +151,9 @@ export class DoctorHome {
         date: '',
         hasActivity: false,
         isCurrentMonth: false
-      });
+
+      }
+      );
     }
 
     for (let dayNumber = 1; dayNumber <= daysInMonth; dayNumber++) {
@@ -156,6 +185,28 @@ export class DoctorHome {
     this.router.navigate(['/doctor/availability'], {
       queryParams: { date: day.date }
     });
+  }
+
+  getDayButtonClass(day: CalendarDay): string {
+    const classes = ['day-button'];
+
+    if (!day.isCurrentMonth) {
+      classes.push('empty-day');
+    }
+
+    if (day.hasConfirmedAppointment) {
+      classes.push('confirmed-day');
+    }
+
+    if (day.hasPendingAppointment) {
+      classes.push('pending-day');
+    }
+
+    if (day.isToday) {
+      classes.push('today-day');
+    }
+
+    return classes.join(' ');
   }
 
   goToRequests() {
