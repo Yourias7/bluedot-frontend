@@ -1,11 +1,13 @@
 .doctor-home-page {
   min-height: 100vh;
-  padding: 48px 80px;
+  padding: 48px 24px;
   background-color: #eef1ff;
 }
 
 .welcome-section {
-  margin-bottom: 32px;
+  max-width: 870px;
+  margin: 0 auto 32px;
+  text-align: center;
 }
 
 .welcome-section h1 {
@@ -17,10 +19,12 @@
 
 .notification-card {
   max-width: 620px;
+  margin: 0 auto;
   padding: 24px 32px;
   background-color: #ffffff;
+  border: 1px solid #d6d6d6;
   border-radius: 24px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 8px 18px rgba(31, 42, 68, 0.12);
 }
 
 .notification-card p {
@@ -30,85 +34,231 @@
   line-height: 1.5;
 }
 
-.calendar-card {
-  max-width: 760px;
-  padding: 32px;
+.quick-actions {
+  margin-top: 18px;
+
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.quick-action-button {
+  padding: 12px 18px;
+  border: 1px solid #d6d6d6;
+  border-radius: 14px;
   background-color: #ffffff;
-  border-radius: 28px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  color: #1f2a44;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.quick-action-button:hover {
+  background-color: #f4f6ff;
+  border-color: #c8cde0;
+}
+
+.quick-action-button.primary-action {
+  background-color: #1f2a44;
+  border-color: #1f2a44;
+  color: #ffffff;
+}
+
+.quick-action-button.primary-action:hover {
+  background-color: #2b3858;
+}
+
+/* Calendar */
+
+.calendar-card {
+  width: 870px;
+  margin: 28px auto 0;
+  padding: 24px 36px 44px;
+  background-color: #ffffff;
+  border: 1px solid #d6d6d6;
+  border-radius: 18px;
+  box-shadow: 0 8px 18px rgba(31, 42, 68, 0.12);
 }
 
 .calendar-header {
-  display: flex;
+  width: 546px;
+  margin: 0 auto 26px;
+  display: grid;
+  grid-template-columns: 46px 1fr 46px;
   align-items: center;
-  justify-content: center;
-  gap: 24px;
-  margin-bottom: 32px;
+  column-gap: 16px;
 }
 
 .calendar-header h2 {
   margin: 0;
-  color: #1f2a44;
-  font-size: 28px;
-  font-weight: 700;
+  color: #2c2c2c;
+  font-size: 23px;
+  font-weight: 500;
+  text-align: center;
 }
 
 .month-button {
-  width: 40px;
-  height: 40px;
-  border: none;
-  border-radius: 50%;
-  background-color: #eef1ff;
-  color: #1f2a44;
-  font-size: 22px;
+  width: 46px;
+  height: 46px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background-color: transparent;
+  color: #222222;
+  font-size: 30px;
+  line-height: 1;
   cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.month-button:hover {
+  background-color: #f2f2f2;
+  border-color: #dddddd;
+}
+
+.month-button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
 }
 
 .week-row,
 .days-grid {
+  width: 546px;
+  margin-left: auto;
+  margin-right: auto;
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 14px;
+  grid-template-columns: repeat(7, 55px);
+  justify-content: center;
+  column-gap: 23px;
 }
 
 .week-row {
-  margin-bottom: 16px;
+  margin-bottom: 10px;
+}
+
+.days-grid {
+  row-gap: 16px;
 }
 
 .week-day {
   text-align: center;
-  color: #7c8499;
-  font-size: 14px;
-  font-weight: 700;
+  color: #6f6f6f;
+  font-size: 15px;
+  font-weight: 500;
 }
 
 .day-button {
-  height: 64px;
-  border: none;
-  border-radius: 18px;
-  background-color: #f5f6ff;
-  color: #1f2a44;
-  font-size: 20px;
-  font-weight: 600;
+  box-sizing: border-box;
+  width: 55px;
+  height: 55px;
+  border: 1px solid #ececec;
+  border-radius: 12px;
+  background-color: #fafafa;
+  color: #252525;
+  font-size: 21px;
+  font-weight: 400;
   cursor: pointer;
-}
-
-/* 
-  This applies only to days that have BOTH classes:
-  day-button AND activity-day.
-
-  Example:
-  <button class="day-button activity-day">9</button>
-*/
-.day-button.activity-day {
-  background-color: #1f2a44;
-  color: #ffffff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .day-button:hover {
-  opacity: 0.9;
+  background-color: #f0f0f0;
+  border-color: #d7d7d7;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
 }
 
-.day-button.activity-day:hover {
-  opacity: 0.9;
+.day-button.empty-day {
+  background-color: transparent;
+  border-color: transparent;
+  box-shadow: none;
+  cursor: default;
+}
+
+.day-button.empty-day:hover {
+  background-color: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.day-button.today-day {
+  border: 2px solid #69bdfd;
+}
+
+.day-button.confirmed-day {
+  background-color: #d8f5dd;
+  border-color: #c4e9cb;
+  color: #252525;
+}
+
+.day-button.pending-day {
+  background-color: #ffe79a;
+  border-color: #f3d574;
+  color: #252525;
+}
+
+.day-button.confirmed-day:hover {
+  background-color: #c8efcf;
+  border-color: #acdcb6;
+}
+
+.day-button.pending-day:hover {
+  background-color: #ffdf75;
+  border-color: #ecc95b;
+}
+
+/* In case the old activity class still exists somewhere */
+.day-button.activity-day {
+  background-color: #fafafa;
+  color: #252525;
+}
+
+/* Smaller screens */
+
+@media (max-width: 900px) {
+  .doctor-home-page {
+    padding: 32px 20px;
+  }
+
+  .welcome-section {
+    max-width: 100%;
+  }
+
+  .welcome-section h1 {
+    font-size: 28px;
+  }
+
+  .notification-card {
+    padding: 20px 24px;
+  }
+
+  .calendar-card {
+    width: 100%;
+    max-width: 870px;
+    padding: 24px 18px 32px;
+  }
+
+  .calendar-header {
+    width: 100%;
+    max-width: 546px;
+    grid-template-columns: 42px 1fr 42px;
+  }
+
+  .week-row,
+  .days-grid {
+    width: 100%;
+    max-width: 546px;
+    grid-template-columns: repeat(7, 44px);
+    column-gap: 8px;
+  }
+
+  .day-button {
+    width: 44px;
+    height: 44px;
+    font-size: 16px;
+  }
+
+  .week-day {
+    font-size: 12px;
+  }
 }

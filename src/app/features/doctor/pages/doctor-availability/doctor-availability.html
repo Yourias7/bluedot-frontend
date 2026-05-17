@@ -1,53 +1,114 @@
-<section class="availability-page" (click)="closeSlotMenu()">
+<section class="availability-page">
   <div class="page-header">
-    <div>
-      <h1>Availability</h1>
-      <p>Selected day: {{ selectedDate }}</p>
-    </div>
+    <h1>Διαθεσιμότητα</h1>
+    <p>Επιλέξτε ποιες ώρες είστε διαθέσιμοι για ραντεβού.</p>
   </div>
 
   <div class="content-card">
-    <div class="date-box">
-      <label>Date</label>
-      <input type="text" [value]="selectedDate" readonly>
+    <div class="left-column">
+      <div class="date-box">
+        <label>Ημερομηνία</label>
+
+        <p-datepicker
+          [(ngModel)]="selectedDateObject"
+          dateFormat="dd/mm/yy"
+          [inline]="true"
+          [showIcon]="false"
+          (onSelect)="onDateChanged($event)"
+        ></p-datepicker>
+      </div>
     </div>
 
-    <div class="slots-grid">
-      @for (slot of availabilitySlots; track slot.id) {
+    <div class="right-column">
+      <div class="availability-header-row">
+        <div>
+          <h2>Διαθέσιμες ώρες</h2>
+
+          @if (isEditMode) {
+            <p class="edit-mode-help">
+              Επιλέξτε ποιες διαθέσιμες ώρες θέλετε να ενεργοποιήσετε ή να απενεργοποιήσετε.
+            </p>
+          } @else {
+            <p class="edit-mode-help">
+              Πατήστε σε ένα ραντεβού για να δείτε τις λεπτομέρειες ή επιλέξτε επεξεργασία για αλλαγές διαθεσιμότητας.
+            </p>
+          }
+        </div>
+
         <button
-          class="slot-card"
-          [class.free-slot]="slot.status === 'free'"
-          [class.pending-slot]="slot.status === 'pending'"
-          [class.booked-slot]="slot.status === 'booked'"
-          [class.disabled-slot]="slot.status === 'disabled'"
-          (click)="openSlot(slot)"
-          (contextmenu)="openSlotMenu($event, slot)"
+          type="button"
+          class="edit-mode-button"
+          [class.active-edit-button]="isEditMode"
+          (click)="toggleEditMode()"
         >
-          <span class="slot-icon">▣</span>
-          <span>{{ slot.startTime }} - {{ slot.endTime }}</span>
+          @if (isEditMode) {
+            Ολοκλήρωση επεξεργασίας
+          } @else {
+            Επεξεργασία διαθεσιμότητας
+          }
         </button>
-      }
+      </div>
+
+      <div class="slots-grid">
+        @for (slot of availabilitySlots; track slot.id) {
+          <div
+            class="slot-card"
+            [class.free-slot]="slot.status === 'free'"
+            [class.pending-slot]="slot.status === 'pending'"
+            [class.booked-slot]="slot.status === 'booked'"
+            [class.disabled-slot]="slot.status === 'disabled'"
+            [class.is-clickable]="!isEditMode && slot.appointmentId !== null"
+            (click)="openSlot(slot)"
+          >
+            <div class="slot-main-content">
+              <span class="slot-icon">▣</span>
+              <span>{{ slot.startTime }} - {{ slot.endTime }}</span>
+            </div>
+
+            @if (isEditMode && slot.status === 'free') {
+              <button
+                type="button"
+                class="slot-edit-button disable-button"
+                (click)="disableSlot(slot); $event.stopPropagation()"
+              >
+                Απενεργοποίηση
+              </button>
+            }
+
+            @if (isEditMode && slot.status === 'disabled') {
+              <button
+                type="button"
+                class="slot-edit-button enable-button"
+                (click)="enableSlot(slot); $event.stopPropagation()"
+              >
+                Ενεργοποίηση
+              </button>
+            }
+          </div>
+        }
+      </div>
+
+      <div class="legend">
+        <div class="legend-item">
+          <span class="legend-color free"></span>
+          <span>Διαθέσιμο</span>
+        </div>
+
+        <div class="legend-item">
+          <span class="legend-color pending"></span>
+          <span>Σε αναμονή</span>
+        </div>
+
+        <div class="legend-item">
+          <span class="legend-color booked"></span>
+          <span>Επιβεβαιωμένο</span>
+        </div>
+
+        <div class="legend-item">
+          <span class="legend-color disabled"></span>
+          <span>Μη διαθέσιμο</span>
+        </div>
+      </div>
     </div>
   </div>
-
-  @if (showSlotMenu && selectedSlot !== null) {
-  <div
-    class="slot-menu"
-    [style.left.px]="menuX"
-    [style.top.px]="menuY"
-    (click)="$event.stopPropagation()"
-  >
-    @if (selectedSlot.status === 'free') {
-      <button type="button" (click)="disableSlot()">
-        Disable slot
-      </button>
-    }
-
-    @if (selectedSlot.status === 'disabled') {
-      <button type="button" (click)="enableSlot()">
-        Enable slot
-      </button>
-    }
-  </div>
-}
 </section>

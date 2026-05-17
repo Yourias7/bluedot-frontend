@@ -6,6 +6,7 @@ export interface User extends BaseModel {
     email: string;
     password: string;
     role: UserRole;
+    token?: string; // Optional: Store the JWT token here after login
 }
 
 export enum UserRole {

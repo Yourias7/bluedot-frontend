@@ -2,39 +2,64 @@
   <div class="welcome-section">
     <h1>Welcome back Doctor1</h1>
 
-    <div class="notification-card">
-      <p>
-        You have new appointment activity.
-        Click on a highlighted day to view your schedule.
-      </p>
-    </div>
+    @if (hasPendingAppointments) {
+      <div class="notification-card">
+        <p>
+          Έχετε {{ pendingAppointmentCount }}
+          @if (pendingAppointmentCount === 1) {
+            εκκρεμές αίτημα ραντεβού.
+          } @else {
+            εκκρεμή αιτήματα ραντεβού.
+          }
+        </p>
+
+        <div class="quick-actions">
+          <button type="button" class="quick-action-button primary-action" (click)="goToRequests()">
+            Προβολή αιτημάτων
+          </button>
+
+          <button type="button" class="quick-action-button" (click)="goToAvailability()">
+            Διαχείριση διαθεσιμότητας
+          </button>
+        </div>
+      </div>
+    }
   </div>
 
-  <div class="calendar-card">
-    <div class="calendar-header">
-      <button class="month-button">&lt;</button>
-      <h2>September 2025</h2>
-      <button class="month-button">&gt;</button>
-    </div>
+  <div class="calendar-header">
+    <button class="month-button" (click)="goToPreviousMonth()">
+      &lt;
+    </button>
 
-    <div class="week-row">
-      @for (weekDay of weekDays; track weekDay) {
-        <div class="week-day">
-          {{ weekDay }}
-        </div>
-      }
-    </div>
+    <h2>{{ currentMonthTitle }}</h2>
 
-    <div class="days-grid">
-      @for (day of calendarDays; track day.date) {
-        <button
-          class="day-button"
-          [class.activity-day]="day.hasActivity"
-          (click)="openDay(day)"
-        >
+    <button class="month-button" [disabled]="!canGoToNextMonth" (click)="goToNextMonth()">
+      &gt;
+    </button>
+  </div>
+
+  <div class="week-row">
+    @for (weekDay of weekDays; track weekDay) {
+      <div class="week-day">
+        {{ weekDay }}
+      </div>
+    }
+  </div>
+
+  <div class="days-grid">
+    @for (day of calendarDays; track day.date) {
+      <button
+        class="day-button"
+        [class.empty-day]="!day.isCurrentMonth"
+        [class.today-day]="day.isToday"
+        [class.confirmed-day]="day.hasConfirmedAppointment"
+        [class.pending-day]="day.hasPendingAppointment"
+        (click)="openDay(day)"
+      >
+        @if (day.isCurrentMonth) {
           {{ day.number }}
-        </button>
-      }
-    </div>
+        }
+      </button>
+    }
   </div>
 </section>
