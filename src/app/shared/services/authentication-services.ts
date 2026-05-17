@@ -5,8 +5,8 @@ import { UserRole } from '../domain/user-role';
   providedIn: 'root',
 })
 export class AuthenticationServices {
-  private isUserLoggedIn = false;
-  private currentUserRole: UserRole = 'doctor';
+  private isUserLoggedIn = true;
+  private currentUserRole: UserRole = 'patient';
   private currentUserName = 'Doctor1';
 
   isLoggedIn(): boolean {

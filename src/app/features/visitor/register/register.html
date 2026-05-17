@@ -8,6 +8,10 @@
         <p-tabpanel value="0">
             <form [formGroup]="patient_registerForm" (ngSubmit)="onSubmit()">
                 <app-register-common-fields [formGroup]="patient_registerForm"></app-register-common-fields>
+                <div class="mb-3">
+                    <label for="telephone" class="form-label">Τηλέφωνο</label>
+                    <input id="telephone" formControlName="phone" type="text" class="form-control" />
+                </div>
                 <div>
                     <input type="checkbox" formControlName="terms">
                     <label for="checkbox">Έχω διαβάσει και αποδεχθεί τους Όρους Χρήσης</label>
@@ -19,17 +23,30 @@
         <p-tabpanel value="1">
             <form [formGroup]="doctor_registerForm" (ngSubmit)="onSubmit()">
                 <app-register-common-fields [formGroup]="doctor_registerForm"></app-register-common-fields>
-                <div class="mb-3">
+                <div>
                     <label for="specialization" class="form-label">Ειδικότητα</label>
-               <!--      <div class="card flex justify-center">
-                        <p-listbox [options]="items" [(ngModel)]="selectedItems" [selectAll]="selectAll" [filter]="true"
-                            [checkbox]="true" optionLabel="label" [virtualScroll]="true" [virtualScrollItemSize]="40"
-                            [multiple]="true" [metaKeySelection]="false" (onSelectAllChange)="onSelectAllChange($event)"
-                            (onChange)="onChange($event)" scrollHeight="250px" [striped]="true"
-                            class="w-full md:w-56" />
-                    </div> -->
+                    <div class="card flex justify-center">
+                        <p-listbox [options]="items" [(ngModel)]="selected_items" [filter]="true" [checkbox]="true"
+                            optionLabel="label" [virtualScroll]="true" [virtualScrollItemSize]='40'
+                            [metaKeySelection]="false" scrollHeight="250px" [striped]="true" class="w-full md:w-56" />
+                    </div>
 
-                    <!--FIXME-->>
+                    <!--FIXME-->
+                    <div class="mb-3">
+                        <label for="telephone" class="form-label">Τηλέφωνο</label>
+                        <input id="telephone" formControlName="phone" type="text" class="form-control" />
+                        @if(doctor_registerForm.get("phone")?.touched){
+                        @if(doctor_registerForm.get("phone")?.hasError("required")) {
+                        <div class="form-error">Email is required.</div>
+                        } @else if (doctor_registerForm.get("phone")?.hasError("pattern")) {
+                        <div class="form-error">Please enter a valid email address.</div>
+                        }
+                        }
+                    </div>
+                    <div class="mb-3">
+                        <label for="bio" class="form-label">Γενικές πληροφορίες</label>
+                        <textarea id="bio" formControlName="bio" type="text" class="form-control"></textarea>
+                    </div>
                 </div>
                 <div>
                     <input type="checkbox" formControlName="terms">
