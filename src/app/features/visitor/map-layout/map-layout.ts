@@ -3,6 +3,11 @@ import { CommonModule } from '@angular/common';
 import * as L from 'leaflet';
 import { Doctor } from '../../../shared/domain/doctor';
 import { DoctorSearchService } from '../../../shared/services/doctor-search-service';
+import { Router, RouterLink } from '@angular/router';
+import { Avatar, AvatarModule } from 'primeng/avatar';
+import { RatingModule } from 'primeng/rating';
+import { AutoCompleteModule } from 'primeng/autocomplete';
+import { FormsModule } from '@angular/forms';
 
 interface MarkerData {
   name: string;
@@ -13,7 +18,7 @@ interface MarkerData {
 
 @Component({
   selector: 'app-map-layout',
-  imports: [CommonModule],
+  imports: [CommonModule, AvatarModule, RatingModule, AutoCompleteModule, FormsModule],
   templateUrl: './map-layout.html',
   styleUrls: ['./map-layout.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -21,10 +26,32 @@ interface MarkerData {
 export class MapLayout implements AfterViewInit {
 
   selectedDoctor?:Doctor;
-
+  zoomLevel:number = 11;
   private map!: L.Map
   sidebarOpen = false;
   selectedMarker: MarkerData | null = null;
+  review:number = 3;
+
+  specialties: string[] = [
+    'Kαρδιολογία',
+    'Δερματολογία',
+    'Οφθαλμολογία',
+    'Γενική Ιατρική',
+    'Νευρολογία'
+  ];
+
+  locations: string[] = [
+    'Αθήνα',
+    'Θεσσαλονίκη',
+    'Πάτρα',
+    'Ηράκλειο',
+    'Λάρισα'
+  ];
+
+  filteredSpecialties: string[] = [];
+  filteredLocations: string[] = [];
+  selectedSpecialty?: string;
+  selectedLocation?: string;
 
   markers: L.Marker[] = [
     L.marker([23.7771, 90.3994]),
@@ -40,16 +67,14 @@ export class MapLayout implements AfterViewInit {
     }
   };
 
-  constructor(private cdf: ChangeDetectorRef, private searchService:DoctorSearchService) {
+  constructor(private cdf: ChangeDetectorRef, private searchService:DoctorSearchService, private router:Router) {
 
   }
 
- 
   ngAfterViewInit(): void {
     this.initMap();
     this.centerMap();
   }
-
 
   private initMap() {
     const baseMapURl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
@@ -69,12 +94,14 @@ export class MapLayout implements AfterViewInit {
     this.markers.forEach((marker, index) => {
       marker.addTo(this.map);
       marker.addEventListener('click', () => {
+        this.map.setView(marker.getLatLng(), this.zoomLevel);
         this.openSidebar(index);
       });
     });
   }
 
   openSidebar(markerIndex: number) {
+    
     this.selectedMarker = this.markerData[markerIndex];
     this.sidebarOpen = true;
     this.selectedDoctor = this.searchService.getDoctorById(0);
@@ -85,5 +112,19 @@ export class MapLayout implements AfterViewInit {
   closeSidebar() {
     this.sidebarOpen = false;
     this.selectedMarker = null;
+  }
+
+  filterSpecialties(event: { originalEvent: Event; query: string }) {
+    const query = event.query?.toLowerCase() ?? '';
+    this.filteredSpecialties = this.specialties.filter(item => item.toLowerCase().includes(query));
+  }
+
+  filterLocations(event: { originalEvent: Event; query: string }) {
+    const query = event.query?.toLowerCase() ?? '';
+    this.filteredLocations = this.locations.filter(item => item.toLowerCase().includes(query));
+  }
+
+  showDoctorInfo(id:number | undefined){
+     this.router.navigate(['/doctor-details', 0]);
   }
 }
