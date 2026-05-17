@@ -1,117 +1,104 @@
-<section class="appointment-page">
-  @if (appointment === undefined) {
-    <div class="appointment-card">
-      <h1>Appointment not found</h1>
-
-      <button type="button" class="primary-button" (click)="goBack()">
-        Back
-      </button>
-    </div>
-  }
-
+<section class="appointment-details-page">
   @if (appointment !== undefined) {
-    <div class="appointment-banner">
-      <div class="banner-left">
-        <div class="patient-icon">👤</div>
+  <div class="page-header">
+    <button type="button" class="back-button" (click)="goBack()">
+      ← Πίσω στα ραντεβού
+    </button>
 
-        <div>
-          <h2>Ραντεβού {{ appointment.id }} - {{ appointment.specialty }}</h2>
-          <p>
-            {{ appointment.date }} ώρα
-            {{ appointment.startTime }} - {{ appointment.endTime }}
-          </p>
-        </div>
+    <h1>Λεπτομέρειες ραντεβού</h1>
+    <p>
+      {{ appointment.date }}
+      Ώρα {{ appointment.startTime }} - {{ appointment.endTime }}
+    </p>
+  </div>
+
+  <div class="details-card">
+    <div class="appointment-summary">
+      <div>
+        <h2>{{ appointment.patientName }}</h2>
+        <p>{{ appointment.specialty }}</p>
       </div>
 
-      <div class="calendar-icon">📅</div>
+      <span class="status-pill" [class.pending-status]="appointment.status === 'pending'"
+        [class.booked-status]="appointment.status === 'booked'"
+        [class.rejected-status]="appointment.status === 'rejected'">
+        @if (appointment.status === 'pending') {
+        Σε αναμονή
+        }
+
+        @if (appointment.status === 'booked') {
+        Επιβεβαιωμένο
+        }
+
+        @if (appointment.status === 'rejected') {
+        Απορρίφθηκε
+        }
+      </span>
     </div>
 
-    <div class="patient-info-section">
-      <div class="patient-image-placeholder">
-        🩺
+    <div class="patient-section">
+      <div class="patient-avatar">
+        <span>👤</span>
       </div>
 
-      <div class="patient-details">
-        <h1>{{ appointment.patientName }}</h1>
-        <p>Τηλέφωνο: {{ appointment.patientPhone }}</p>
-        <p>Email: {{ appointment.patientEmail }}</p>
+      <div class="patient-info">
+        <h3>Στοιχεία ασθενή</h3>
+
+        <p>
+          <strong>Ονοματεπώνυμο:</strong>
+          {{ appointment.patientName }}
+        </p>
+
+        <p>
+          <strong>Τηλέφωνο:</strong>
+          {{ appointment.patientPhone }}
+        </p>
+
+        <p>
+          <strong>Email:</strong>
+          {{ appointment.patientEmail }}
+        </p>
       </div>
     </div>
 
     <div class="message-section">
-      <h2>
-        @if (appointment.status === 'booked') {
-          Το μήνυμα σας
-        }
+      <h3>Επισυναπτόμενο μήνυμα</h3>
 
-        @if (appointment.status === 'pending') {
-          Επισυναπτόμενο μήνυμα
-        }
-
-        @if (appointment.status === 'rejected') {
-          Επισυναπτόμενο μήνυμα
-        }
-      </h2>
-
-      <p>{{ appointment.patientMessage }}</p>
+      <p>
+        {{ appointment.patientMessage }}
+      </p>
     </div>
 
-    @if (appointment.status === 'pending') {
-      <div class="action-buttons">
-        <button
-          type="button"
-          class="primary-button"
-          (click)="acceptAppointment()"
-        >
-          Αποδοχή
-        </button>
+    @if (isPendingAppointment) {
+    <div class="actions">
+      <button type="button" class="accept-button" (click)="acceptAppointment()">
+        Αποδοχή
+      </button>
 
-        <button
-          type="button"
-          class="primary-button"
-          (click)="rejectAppointment()"
-        >
-          Απόρριψη
-        </button>
+      <button type="button" class="reject-button" (click)="rejectAppointment()">
+        Απόρριψη
+      </button>
 
-        <button
-          type="button"
-          class="danger-button"
-          (click)="rejectAppointmentAndDisableSlot()"
-        >
-          Απόρριψη & Απενεργοποίηση
-        </button>
-      </div>
+      <button type="button" class="reject-disable-button" (click)="rejectAppointmentAndDisableSlot()">
+        Απόρριψη & Απενεργοποίηση
+      </button>
+    </div>
     }
-
-    @if (backendMessage) {
-      <div class="status-box">
-        <p>{{ backendMessage }}</p> 
-      </div>
+    @if (isRejectedAppointment) {
+    <div class="actions">
+      <button type="button" class="restore-button" (click)="restoreRejectedAppointment()">
+        Αναίρεση απόρριψης
+      </button>
+    </div>
     }
+  </div>
+  } @else {
+  <div class="not-found-card">
+    <h1>Το ραντεβού δεν βρέθηκε</h1>
 
-    @if (appointment.status === 'booked') {
-      <div class="conversation-section">
-        <h2>Η συνομιλία σας</h2>
-
-        <div class="chat-box">
-          @for (message of appointment.conversation; track message.sentAt) {
-            <div
-              class="chat-message"
-              [class.patient-message]="message.sender === 'patient'"
-              [class.doctor-message]="message.sender === 'doctor'"
-            >
-              <p>{{ message.text }}</p>
-              <span>{{ message.sentAt }}</span>
-            </div>
-          }
-
-          <div class="chat-input">
-            <input type="text" placeholder="Γράψτε το μήνυμα σας εδώ..." />
-            <button type="button">➤</button>
-          </div>
-        </div>
-      </div>
-    }
+    <button type="button" class="back-button" (click)="goBack()">
+      Επιστροφή στα ραντεβού
+    </button>
+  </div>
   }
 </section>

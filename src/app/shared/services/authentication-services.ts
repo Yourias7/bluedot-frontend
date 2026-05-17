@@ -14,8 +14,8 @@ export interface LoginDto {
   providedIn: 'root',
 })
 export class AuthenticationServices {
-  private isUserLoggedIn = false;
-  private currentUserRole: UserRole = 'patient';
+  private isUserLoggedIn = true;
+  private currentUserRole: UserRole = 'doctor';
   private currentUserName = 'Doctor1';
   private http = inject(HttpClient);
   private baseUrl = environment.apiUrl; 
