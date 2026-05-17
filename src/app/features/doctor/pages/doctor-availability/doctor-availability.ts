@@ -6,8 +6,6 @@ import { DatePickerModule } from 'primeng/datepicker';
 import { AvailabilitySlot } from '../../../../shared/domain/availability-slot';
 import { DoctorService } from '../../../../shared/services/doctor-service';
 
-type UserRole = 'patient' | 'doctor' | 'manager';
-
 @Component({
   selector: 'app-doctor-availability',
   imports: [FormsModule, DatePickerModule],
@@ -18,21 +16,9 @@ export class DoctorAvailability {
   selectedDate: string | null = null;
   selectedDateObject: Date = new Date();
 
-  /*
-    TEMPORARY TESTING ROLE.
-
-    Later this should NOT be hardcoded.
-    Later we should read the user role from the JWT claims,
-    probably through an AuthService.
-  */
-  fakeUserRole: UserRole = 'doctor';
-
   availabilitySlots: AvailabilitySlot[] = [];
 
-  selectedSlot: AvailabilitySlot | null = null;
-  showSlotMenu = false;
-  menuX = 0;
-  menuY = 0;
+  isEditMode = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -48,20 +34,17 @@ export class DoctorAvailability {
     this.selectedDate = selectedDate;
     this.selectedDateObject = this.parseDate(selectedDate);
 
-    console.log('Selected date:', selectedDate);
-
     this.loadSlotsForSelectedDate();
   }
 
   onDateChanged(date: Date | null) {
-    console.log('Date clicked:', date);
-
     if (date === null) {
       return;
     }
 
     this.selectedDateObject = date;
     this.selectedDate = this.formatDate(date);
+    this.isEditMode = false;
 
     this.router.navigate([], {
       relativeTo: this.route,
@@ -80,62 +63,48 @@ export class DoctorAvailability {
     this.availabilitySlots = this.doctorservice.getAvailabilitySlotsByDate(this.selectedDate);
   }
 
+  toggleEditMode() {
+    this.isEditMode = !this.isEditMode;
+  }
+
   openSlot(slot: AvailabilitySlot) {
+    if (this.isEditMode) {
+      return;
+    }
+
     if (slot.appointmentId !== null) {
-      this.router.navigate(['/doctor/appointments', slot.appointmentId]);
+      this.router.navigate(['/doctor/appointments', slot.appointmentId], {
+        queryParams: this.selectedDate !== null
+          ? { date: this.selectedDate }
+          : {}
+      });
     }
   }
 
-  openSlotMenu(event: MouseEvent, slot: AvailabilitySlot) {
-    event.preventDefault();
-
-    if (this.fakeUserRole !== 'doctor') {
-      return;
-    }
-
-    if (slot.status !== 'free' && slot.status !== 'disabled') {
-      return;
-    }
-
-    this.selectedSlot = slot;
-    this.showSlotMenu = true;
-    this.menuX = event.clientX;
-    this.menuY = event.clientY;
-  }
-
-  closeSlotMenu() {
-    this.showSlotMenu = false;
-    this.selectedSlot = null;
-  }
-
-  disableSlot() {
-    if (this.selectedSlot === null) {
+  disableSlot(slot: AvailabilitySlot) {
+    if (slot.status !== 'free') {
       return;
     }
 
     /*
-      TEMPORARY FRONTEND-ONLY LOGIC.
-
-      Later this should call the backend.
-      For now, it only updates the selected slot visually.
+      Temporary frontend-only logic.
+      Later this should call the backend availability endpoint.
     */
-    this.selectedSlot.status = 'disabled';
-    this.closeSlotMenu();
+    slot.status = 'disabled';
+    slot.appointmentId = null;
   }
 
-  enableSlot() {
-    if (this.selectedSlot === null) {
+  enableSlot(slot: AvailabilitySlot) {
+    if (slot.status !== 'disabled') {
       return;
     }
 
     /*
-      TEMPORARY FRONTEND-ONLY LOGIC.
-
-      Later this should call the backend.
-      For now, it only updates the selected slot visually.
+      Temporary frontend-only logic.
+      Later this should call the backend availability endpoint.
     */
-    this.selectedSlot.status = 'free';
-    this.closeSlotMenu();
+    slot.status = 'free';
+    slot.appointmentId = null;
   }
 
   getFormattedDate(): string {

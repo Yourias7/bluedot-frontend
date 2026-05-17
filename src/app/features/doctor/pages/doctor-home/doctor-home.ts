@@ -69,8 +69,14 @@ export class DoctorHome {
     return nextMonth <= maxMonth;
   }
 
+  get pendingAppointmentCount(): number {
+    return this.doctorService.getDoctorAppointments()
+      .filter(appointment => appointment.status === 'pending')
+      .length;
+  }
+
   get hasPendingAppointments(): boolean {
-    return this.calendarDays.some(day => day.hasPendingAppointment);
+    return this.pendingAppointmentCount > 0;
   }
 
   goToPreviousMonth() {
@@ -98,21 +104,9 @@ export class DoctorHome {
   }
 
   buildCalendar() {
-    /*
-      Temporary mock dates.
-      Later these will come from backend appointments:
-      Pending = yellow
-      Confirmed/booked = green
-    */
-    const pendingAppointmentDates = [
-      this.formatDate(new Date()),
-      '2026-05-24'
-    ];
+    const pendingAppointmentDates = this.doctorService.getPendingAppointmentDates();
 
-    const confirmedAppointmentDates = [
-      '2026-05-24',
-      '2026-05-26'
-    ];
+    const confirmedAppointmentDates = this.doctorService.getBookedAppointmentDates();
 
     const year = this.currentDate.getFullYear();
     const month = this.currentDate.getMonth();
@@ -159,12 +153,20 @@ export class DoctorHome {
       return;
     }
 
-    if (!day.hasPendingAppointment && !day.hasConfirmedAppointment) {
-      return;
-    }
-
-    this.router.navigate(['/doctor/appointments'], {
+    this.router.navigate(['/doctor/availability'], {
       queryParams: { date: day.date }
+    });
+  }
+
+  goToRequests() {
+    this.router.navigate(['/doctor/appointments'], {
+      queryParams: { tab: 'requests' }
+    });
+  }
+
+  goToAvailability() {
+    this.router.navigate(['/doctor/availability'], {
+      queryParams: { date: this.formatDate(new Date()) }
     });
   }
 

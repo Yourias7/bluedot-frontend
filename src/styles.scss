@@ -7,3 +7,19 @@
   --text-primary-color: rgb(39, 34, 34);
   --primary-background-color: white;
 }
+
+html,
+body {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+* {
+  box-sizing: border-box;
+}
