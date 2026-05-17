@@ -12,7 +12,7 @@ export class AppointmentCard {
   @Output() messageEvent = new EventEmitter<number>();
 
   sendMessage(){
-    console.log(this.appointment.id);
+    //console.log(this.appointment.id);
     this.messageEvent.emit(this.appointment.id);
   }
 }

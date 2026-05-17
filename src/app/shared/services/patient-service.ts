@@ -30,7 +30,7 @@ export class PatientService {
       patientPhone: '+1234567890',
       patientEmail: 'jane.doe@example.com',
       patientMessage: 'I would like a general checkup appointment.',
-      conversation: []
+      conversation: [],
     },
     {
       id: 202,
@@ -43,7 +43,7 @@ export class PatientService {
       patientPhone: '+1234567890',
       patientEmail: 'jane.doe@example.com',
       patientMessage: 'Teeth cleaning appointment.',
-      conversation: []
+      conversation: [],
     },
     {
       id: 203,
