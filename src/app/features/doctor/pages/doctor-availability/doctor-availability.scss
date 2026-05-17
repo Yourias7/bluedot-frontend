@@ -57,14 +57,6 @@
   font-weight: 700;
 }
 
-.date-help {
-  max-width: 320px;
-  margin: 16px 0 0;
-  color: #7c8499;
-  font-size: 14px;
-  line-height: 1.4;
-}
-
 /* PrimeNG inline datepicker styling */
 
 :host ::ng-deep p-datepicker {
@@ -85,10 +77,6 @@
   box-shadow: none !important;
 }
 
-/*
-  These inner PrimeNG wrappers must NOT have their own width/padding/background.
-  Otherwise you get the weird second box and horizontal scrollbar.
-*/
 :host ::ng-deep .p-datepicker-panel,
 :host ::ng-deep .p-datepicker-calendar-container {
   width: 100% !important;
@@ -240,11 +228,56 @@
 
 /* Slots section */
 
+.availability-header-row {
+  margin-bottom: 22px;
+
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+}
+
 .right-column h2 {
-  margin: 0 0 22px;
+  margin: 0 0 8px;
   color: #1f2a44;
   font-size: 22px;
   font-weight: 600;
+}
+
+.edit-mode-help {
+  max-width: 520px;
+  margin: 0;
+  color: #7c8499;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.edit-mode-button {
+  flex: 0 0 auto;
+  padding: 12px 18px;
+  border: 1px solid #d6d6d6;
+  border-radius: 14px;
+  background-color: #ffffff;
+  color: #1f2a44;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.edit-mode-button:hover {
+  background-color: #f4f6ff;
+  border-color: #c8cde0;
+}
+
+.edit-mode-button.active-edit-button {
+  background-color: #1f2a44;
+  border-color: #1f2a44;
+  color: #ffffff;
+}
+
+.edit-mode-button.active-edit-button:hover {
+  background-color: #2b3858;
 }
 
 .slots-grid {
@@ -254,58 +287,97 @@
 }
 
 .slot-card {
-  min-height: 56px;
-  padding: 0 18px;
+  min-height: 72px;
+  padding: 12px 16px;
   border: 1px solid #ececec;
   border-radius: 14px;
   background-color: #ffffff;
   color: #5b4bb7;
   font-size: 16px;
   font-weight: 600;
-  cursor: pointer;
   box-shadow: 0 5px 12px rgba(0, 0, 0, 0.13);
   transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.slot-card.is-clickable {
+  cursor: pointer;
+}
+
+.slot-card.is-clickable:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 7px 16px rgba(0, 0, 0, 0.16);
+}
+
+.slot-main-content {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
 }
 
-.slot-card:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 7px 16px rgba(0, 0, 0, 0.16);
-}
-
 .slot-icon {
   font-size: 14px;
 }
 
-/* Free slot: doctor is available, no appointment yet */
 .slot-card.free-slot {
   background-color: #ffffff;
   color: #5b4bb7;
 }
 
-/* Pending slot: patient requested appointment, doctor has not handled it yet */
 .slot-card.pending-slot {
   background-color: #ffe79a;
   border-color: #f3d574;
   color: #1f2a44;
 }
 
-/* Booked slot: appointment is confirmed/booked */
 .slot-card.booked-slot {
   background-color: #d8f5dd;
   border-color: #c4e9cb;
   color: #1f2a44;
 }
 
-/* Disabled slot: doctor manually made this slot unavailable */
 .slot-card.disabled-slot {
   background-color: #ffb3b3;
   border-color: #f09a9a;
   color: #1f2a44;
+}
+
+.slot-edit-button {
+  width: fit-content;
+  max-width: 100%;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  line-height: 1.2;
+}
+
+.disable-button {
+  border: 1px solid #d6d6d6;
+  background-color: #ffffff;
+  color: #1f2a44;
+}
+
+.disable-button:hover {
+  background-color: #f4f6ff;
+  border-color: #c8cde0;
+}
+
+.enable-button {
+  border: 1px solid #1f2a44;
+  background-color: #ffffff;
+  color: #1f2a44;
+}
+
+.enable-button:hover {
+  background-color: #f4f6ff;
 }
 
 /* Legend */
@@ -351,36 +423,6 @@
   border-color: #f09a9a;
 }
 
-/* Right-click menu for free/disabled slots */
-
-.slot-menu {
-  position: fixed;
-  z-index: 1000;
-  min-width: 240px;
-  padding: 8px;
-  background-color: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
-}
-
-.slot-menu button {
-  display: block;
-  width: 100%;
-  padding: 10px 12px;
-  border: none;
-  border-radius: 8px;
-  background-color: transparent;
-  color: #1f2a44;
-  font-size: 14px;
-  font-weight: 600;
-  text-align: left;
-  cursor: pointer;
-}
-
-.slot-menu button:hover {
-  background-color: #eef1ff;
-}
-
 /* Smaller screens */
 
 @media (max-width: 900px) {
@@ -415,6 +457,15 @@
   :host ::ng-deep .p-datepicker {
     width: 100% !important;
     max-width: 320px !important;
+  }
+
+  .availability-header-row {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .edit-mode-button {
+    width: 100%;
   }
 
   .slots-grid {

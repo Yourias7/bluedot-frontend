@@ -1,0 +1,324 @@
+<section class="doctor-account-page">
+  <div class="page-header">
+    <h1>Ο λογαριασμός μου</h1>
+    <p>Διαχειριστείτε τα στοιχεία του επαγγελματικού σας προφίλ.</p>
+  </div>
+
+  <div class="account-card">
+    <form [formGroup]="form">
+      <div class="profile-summary">
+        <div class="profile-avatar">
+          👤
+        </div>
+
+        <div>
+          <h2>{{ doctorInfo.firstName }} {{ doctorInfo.lastName }}</h2>
+          <p>{{ doctorInfo.specialty?.name }}</p>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label>Όνομα</label>
+
+        <div class="field-content">
+          @if (!editing['firstName']) {
+            <span>{{ doctorInfo.firstName }}</span>
+          } @else {
+            <input
+              class="form-control"
+              formControlName="firstName"
+              [class.is-invalid]="getControl('firstName').invalid && getControl('firstName').touched"
+            >
+
+            @if (getControl('firstName').invalid && getControl('firstName').touched) {
+              <div class="invalid-feedback d-block">
+                Το όνομα είναι υποχρεωτικό.
+              </div>
+            }
+          }
+        </div>
+
+        <button
+          type="button"
+          class="edit-button"
+          (click)="editField('firstName')"
+          [hidden]="editing['firstName']"
+        >
+          Επεξεργασία
+        </button>
+      </div>
+
+      <div class="form-row">
+        <label>Επώνυμο</label>
+
+        <div class="field-content">
+          @if (!editing['lastName']) {
+            <span>{{ doctorInfo.lastName }}</span>
+          } @else {
+            <input
+              class="form-control"
+              formControlName="lastName"
+              [class.is-invalid]="getControl('lastName').invalid && getControl('lastName').touched"
+            >
+
+            @if (getControl('lastName').invalid && getControl('lastName').touched) {
+              <div class="invalid-feedback d-block">
+                Το επώνυμο είναι υποχρεωτικό.
+              </div>
+            }
+          }
+        </div>
+
+        <button
+          type="button"
+          class="edit-button"
+          (click)="editField('lastName')"
+          [hidden]="editing['lastName']"
+        >
+          Επεξεργασία
+        </button>
+      </div>
+
+      <div class="form-row">
+        <label>Email</label>
+
+        <div class="field-content">
+          @if (!editing['email']) {
+            <span>{{ doctorInfo.email }}</span>
+          } @else {
+            <input
+              class="form-control"
+              formControlName="email"
+              [class.is-invalid]="getControl('email').invalid && getControl('email').touched"
+            >
+
+            @if (getControl('email').invalid && getControl('email').touched) {
+              <div class="invalid-feedback d-block">
+                Συμπληρώστε ένα έγκυρο email.
+              </div>
+            }
+          }
+        </div>
+
+        <button
+          type="button"
+          class="edit-button"
+          (click)="editField('email')"
+          [hidden]="editing['email']"
+        >
+          Επεξεργασία
+        </button>
+      </div>
+
+      <div class="form-row">
+        <label>Κωδικός</label>
+
+        <div class="field-content">
+          @if (!editing['password']) {
+            <span>••••••••</span>
+          } @else {
+            <input
+              type="password"
+              class="form-control"
+              formControlName="password"
+              [class.is-invalid]="getControl('password').invalid && getControl('password').touched"
+            >
+
+            @if (getControl('password').invalid && getControl('password').touched) {
+              <div class="invalid-feedback d-block">
+                Ο κωδικός πρέπει να έχει τουλάχιστον 6 χαρακτήρες.
+              </div>
+            }
+          }
+        </div>
+
+        <button
+          type="button"
+          class="edit-button"
+          (click)="editField('password')"
+          [hidden]="editing['password']"
+        >
+          Επεξεργασία
+        </button>
+      </div>
+
+      <div class="form-row">
+        <label>Τηλέφωνο</label>
+
+        <div class="field-content">
+          @if (!editing['phoneNumber']) {
+            <span>{{ doctorInfo.phoneNumber }}</span>
+          } @else {
+            <input
+              class="form-control"
+              formControlName="phoneNumber"
+              [class.is-invalid]="getControl('phoneNumber').invalid && getControl('phoneNumber').touched"
+            >
+
+            @if (getControl('phoneNumber').invalid && getControl('phoneNumber').touched) {
+              <div class="invalid-feedback d-block">
+                Το τηλέφωνο πρέπει να έχει 10 ψηφία.
+              </div>
+            }
+          }
+        </div>
+
+        <button
+          type="button"
+          class="edit-button"
+          (click)="editField('phoneNumber')"
+          [hidden]="editing['phoneNumber']"
+        >
+          Επεξεργασία
+        </button>
+      </div>
+
+      <div class="form-row">
+        <label>Ειδικότητα</label>
+
+        <div class="field-content">
+          @if (!editing['specialty']) {
+            <span>{{ doctorInfo.specialty?.name }}</span>
+          } @else {
+            <input
+              class="form-control"
+              formControlName="specialty"
+              [class.is-invalid]="getControl('specialty').invalid && getControl('specialty').touched"
+            >
+
+            @if (getControl('specialty').invalid && getControl('specialty').touched) {
+              <div class="invalid-feedback d-block">
+                Η ειδικότητα είναι υποχρεωτική.
+              </div>
+            }
+          }
+        </div>
+
+        <button
+          type="button"
+          class="edit-button"
+          (click)="editField('specialty')"
+          [hidden]="editing['specialty']"
+        >
+          Επεξεργασία
+        </button>
+      </div>
+
+      <div class="form-row">
+        <label>Διεύθυνση ιατρείου</label>
+
+        <div class="field-content">
+          @if (!editing['clinicAddress']) {
+            <span>{{ doctorInfo.clinicAddress }}</span>
+          } @else {
+            <input
+              class="form-control"
+              formControlName="clinicAddress"
+              [class.is-invalid]="getControl('clinicAddress').invalid && getControl('clinicAddress').touched"
+            >
+
+            @if (getControl('clinicAddress').invalid && getControl('clinicAddress').touched) {
+              <div class="invalid-feedback d-block">
+                Η διεύθυνση είναι υποχρεωτική.
+              </div>
+            }
+          }
+        </div>
+
+        <button
+          type="button"
+          class="edit-button"
+          (click)="editField('clinicAddress')"
+          [hidden]="editing['clinicAddress']"
+        >
+          Επεξεργασία
+        </button>
+      </div>
+
+      <div class="form-row">
+        <label>Έτη εμπειρίας</label>
+
+        <div class="field-content">
+          @if (!editing['yearsOfExperience']) {
+            <span>{{ doctorInfo.yearsOfExperience }}</span>
+          } @else {
+            <input
+              type="number"
+              class="form-control"
+              formControlName="yearsOfExperience"
+              [class.is-invalid]="getControl('yearsOfExperience').invalid && getControl('yearsOfExperience').touched"
+            >
+
+            @if (getControl('yearsOfExperience').invalid && getControl('yearsOfExperience').touched) {
+              <div class="invalid-feedback d-block">
+                Συμπληρώστε έγκυρα έτη εμπειρίας.
+              </div>
+            }
+          }
+        </div>
+
+        <button
+          type="button"
+          class="edit-button"
+          (click)="editField('yearsOfExperience')"
+          [hidden]="editing['yearsOfExperience']"
+        >
+          Επεξεργασία
+        </button>
+      </div>
+
+      <div class="form-row bio-row">
+        <label>Βιογραφικό</label>
+
+        <div class="field-content">
+          @if (!editing['bio']) {
+            <span>{{ doctorInfo.bio }}</span>
+          } @else {
+            <textarea
+              class="form-control"
+              rows="4"
+              formControlName="bio"
+              [class.is-invalid]="getControl('bio').invalid && getControl('bio').touched"
+            ></textarea>
+
+            @if (getControl('bio').invalid && getControl('bio').touched) {
+              <div class="invalid-feedback d-block">
+                Το βιογραφικό είναι υποχρεωτικό.
+              </div>
+            }
+          }
+        </div>
+
+        <button
+          type="button"
+          class="edit-button"
+          (click)="editField('bio')"
+          [hidden]="editing['bio']"
+        >
+          Επεξεργασία
+        </button>
+      </div>
+
+      @if (isAnyEditing()) {
+        <div class="form-actions">
+          <button
+            type="button"
+            class="save-button"
+            (click)="saveChanges()"
+            [disabled]="form.invalid"
+          >
+            Αποθήκευση αλλαγών
+          </button>
+
+          <button
+            type="button"
+            class="cancel-button"
+            (click)="cancelChanges()"
+          >
+            Ακύρωση
+          </button>
+        </div>
+      }
+    </form>
+  </div>
+</section>

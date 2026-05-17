@@ -5,6 +5,7 @@ import { DoctorHome } from './features/doctor/pages/doctor-home/doctor-home';
 import { DoctorAvailability, } from './features/doctor/pages/doctor-availability/doctor-availability';
 import { DoctorAppointmentDetails, } from './features/doctor/pages/doctor-appointment-details/doctor-appointment-details';
 import { DoctorAppointments } from './features/doctor/pages/doctor-appointments/doctor-appointments';
+import { DoctorAccountDetails } from './features/doctor/pages/doctor-account-details/doctor-account-details';
 import { roleRedirectGuard } from './shared/guards/role-redirect.guard';
 import { doctorOnlyGuard } from './shared/guards/doctor-only.guard';
 import { Error404 } from './shared/components/error-404/error-404';
@@ -84,6 +85,11 @@ export const routes: Routes = [
   {
     path: 'doctor/appointments/:appointmentId',
     component: DoctorAppointmentDetails,
+    canActivate: [doctorOnlyGuard]
+  },
+  {
+    path: 'doctor/account-details',
+    component: DoctorAccountDetails,
     canActivate: [doctorOnlyGuard]
   },
   {
