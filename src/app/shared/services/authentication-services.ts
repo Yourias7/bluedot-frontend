@@ -3,19 +3,14 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
 import { UserRole } from '../domain/user-role';
-import { User } from '../domain/user'; // Your UserDto equivalent
-
-export interface LoginDto {
-  email: string;
-  password?: string;
-}
+import { User } from '../domain/user';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthenticationServices {
-  private isUserLoggedIn = true;
-  private currentUserRole: UserRole = 'doctor';
+  private isUserLoggedIn = false;
+  private currentUserRole: UserRole = 'guest';
   private currentUserName = 'Doctor1';
   private http = inject(HttpClient);
   private baseUrl = environment.apiUrl; 
@@ -50,6 +45,19 @@ export class AuthenticationServices {
 
   getCurrentUserName(): string {
     return this.currentUserName;
+  }
+
+  setCurrentUserRole(role:UserRole):void{
+    this.currentUserRole = role;
+  }
+
+  setCurrentUserName(_name:string):void{
+    this.currentUserName = _name;
+  }
+
+  logIn(user:User):void{
+    this.setCurrentUserName(user.firstName + user.lastName);
+    //this.setCurrentUserRole(user.role);
   }
 }
 

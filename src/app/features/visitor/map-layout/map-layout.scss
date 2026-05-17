@@ -1,9 +1,44 @@
 #map {
-  height: 400px;
+  height: 500px;
 }
 
 .map-wrapper {
   position: relative;
+}
+
+.map-search-overlay {
+  position: absolute;
+  top: 1rem;
+  left: 4rem;
+  right: 1rem;
+  z-index: 1200;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 0.375rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+  width: 40%;
+}
+
+.map-search-overlay .input-group > p-autoComplete {
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.map-search-overlay .input-group > p-autoComplete .p-autocomplete-input {
+  width: 100%;
+  min-width: 0;
+  border-right: 0;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.map-search-overlay .input-group .btn {
+  border-left: 0;
+}
+
+.map-search-overlay .nested-search {
+  width: 40%;
+  min-width: 200px;
 }
 
 .map-drawer {

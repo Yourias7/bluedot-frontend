@@ -43,8 +43,9 @@ export class Register {
       phone: new FormControl('', Validators.required),
       birthDate: new FormControl('', Validators.required),
       gender: new FormControl(''),
-      specialization: new FormControl('', Validators.required),
+      specialization: new FormControl([], Validators.required),
       terms: new FormControl(false, Validators.requiredTrue),
+      bio: new FormControl('', Validators.required)
     });
   }
 

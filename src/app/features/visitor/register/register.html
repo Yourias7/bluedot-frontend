@@ -17,7 +17,11 @@
                     <label for="checkbox">Έχω διαβάσει και αποδεχθεί τους Όρους Χρήσης</label>
                     <br>
                 </div>
-                <button type="submit" [disabled]="patient_registerForm.invalid" class="register-button">Εγγραφή</button>
+
+                <div class=" container mt-4 d-flex justify-content-center">
+                    <button type="submit" [disabled]="patient_registerForm.invalid"
+                        class="register-button btn btn-primary">Εγγραφή</button>
+                </div>
             </form>
         </p-tabpanel>
         <p-tabpanel value="1">
@@ -26,9 +30,10 @@
                 <div>
                     <label for="specialization" class="form-label">Ειδικότητα</label>
                     <div class="card flex justify-center">
-                        <p-listbox [options]="items" [(ngModel)]="selected_items" [filter]="true" [checkbox]="true"
-                            optionLabel="label" [virtualScroll]="true" [virtualScrollItemSize]='40'
-                            [metaKeySelection]="false" scrollHeight="250px" [striped]="true" class="w-full md:w-56" />
+                        <p-listbox [options]="items" id="specialization" formControlName="specialization"
+                            [filter]="true" [checkbox]="true" optionLabel="name" [virtualScroll]="true"
+                            [virtualScrollItemSize]='40' [metaKeySelection]="false" scrollHeight="250px"
+                            [striped]="true" class="w-full md:w-56" />
                     </div>
 
                     <!--FIXME-->
@@ -53,7 +58,10 @@
                     <label for="checkbox">Έχω διαβάσει και αποδεχθεί τους Όρους Χρήσης</label>
                     <br>
                 </div>
-                <button type="submit" [disabled]="doctor_registerForm.invalid" class="register-button">Εγγραφή</button>
+                <div class=" container mt-4 d-flex justify-content-center">
+                    <button type="submit" [disabled]="doctor_registerForm.invalid"
+                        class="register-button btn btn-primary">Εγγραφή</button>
+                </div>
             </form>
         </p-tabpanel>
     </p-tabs>
