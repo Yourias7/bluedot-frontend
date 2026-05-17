@@ -35,6 +35,23 @@ export class DoctorService {
     return of(daysWithAppointments);
   }
 
+  doctorProfile: Doctor = {
+    id: 1,
+    firstName: 'Doctor',
+    lastName: 'One',
+    email: 'doctor1@example.com',
+    password: 'password123',
+    role: 'doctor' as any,
+    bio: 'Καρδιολόγος με εμπειρία στην πρόληψη και παρακολούθηση καρδιαγγειακών παθήσεων.',
+    clinicAddress: 'Λεωφόρος Συγγρού 100, Αθήνα',
+    phoneNumber: '2101234567',
+    yearsOfExperience: 8,
+    specialty: {
+      id: 1,
+      name: 'Καρδιολόγος'
+    }
+  };
+
   availabilitySlots: AvailabilitySlot[] = [
     {
       id: 1,
@@ -372,5 +389,9 @@ export class DoctorService {
     appointment.status = 'booked';
 
     return of(true);
+  }
+  
+  getDoctorProfile(): Doctor {
+    return this.doctorProfile;
   }
 }

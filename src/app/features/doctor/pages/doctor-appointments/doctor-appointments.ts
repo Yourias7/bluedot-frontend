@@ -24,8 +24,14 @@ export class DoctorAppointments {
     private doctorservice: DoctorService
   ) {
     const date = this.route.snapshot.queryParams['date'];
+    const tab = this.route.snapshot.queryParams['tab'];
 
     this.selectedDate = date ?? null;
+
+    if (tab === 'requests' || tab === 'appointments' || tab === 'rejected') {
+      this.selectedTab = tab;
+    }
+
     this.loadAppointments();
   }
 

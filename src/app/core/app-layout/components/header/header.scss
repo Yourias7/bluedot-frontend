@@ -8,20 +8,26 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 32px;
 }
 
 .header-left {
+  flex: 0 0 auto;
+
   display: flex;
   align-items: center;
 }
 
 .logo-link {
   text-decoration: none;
+
   display: flex;
   align-items: center;
 }
 
 .header-nav {
+  flex: 1;
+
   display: flex;
   align-items: center;
   justify-content: center;
@@ -29,10 +35,12 @@
 }
 
 .nav-link {
+  padding: 8px 0;
   color: #1f2a44;
   font-size: 16px;
   font-weight: 600;
   text-decoration: none;
+  border-bottom: 2px solid transparent;
   cursor: pointer;
 }
 
@@ -40,22 +48,40 @@
   opacity: 0.75;
 }
 
+.nav-link.active-link,
 .active-link {
   color: #2f45ff;
+  border-bottom-color: #2f45ff;
 }
 
 .header-right {
-  min-width: 130px;
+  min-width: 150px;
+  flex: 0 0 auto;
 
   display: flex;
   align-items: center;
   justify-content: flex-end;
 }
 
+/* Doctor profile menu trigger */
+
 .doctor-profile {
   display: flex;
   align-items: center;
   gap: 10px;
+  color: #1f2a44;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.doctor-profile p-avatar,
+.doctor-avatar-button {
+  cursor: pointer;
+}
+
+.doctor-profile p-avatar:hover,
+.doctor-avatar-button:hover {
+  opacity: 0.85;
 }
 
 .doctor-name {
@@ -63,6 +89,8 @@
   font-size: 16px;
   font-weight: 700;
 }
+
+/* Keep old fallback avatar style safe if it still exists somewhere */
 
 .doctor-avatar {
   width: 36px;
@@ -75,6 +103,14 @@
   justify-content: center;
 }
 
+/* Patient / guest actions */
+
+.patient-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .login-button {
   padding: 9px 16px;
   border: 1px solid #252525;
@@ -85,13 +121,9 @@
   font-weight: 600;
   cursor: pointer;
 }
+
 .login-button:hover {
   opacity: 0.9;
-}
-.patient-actions {
-  display: flex;
-  align-items: center;
-  gap: 8px;
 }
 
 .register-button {
@@ -107,4 +139,89 @@
 
 .register-button:hover {
   opacity: 0.9;
+}
+
+/* Doctor dropdown menu - force clean light menu */
+
+:host ::ng-deep .doctor-profile-menu,
+:host ::ng-deep .doctor-profile-menu.p-menu {
+  min-width: 230px !important;
+  padding: 8px !important;
+  background-color: #ffffff !important;
+  border: 1px solid #e0e3ee !important;
+  border-radius: 14px !important;
+  box-shadow: 0 10px 24px rgba(31, 42, 68, 0.14) !important;
+}
+
+:host ::ng-deep .doctor-profile-menu .p-menu-list {
+  padding: 0 !important;
+  margin: 0 !important;
+  background-color: #ffffff !important;
+}
+
+:host ::ng-deep .doctor-profile-menu .p-menuitem,
+:host ::ng-deep .doctor-profile-menu .p-menu-item {
+  background-color: #ffffff !important;
+}
+
+:host ::ng-deep .doctor-profile-menu .p-menuitem-content,
+:host ::ng-deep .doctor-profile-menu .p-menu-item-content {
+  background-color: #ffffff !important;
+  border-radius: 10px !important;
+}
+
+:host ::ng-deep .doctor-profile-menu .p-menuitem-link,
+:host ::ng-deep .doctor-profile-menu .p-menu-item-link {
+  padding: 11px 12px !important;
+  border-radius: 10px !important;
+  background-color: #ffffff !important;
+  color: #1f2a44 !important;
+  text-decoration: none !important;
+}
+
+:host ::ng-deep .doctor-profile-menu .p-menuitem-text,
+:host ::ng-deep .doctor-profile-menu .p-menu-item-label {
+  color: #1f2a44 !important;
+  font-size: 15px !important;
+  font-weight: 600 !important;
+}
+
+:host ::ng-deep .doctor-profile-menu .p-menuitem-link:hover,
+:host ::ng-deep .doctor-profile-menu .p-menu-item-link:hover,
+:host ::ng-deep .doctor-profile-menu .p-menuitem-content:hover,
+:host ::ng-deep .doctor-profile-menu .p-menu-item-content:hover {
+  background-color: #f4f6ff !important;
+  color: #1f2a44 !important;
+}
+
+:host ::ng-deep .doctor-profile-menu .p-menuitem-link:hover .p-menuitem-text,
+:host ::ng-deep .doctor-profile-menu .p-menu-item-link:hover .p-menu-item-label {
+  color: #1f2a44 !important;
+}
+
+:host ::ng-deep .doctor-profile-menu .p-menu-separator {
+  margin: 8px 0 !important;
+  border-top: 1px solid #e0e3ee !important;
+}
+
+/* Mobile */
+
+@media (max-width: 900px) {
+  .app-header {
+    padding: 16px 20px;
+    flex-wrap: wrap;
+  }
+
+  .header-nav {
+    order: 3;
+    width: 100%;
+    flex: 0 0 100%;
+    justify-content: flex-start;
+    gap: 20px;
+    overflow-x: auto;
+  }
+
+  .header-right {
+    margin-left: auto;
+  }
 }
