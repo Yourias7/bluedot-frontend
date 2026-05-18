@@ -5,7 +5,7 @@ import { Specialty } from '../../../shared/domain/specialty';
 import { NominatimService, LocationSuggestion } from '../../../shared/services/nominatim.service';
 import { Route, Router } from '@angular/router';
 
-const radiusKm = 10;
+const radiusKm = 3.5;
 
 @Component({
   selector: 'app-landing-page',
