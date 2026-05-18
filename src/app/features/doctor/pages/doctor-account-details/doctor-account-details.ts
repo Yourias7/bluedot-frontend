@@ -3,8 +3,10 @@ import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { Doctor } from '../../../../shared/domain/doctor';
+import { Specialty } from '../../../../shared/domain/specialty';
 import { UserRole } from '../../../../shared/domain/user';
 import { DoctorService } from '../../../../shared/services/doctor-service';
+import { DoctorSearchService } from '../../../../shared/services/doctor-search-service';
 import {
   AccountMeDto,
   AuthenticationServices,
@@ -29,10 +31,12 @@ export class DoctorAccountDetails implements OnInit {
     clinicAddress: new FormControl('', [Validators.required]),
     yearsOfExperience: new FormControl(0, [Validators.required, Validators.min(0)]),
     bio: new FormControl('', [Validators.required]),
-    specialty: new FormControl('', [Validators.required])
+    specialty: new FormControl<number | null>(null, [Validators.required])
   });
 
   editing: { [key: string]: boolean } = {};
+
+  specialties: Specialty[] = [];
 
   isLoading = false;
   isSaving = false;
@@ -40,7 +44,8 @@ export class DoctorAccountDetails implements OnInit {
 
   constructor(
     private doctorService: DoctorService,
-    private authenticationServices: AuthenticationServices
+    private authenticationServices: AuthenticationServices,
+    private doctorSearchService: DoctorSearchService
   ) {
     this.doctorInfo = this.doctorService.getDoctorProfile() ?? {
       id: 0,
@@ -57,7 +62,22 @@ export class DoctorAccountDetails implements OnInit {
   }
 
   ngOnInit(): void {
+    this.loadSpecialties();
     this.loadAccount();
+  }
+
+  private loadSpecialties(): void {
+    this.doctorSearchService.getSpecialties().subscribe({
+      next: (specialties) => {
+        this.specialties = specialties ?? [];
+        // Re-patch the form so the dropdown selection matches the loaded specialty.
+        this.patchFormFromModel();
+      },
+      error: (error) => {
+        console.error('Failed to load specialties:', error);
+        this.specialties = [];
+      },
+    });
   }
 
   private loadAccount(): void {
@@ -110,7 +130,7 @@ export class DoctorAccountDetails implements OnInit {
       clinicAddress: this.doctorInfo.clinicAddress ?? '',
       yearsOfExperience: this.doctorInfo.yearsOfExperience ?? 0,
       bio: this.doctorInfo.bio ?? '',
-      specialty: this.doctorInfo.specialty?.name ?? ''
+      specialty: this.doctorInfo.specialty?.id ?? null
     });
   }
 
@@ -172,10 +192,10 @@ export class DoctorAccountDetails implements OnInit {
       const value = this.form.get(key)?.value;
 
       if (key === 'specialty') {
-        patch.specialty = {
-          id: this.doctorInfo.specialty?.id ?? 0,
-          name: value,
-        };
+        const selected = this.findSpecialtyById(value);
+        if (selected) {
+          patch.specialty = { id: selected.id, name: selected.name };
+        }
         continue;
       }
 
@@ -194,16 +214,24 @@ export class DoctorAccountDetails implements OnInit {
       const value = this.form.get(key)?.value;
 
       if (key === 'specialty') {
-        this.doctorInfo.specialty = {
-          id: this.doctorInfo.specialty?.id ?? 0,
-          name: value,
-        };
+        const selected = this.findSpecialtyById(value);
+        if (selected) {
+          this.doctorInfo.specialty = { id: selected.id, name: selected.name };
+        }
         continue;
       }
 
       // dynamic assignment, same logic style as patient account page
       (this.doctorInfo as any)[key] = value;
     }
+  }
+
+  private findSpecialtyById(id: unknown): Specialty | undefined {
+    if (id === null || id === undefined || id === '') {
+      return undefined;
+    }
+    const numericId = Number(id);
+    return this.specialties.find((specialty) => specialty.id === numericId);
   }
 
   cancelChanges() {

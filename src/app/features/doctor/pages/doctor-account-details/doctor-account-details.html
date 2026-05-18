@@ -180,11 +180,16 @@
           @if (!editing['specialty']) {
             <span>{{ doctorInfo.specialty?.name }}</span>
           } @else {
-            <input
+            <select
               class="form-control"
               formControlName="specialty"
               [class.is-invalid]="getControl('specialty').invalid && getControl('specialty').touched"
             >
+              <option [ngValue]="null" disabled>Επιλέξτε ειδικότητα</option>
+              @for (option of specialties; track option.id) {
+                <option [ngValue]="option.id">{{ option.name }}</option>
+              }
+            </select>
 
             @if (getControl('specialty').invalid && getControl('specialty').touched) {
               <div class="invalid-feedback d-block">
