@@ -12,13 +12,12 @@ export interface LocationSuggestion {
   providedIn: 'root'
 })
 export class NominatimService {
-  // Point directly to your locally hosted C# Web API instance
-  private apiUrl = 'https://localhost:5228/api/locations'; 
+  // Point to your local C# API
+  private apiUrl = 'http://localhost:5228/api/locations'; 
 
   constructor(private http: HttpClient) {}
 
-  searchAddress(query: string): Observable<any[]> {
-    // Call your backend instead of the third-party public server
-    return this.http.get<any[]>(`${this.apiUrl}/suggest?query=${encodeURIComponent(query)}`);
+  searchAddress(query: string): Observable<LocationSuggestion[]> {
+    return this.http.get<LocationSuggestion[]>(`${this.apiUrl}/suggest?query=${encodeURIComponent(query)}`);
   }
 }

@@ -19,9 +19,9 @@
                 <span class="pi pi-search" ></span>
                 <input type="text" pInputText list="location-options" placeholder="Τοποθεσία πχ. Αθήνα" (input)="onLocationInput($event)"/>
                 <datalist id="location-options">
-                    <!-- Assuming your Nominatim service returns objects with a 'display_name' property -->
+                    <!-- Assuming your Nominatim service returns objects with a 'displayName' property -->
                     @for (location of locations; track $index) {
-                        <option [value]="location.display_name"></option>
+                        <option [value]="location.displayName"></option>
                     }
                 </datalist>
             </p-iconfield>

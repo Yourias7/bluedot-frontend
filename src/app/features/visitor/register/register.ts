@@ -122,8 +122,8 @@ export class Register implements OnInit {
   }
 
   submitPatient() {
-    this.errorMessage = '';
-    this.successMessage = '';
+    this.errorMessage = 'Αποτυχία εγγραφής ασθενή. Ελέγξτε τα στοιχεία και δοκιμάστε ξανά.';
+    this.successMessage = 'Η εγγραφή ολοκληρώθηκε επιτυχώς. Μπορείτε πλέον να συνδεθείτε.';
 
     this.patient_registerForm.markAllAsTouched();
 
@@ -145,7 +145,10 @@ export class Register implements OnInit {
       firstName: formData.firstName,
       lastName: formData.lastName,
       email: formData.email,
-      password: formData.pass
+      password: formData.pass,
+      dateOfBirth: formData.birthDate,
+      gender: formData.gender,
+      phoneNumber: formData.phone
     }).subscribe({
       next: () => {
         this.isLoading = false;
@@ -168,8 +171,8 @@ export class Register implements OnInit {
   }
 
   submitDoctor() {
-    this.errorMessage = '';
-    this.successMessage = '';
+    this.errorMessage = 'Αποτυχία εγγραφής γιατρού. Ελέγξτε τα στοιχεία και δοκιμάστε ξανά.';
+    this.successMessage = 'Η εγγραφή ολοκληρώθηκε επιτυχώς. Μπορείτε πλέον να συνδεθείτε.';
 
     this.doctor_registerForm.markAllAsTouched();
 
