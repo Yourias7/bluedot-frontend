@@ -1,109 +1,230 @@
-<div class="container">
-    <h1 class="mb-4">Το προφίλ μου</h1>
+<section class="patient-account-page">
+  <div class="page-header">
+    <h1>Το προφίλ μου</h1>
+    <p>Διαχειριστείτε τα προσωπικά στοιχεία του λογαριασμού σας.</p>
+  </div>
 
+  <div class="account-card">
     <form [formGroup]="form">
-        <div class="mb-3 row align-items-center">
-            <label class="col-sm-3 col-form-label">Όνομα</label>
-            <div class="col-sm-7">
-                <span [hidden]="editing['firstName']">{{ patientInfo.firstName }}</span>
-                <input class="form-control" [class.is-invalid]="getControl('firstName').invalid && getControl('firstName').touched" [hidden]="!editing['firstName']" formControlName="firstName" />
-                <div *ngIf="editing['firstName'] && getControl('firstName').invalid && getControl('firstName').touched" class="invalid-feedback d-block">
-                    First name is required.
-                </div>
-            </div>
-            <div class="col-sm-2">
-                <button type="button" class="btn btn-outline-secondary btn-sm" (click)="editField('firstName')" [hidden]="editing['firstName']">Edit</button>
-            </div>
+      <div class="profile-summary">
+        <div class="profile-avatar">
+          👤
         </div>
 
-        <div class="mb-3 row align-items-center">
-            <label class="col-sm-3 col-form-label">Επώνυμο</label>
-            <div class="col-sm-7">
-                <span [hidden]="editing['lastName']">{{ patientInfo.lastName }}</span>
-                <input class="form-control" [class.is-invalid]="getControl('lastName').invalid && getControl('lastName').touched" [hidden]="!editing['lastName']" formControlName="lastName" />
-                <div *ngIf="editing['lastName'] && getControl('lastName').invalid && getControl('lastName').touched" class="invalid-feedback d-block">
-                    Last name is required.
-                </div>
-            </div>
-            <div class="col-sm-2">
-                <button type="button" class="btn btn-outline-secondary btn-sm" (click)="editField('lastName')" [hidden]="editing['lastName']">Edit</button>
-            </div>
+        <div>
+          <h2>{{ patientInfo.firstName }} {{ patientInfo.lastName }}</h2>
+          <p>{{ patientInfo.email }}</p>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label>Όνομα</label>
+
+        <div class="field-content">
+          @if (!editing['firstName']) {
+            <span>{{ patientInfo.firstName }}</span>
+          } @else {
+            <input
+              class="form-control"
+              formControlName="firstName"
+              [class.is-invalid]="getControl('firstName').invalid && getControl('firstName').touched"
+            >
+
+            @if (getControl('firstName').invalid && getControl('firstName').touched) {
+              <div class="invalid-feedback d-block">
+                Το όνομα είναι υποχρεωτικό.
+              </div>
+            }
+          }
         </div>
 
-        <div class="mb-3 row align-items-center">
-            <label class="col-sm-3 col-form-label">Email</label>
-            <div class="col-sm-7">
-                <span [hidden]="editing['email']">{{ patientInfo.email }}</span>
-                <input class="form-control" [class.is-invalid]="getControl('email').invalid && getControl('email').touched" [hidden]="!editing['email']" formControlName="email" />
-                <div *ngIf="editing['email'] && getControl('email').invalid && getControl('email').touched" class="invalid-feedback d-block">
-                    <div *ngIf="getControl('email').errors?.['required']">Email is required.</div>
-                    <div *ngIf="getControl('email').errors?.['email']">Please enter a valid email address.</div>
-                </div>
-            </div>
-            <div class="col-sm-2">
-                <button type="button" class="btn btn-outline-secondary btn-sm" (click)="editField('email')" [hidden]="editing['email']">Edit</button>
-            </div>
+        <button
+          type="button"
+          class="edit-button"
+          (click)="editField('firstName')"
+          [hidden]="editing['firstName']"
+        >
+          Επεξεργασία
+        </button>
+      </div>
+
+      <div class="form-row">
+        <label>Επώνυμο</label>
+
+        <div class="field-content">
+          @if (!editing['lastName']) {
+            <span>{{ patientInfo.lastName }}</span>
+          } @else {
+            <input
+              class="form-control"
+              formControlName="lastName"
+              [class.is-invalid]="getControl('lastName').invalid && getControl('lastName').touched"
+            >
+
+            @if (getControl('lastName').invalid && getControl('lastName').touched) {
+              <div class="invalid-feedback d-block">
+                Το επώνυμο είναι υποχρεωτικό.
+              </div>
+            }
+          }
         </div>
 
-        <div class="mb-3 row align-items-center">
-            <label class="col-sm-3 col-form-label">Κωδικός</label>
-            <div class="col-sm-7">
-                <span [hidden]="editing['password']">••••••••</span>
-                <input class="form-control" [class.is-invalid]="getControl('password').invalid && getControl('password').touched" [hidden]="!editing['password']" type="password" formControlName="password" />
-                <div *ngIf="editing['password'] && getControl('password').invalid && getControl('password').touched" class="invalid-feedback d-block">
-                    <div *ngIf="getControl('password').errors?.['minlength']">Password must be at least 6 characters long.</div>
-                </div>
-            </div>
-            <div class="col-sm-2">
-                <button type="button" class="btn btn-outline-secondary btn-sm" (click)="editField('password')" [hidden]="editing['password']">Edit</button>
-            </div>
+        <button
+          type="button"
+          class="edit-button"
+          (click)="editField('lastName')"
+          [hidden]="editing['lastName']"
+        >
+          Επεξεργασία
+        </button>
+      </div>
+
+      <div class="form-row">
+        <label>Email</label>
+
+        <div class="field-content">
+          @if (!editing['email']) {
+            <span>{{ patientInfo.email }}</span>
+          } @else {
+            <input
+              class="form-control"
+              formControlName="email"
+              [class.is-invalid]="getControl('email').invalid && getControl('email').touched"
+            >
+
+            @if (getControl('email').invalid && getControl('email').touched) {
+              <div class="invalid-feedback d-block">
+                Συμπληρώστε ένα έγκυρο email.
+              </div>
+            }
+          }
         </div>
 
-        <div class="mb-3 row align-items-center">
-            <label class="col-sm-3 col-form-label">Ρόλος</label>
-            <div class="col-sm-7">
-                <span [hidden]="editing['role']">{{ patientInfo.role }}</span>
-                <input class="form-control" [class.is-invalid]="getControl('role').invalid && getControl('role').touched" [hidden]="!editing['role']" formControlName="role" />
-                <div *ngIf="editing['role'] && getControl('role').invalid && getControl('role').touched" class="invalid-feedback d-block">
-                    Role is required.
-                </div>
-            </div>
-            <div class="col-sm-2">
-                <button type="button" class="btn btn-outline-secondary btn-sm" (click)="editField('role')" [hidden]="editing['role']">Edit</button>
-            </div>
+        <button
+          type="button"
+          class="edit-button"
+          (click)="editField('email')"
+          [hidden]="editing['email']"
+        >
+          Επεξεργασία
+        </button>
+      </div>
+
+      <div class="form-row">
+        <label>Κωδικός</label>
+
+        <div class="field-content">
+          @if (!editing['password']) {
+            <span>••••••••</span>
+          } @else {
+            <input
+              type="password"
+              class="form-control"
+              formControlName="password"
+              [class.is-invalid]="getControl('password').invalid && getControl('password').touched"
+            >
+
+            @if (getControl('password').invalid && getControl('password').touched) {
+              <div class="invalid-feedback d-block">
+                Ο κωδικός πρέπει να έχει τουλάχιστον 6 χαρακτήρες.
+              </div>
+            }
+          }
         </div>
 
-        <div class="mb-3 row align-items-center">
-            <label class="col-sm-3 col-form-label">Ημερομηνία γέννησης</label>
-            <div class="col-sm-7">
-                <span [hidden]="editing['dateOfBirth']">{{ patientInfo.dateOfBirth | date:'yyyy-MM-dd' }}</span>
-                <input class="form-control" [class.is-invalid]="getControl('dateOfBirth').invalid && getControl('dateOfBirth').touched" [hidden]="!editing['dateOfBirth']" type="date" formControlName="dateOfBirth" />
-                <div *ngIf="editing['dateOfBirth'] && getControl('dateOfBirth').invalid && getControl('dateOfBirth').touched" class="invalid-feedback d-block">
-                    Date of birth is required.
-                </div>
-            </div>
-            <div class="col-sm-2">
-                <button type="button" class="btn btn-outline-secondary btn-sm" (click)="editField('dateOfBirth')" [hidden]="editing['dateOfBirth']">Edit</button>
-            </div>
+        <button
+          type="button"
+          class="edit-button"
+          (click)="editField('password')"
+          [hidden]="editing['password']"
+        >
+          Επεξεργασία
+        </button>
+      </div>
+
+      <div class="form-row">
+        <label>Ημερομηνία γέννησης</label>
+
+        <div class="field-content">
+          @if (!editing['dateOfBirth']) {
+            <span>{{ patientInfo.dateOfBirth | date:'yyyy-MM-dd' }}</span>
+          } @else {
+            <input
+              type="date"
+              class="form-control"
+              formControlName="dateOfBirth"
+              [class.is-invalid]="getControl('dateOfBirth').invalid && getControl('dateOfBirth').touched"
+            >
+
+            @if (getControl('dateOfBirth').invalid && getControl('dateOfBirth').touched) {
+              <div class="invalid-feedback d-block">
+                Η ημερομηνία γέννησης είναι υποχρεωτική.
+              </div>
+            }
+          }
         </div>
 
-        <div class="mb-3 row align-items-center">
-            <label class="col-sm-3 col-form-label">Τηλέφωνο</label>
-            <div class="col-sm-7">
-                <span [hidden]="editing['phoneNumber']">{{ patientInfo.phoneNumber }}</span>
-                <input class="form-control" [class.is-invalid]="getControl('phoneNumber').invalid && getControl('phoneNumber').touched" [hidden]="!editing['phoneNumber']" formControlName="phoneNumber" />
-                <div *ngIf="editing['phoneNumber'] && getControl('phoneNumber').invalid && getControl('phoneNumber').touched" class="invalid-feedback d-block">
-                    <div *ngIf="getControl('phoneNumber').errors?.['pattern']">Phone must be 10 digits.</div>
-                </div>
-            </div>
-            <div class="col-sm-2">
-                <button type="button" class="btn btn-outline-secondary btn-sm" (click)="editField('phoneNumber')" [hidden]="editing['phoneNumber']">Edit</button>
-            </div>
+        <button
+          type="button"
+          class="edit-button"
+          (click)="editField('dateOfBirth')"
+          [hidden]="editing['dateOfBirth']"
+        >
+          Επεξεργασία
+        </button>
+      </div>
+
+      <div class="form-row">
+        <label>Τηλέφωνο</label>
+
+        <div class="field-content">
+          @if (!editing['phoneNumber']) {
+            <span>{{ patientInfo.phoneNumber }}</span>
+          } @else {
+            <input
+              class="form-control"
+              formControlName="phoneNumber"
+              [class.is-invalid]="getControl('phoneNumber').invalid && getControl('phoneNumber').touched"
+            >
+
+            @if (getControl('phoneNumber').invalid && getControl('phoneNumber').touched) {
+              <div class="invalid-feedback d-block">
+                Το τηλέφωνο πρέπει να έχει 10 ψηφία.
+              </div>
+            }
+          }
         </div>
 
-        <div class="mt-4" [hidden]="!isAnyEditing()">
-            <button type="button" class="btn btn-primary me-2" (click)="saveChanges()" [disabled]="form.invalid">Save changes</button>
-            <button type="button" class="btn btn-secondary" (click)="cancelChanges()">Cancel</button>
+        <button
+          type="button"
+          class="edit-button"
+          (click)="editField('phoneNumber')"
+          [hidden]="editing['phoneNumber']"
+        >
+          Επεξεργασία
+        </button>
+      </div>
+
+      @if (isAnyEditing()) {
+        <div class="form-actions">
+          <button
+            type="button"
+            class="save-button"
+            (click)="saveChanges()"
+            [disabled]="form.invalid"
+          >
+            Αποθήκευση αλλαγών
+          </button>
+
+          <button
+            type="button"
+            class="cancel-button"
+            (click)="cancelChanges()"
+          >
+            Ακύρωση
+          </button>
         </div>
+      }
     </form>
-</div>
+  </div>
+</section>

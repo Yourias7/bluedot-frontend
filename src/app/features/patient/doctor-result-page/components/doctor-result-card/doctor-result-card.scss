@@ -1,18 +1,82 @@
+.doctor-card {
+  min-height: 260px;
+  padding: 22px;
+  border: 1px solid #ececec;
+  border-radius: 18px;
+  background-color: #ffffff;
+  box-shadow: 0 5px 14px rgba(31, 42, 68, 0.08);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.doctor-card:hover {
+  transform: translateY(-1px);
+  border-color: #d8dce8;
+  box-shadow: 0 8px 18px rgba(31, 42, 68, 0.12);
+}
+
+.doctor-card-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.doctor-card-header h2 {
+  margin: 0 0 4px;
+  color: #1f2a44;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.doctor-card-header p {
+  margin: 0;
+  color: #7c8499;
+  font-size: 15px;
+  font-weight: 600;
+}
+
 .rating-container {
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-    margin: 0.5rem 0;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
 
-    i {
-        color: #ffc107;
-        font-size: 1rem;
-        
-    }
+.rating-container i {
+  color: #ffc107;
+  font-size: 16px;
+}
 
-    p {
-        margin: 0;
-        font-size: 0.9rem;
-        margin-left: 0.5rem;
-    }
+.rating-container span {
+  margin-left: 8px;
+  color: #6e7894;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.doctor-address {
+  min-height: 42px;
+  margin: 0;
+  color: #4c556b;
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+.details-button {
+  margin-top: auto;
+  width: fit-content;
+  padding: 10px 16px;
+  border: 1px solid #1f2a44;
+  border-radius: 12px;
+  background-color: #1f2a44;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.details-button:hover {
+  background-color: #2b3858;
 }

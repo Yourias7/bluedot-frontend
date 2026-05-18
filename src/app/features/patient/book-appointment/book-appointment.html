@@ -1,45 +1,48 @@
-<section class="container mt-4 d-flex flex-column gap-4 align-items-center">
+<section class="book-appointment-page">
+  <div class="page-header">
+    <h1>Το αίτημά σας</h1>
+    <p>Συμπληρώστε τα στοιχεία για να ολοκληρώσετε την αίτηση για ραντεβού.</p>
+  </div>
 
-    <h1>Το αίτημα σας</h1>
-    <h2>Συμπληρώστε τα παρακάτω στοιχεία για να ολοκληρώσετε την αίτηση για ραντεβού με τον ιατρό σας.</h2>
-
-</section>
-<form [formGroup]="appointmentForm" (ngSubmit)="submitAppointment()">
-    @if(userDetailedInfo){
-    <!-- <section class="container mt-4 d-flex flex-row gap-4">
-        <div>
-            <p-avatar icon="pi pi-user" class="mr-2" size="xlarge" />
-        </div>
-        <div>
-            <h1>{{userDetailedInfo.firstName}} {{userDetailedInfo.lastName}}</h1>
-            <p>{{userDetailedInfo.specialty?.name}}</p>
-            <div class="rating-container d-flex flex-row gap-2 align-items-center">
-                @for (n of [1,2,3,4,5]; track $index) {
-                @if(n>getfilledStars()){
-                <i class="pi pi-star"></i>
-                }
-                @else{
-                <i class="pi pi-star-fill"></i>
-                }
-                }
-                <p>{{ review }}/5</p>
-                <p>(39)</p>
-            </div>
-            <br>
-            <p>Διεύθυνση: {{userDetailedInfo.clinicAddress}}</p>
-            <p>Τηλέφωνο: {{userDetailedInfo.phoneNumber}}</p>
-            <p>Email: {{userDetailedInfo.email}}</p>
-        </div>
-    </section> -->
-     <app-doctor-basic-info [userDetailedInfo]="userDetailedInfo"></app-doctor-basic-info>
+  <form
+    class="book-card"
+    [formGroup]="appointmentForm"
+    (ngSubmit)="submitAppointment()"
+  >
+    @if (userDetailedInfo) {
+      <app-doctor-basic-info [userDetailedInfo]="userDetailedInfo"></app-doctor-basic-info>
     }
-    <section class="container mt-4 d-flex flex-column gap-4">
-        <label for="reason">Λόγος επίσκεψης*</label>
-        <textarea id="reason" name="reason" rows="4" cols="50" formControlName="reason"></textarea>
-    </section>
-    <app-doctor-availability-patient-side (slotSelected)="closedSlot"></app-doctor-availability-patient-side>
-    <section class="container mt-4 d-flex flex-row gap-3 justify-content-center">
-        <button class="btn btn-primary" (click)="goBack()">Ακύρωση</button>
-        <button class="btn btn-primary" type="submit" (click)="submitAppointment()">Υποβολή αιτήματος</button>
-    </section>
-</form>
+
+    <div class="reason-section">
+      <label for="reason">Λόγος επίσκεψης*</label>
+
+      <textarea
+        id="reason"
+        name="reason"
+        rows="4"
+        formControlName="reason"
+      ></textarea>
+    </div>
+
+    <app-doctor-availability-patient-side
+      (slotSelected)="closedSlot = $event"
+    ></app-doctor-availability-patient-side>
+
+    <div class="form-actions">
+      <button
+        type="button"
+        class="cancel-button"
+        (click)="goBack()"
+      >
+        Ακύρωση
+      </button>
+
+      <button
+        type="submit"
+        class="submit-button"
+      >
+        Υποβολή αιτήματος
+      </button>
+    </div>
+  </form>
+</section>

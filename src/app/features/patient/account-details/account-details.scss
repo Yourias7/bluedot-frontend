@@ -1,0 +1,209 @@
+.patient-account-page {
+  min-height: 100vh;
+  padding: 48px 24px;
+  background-color: #eef1ff;
+}
+
+.page-header {
+  max-width: 980px;
+  margin: 0 auto 28px;
+}
+
+.page-header h1 {
+  margin: 0 0 8px;
+  color: #1f2a44;
+  font-size: 36px;
+  font-weight: 700;
+}
+
+.page-header p {
+  margin: 0;
+  color: #7c8499;
+  font-size: 18px;
+}
+
+.account-card {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 34px 38px;
+  background-color: #ffffff;
+  border: 1px solid #d6d6d6;
+  border-radius: 18px;
+  box-shadow: 0 8px 18px rgba(31, 42, 68, 0.12);
+}
+
+.profile-summary {
+  padding-bottom: 26px;
+  margin-bottom: 26px;
+  border-bottom: 1px solid #ececec;
+
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.profile-avatar {
+  width: 78px;
+  height: 78px;
+  border-radius: 50%;
+  background-color: #eef1ff;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 34px;
+}
+
+.profile-summary h2 {
+  margin: 0 0 6px;
+  color: #1f2a44;
+  font-size: 26px;
+  font-weight: 800;
+}
+
+.profile-summary p {
+  margin: 0;
+  color: #7c8499;
+  font-size: 16px;
+}
+
+.form-row {
+  padding: 18px 0;
+  border-bottom: 1px solid #f0f0f0;
+
+  display: grid;
+  grid-template-columns: 190px 1fr 130px;
+  gap: 18px;
+  align-items: center;
+}
+
+.form-row label {
+  color: #1f2a44;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.field-content {
+  color: #4c556b;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.form-control {
+  width: 100%;
+  padding: 11px 13px;
+  border: 1px solid #c8cde0;
+  border-radius: 12px;
+  background-color: #ffffff;
+  color: #1f2a44;
+  font-size: 15px;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: #7f8cff;
+  box-shadow: 0 0 0 3px rgba(127, 140, 255, 0.15);
+}
+
+.invalid-feedback {
+  margin-top: 6px;
+  color: #c74343;
+  font-size: 13px;
+}
+
+.edit-button {
+  padding: 9px 13px;
+  border: 1px solid #d6d6d6;
+  border-radius: 12px;
+  background-color: #ffffff;
+  color: #1f2a44;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.edit-button:hover {
+  background-color: #f4f6ff;
+  border-color: #c8cde0;
+}
+
+.form-actions {
+  padding-top: 28px;
+
+  display: flex;
+  justify-content: flex-end;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.save-button,
+.cancel-button {
+  padding: 13px 20px;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.save-button {
+  border: 1px solid #1f2a44;
+  background-color: #1f2a44;
+  color: #ffffff;
+}
+
+.save-button:hover {
+  background-color: #2b3858;
+}
+
+.save-button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.cancel-button {
+  border: 1px solid #d6d6d6;
+  background-color: #ffffff;
+  color: #1f2a44;
+}
+
+.cancel-button:hover {
+  background-color: #f4f6ff;
+}
+
+@media (max-width: 768px) {
+  .patient-account-page {
+    padding: 32px 20px;
+  }
+
+  .page-header h1 {
+    font-size: 28px;
+  }
+
+  .account-card {
+    padding: 26px 20px;
+  }
+
+  .profile-summary {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .edit-button {
+    width: fit-content;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .save-button,
+  .cancel-button {
+    width: 100%;
+  }
+}
