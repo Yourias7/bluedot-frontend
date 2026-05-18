@@ -5,7 +5,7 @@
             <h2 class="text-center fs-4 fw-semibold">ψάχνω</h2>
             <p-iconfield class="card flex flex-wrap gap-4">
                 <span class="pi pi-search" ></span>
-                <input type="text" pInputText placeholder="Ειδικότητα πχ. Παθολόγος" />
+                <input type="text" pInputText list="specialty-options" placeholder="Ειδικότητα πχ. Παθολόγος" />
                 <datalist id="specialty-options">
                     @for (specialty of specialties; track specialty.id) {
                         <option [value]="specialty.name"></option>

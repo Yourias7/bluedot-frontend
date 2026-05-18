@@ -89,20 +89,6 @@
                         <div class="form-error">Υποχρεωτικό πεδίο.</div>}
                     </div>
                 </div>
-
-                <div class="mb-3">
-                    <label for="doctor-telephone" class="form-label">Τηλέφωνο</label>
-                    <input id="doctor-telephone" formControlName="phone" type="text" class="form-control" />
-
-                    @if(doctor_registerForm.get("phone")?.touched) {
-                    @if(doctor_registerForm.get("phone")?.hasError("required")) {
-                    <div class="form-error">Το τηλέφωνο είναι υποχρεωτικό.</div>
-                    } @else if (doctor_registerForm.get("phone")?.hasError("pattern")) {
-                    <div class="form-error">Το τηλέφωνο πρέπει να έχει 10 ψηφία.</div>
-                    }
-                    }
-                </div>
-
                 <div class="mb-3">
                     <label for="clinicAddress" class="form-label">Διεύθυνση ιατρείου</label>
                     <input 
@@ -139,16 +125,6 @@
                         <div class="form-error">Η διεύθυνση ιατρείου είναι υποχρεωτική.</div>
                     }
                 </div>
-
-                <div class="mb-3">
-                    <label for="bio" class="form-label">Γενικές πληροφορίες</label>
-                    <textarea id="bio" formControlName="bio" class="form-control"></textarea>
-                     @if(doctor_registerForm.get("bio")?.touched &&
-                    doctor_registerForm.get("bio")?.hasError("required")) {
-                    <div class="form-error">Το πεδίο γενικών πληροφοριών είναι υποχρεωτικό.</div>
-                    }
-                </div>
-
                 <div>
                     <input id="doctor-terms" type="checkbox" formControlName="terms">
                     <label for="doctor-terms">Έχω διαβάσει και αποδεχθεί τους Όρους Χρήσης</label>
