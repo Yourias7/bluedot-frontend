@@ -1,18 +1,34 @@
-<article class="card p-2 d-inline-block">
-    <h5>{{ doctor?.firstName }} {{ doctor?.lastName }}</h5>
-    <p-avatar icon="pi pi-user" class="mr-2" size="xlarge" />
-    <div class="rating-container">
-        @for (n of [1,2,3,4,5]; track $index) {
-            @if(n>getfilledStars()){ 
-                    <i class="pi pi-star"></i>
-                }
-            @else{
-                    <i class="pi pi-star-fill"></i>
-                }
-        }
-        <p>{{ review }}/5</p>
+<article class="doctor-card">
+  <div class="doctor-card-header">
+    <p-avatar icon="pi pi-user" size="xlarge"></p-avatar>
+
+    <div>
+      <h2>{{ doctor?.firstName }} {{ doctor?.lastName }}</h2>
+      <p>{{ doctor?.specialty?.name }}</p>
     </div>
-    <p>{{ doctor?.specialty?.name }}</p>
-    <p>{{doctor?.clinicAddress}}</p>
-    <button pButton type="button" class="p-button-primary" (click)="viewDetails(doctor?.id)">Περισσότερα</button>
+  </div>
+
+  <div class="rating-container">
+    @for (n of [1, 2, 3, 4, 5]; track $index) {
+      @if (n > getfilledStars()) {
+        <i class="pi pi-star"></i>
+      } @else {
+        <i class="pi pi-star-fill"></i>
+      }
+    }
+
+    <span>{{ review }}/5</span>
+  </div>
+
+  <p class="doctor-address">
+    {{ doctor?.clinicAddress }}
+  </p>
+
+  <button
+    type="button"
+    class="details-button"
+    (click)="viewDetails(doctor?.id)"
+  >
+    Περισσότερα
+  </button>
 </article>

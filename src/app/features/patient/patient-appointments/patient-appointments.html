@@ -1,49 +1,67 @@
-<p-tabs value="0" class="mb-3">
-    <p-tablist>
+<section class="patient-appointments-page">
+  <div class="page-header">
+    <h1>Τα ραντεβού μου</h1>
+    <p>Παρακολουθήστε τα επιβεβαιωμένα ραντεβού, τα αιτήματα και το ιστορικό σας.</p>
+  </div>
+
+  <div class="appointments-card">
+    <p-tabs value="0" class="patient-tabs">
+      <p-tablist>
         <p-tab value="0">Ραντεβού</p-tab>
         <p-tab value="1">Αιτήματα</p-tab>
         <p-tab value="2">Ιστορικό</p-tab>
-    </p-tablist>
-    <p-tabpanel value="0">
+      </p-tablist>
+
+      <p-tabpanel value="0">
         @if(getCurrentAppointment() && getCurrentAppointmentCount() > 0) {
-        <section class="container mt-4">
+          <section class="appointment-list">
             @for(appointment of getCurrentAppointment(); track $index) {
-            <app-appointment-card [appointment]='appointment' (messageEvent)="showAppointmentDetails($event)"></app-appointment-card>
+              <app-appointment-card
+                [appointment]="appointment"
+                (messageEvent)="showAppointmentDetails($event)"
+              ></app-appointment-card>
             }
-        </section>
+          </section>
+        } @else {
+          <div class="empty-state">
+            Δεν υπάρχουν τρέχοντα ραντεβού.
+          </div>
         }
-        @else {
-        <div class="container mt-4">
-            <p>Δεν υπάρχουν τρέχοντα ραντεβού.</p>
-        </div>
-        }
-    </p-tabpanel>
-    <p-tabpanel value="1">
-        @if(getPendingAppointment() && getPendingAppointmentCount()> 0) {
-        <section class="container mt-4">
+      </p-tabpanel>
+
+      <p-tabpanel value="1">
+        @if(getPendingAppointment() && getPendingAppointmentCount() > 0) {
+          <section class="appointment-list">
             @for(appointment of getPendingAppointment(); track $index) {
-            <app-appointment-card [appointment]="appointment" (messageEvent)="showAppointmentDetails($event)"></app-appointment-card>
+              <app-appointment-card
+                [appointment]="appointment"
+                (messageEvent)="showAppointmentDetails($event)"
+              ></app-appointment-card>
             }
-        </section>
+          </section>
+        } @else {
+          <div class="empty-state">
+            Δεν υπάρχουν τρέχοντα αιτήματα.
+          </div>
         }
-        @else {
-        <div class="container mt-4">
-            <p>Δεν υπάρχουν τρέχοντα αιτήματα.</p>
-        </div>
-        }
-    </p-tabpanel>
-    <p-tabpanel value="2">
+      </p-tabpanel>
+
+      <p-tabpanel value="2">
         @if(getCompletedAppointment() && getCompletedAppointmentCount() > 0) {
-        <section class="container mt-4">
+          <section class="appointment-list">
             @for(appointment of getCompletedAppointment(); track $index) {
-            <app-appointment-card [appointment]="appointment" (messageEvent)="showAppointmentDetails($event)"></app-appointment-card>
+              <app-appointment-card
+                [appointment]="appointment"
+                (messageEvent)="showAppointmentDetails($event)"
+              ></app-appointment-card>
             }
-        </section>
+          </section>
+        } @else {
+          <div class="empty-state">
+            Δεν υπάρχει ιστορικό.
+          </div>
         }
-        @else {
-        <div class="container mt-4">
-            <p>Δεν υπάρχει ιστορικό.</p>
-        </div>
-        }
-    </p-tabpanel>
-</p-tabs>
+      </p-tabpanel>
+    </p-tabs>
+  </div>
+</section>

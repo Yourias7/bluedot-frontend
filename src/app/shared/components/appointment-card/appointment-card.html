@@ -1,10 +1,32 @@
-<article class="card" (click)="sendMessage()">
-  <div class="card-body d-flex align-items-center justify-content-between">
-    <div>
-      <div class="h6 mb-1">{{ appointment.specialty }}</div>
-      <div class="text-muted small mb-1">{{ appointment.date }}</div>
-      <div class="text-muted small">{{ appointment.startTime }} - {{ appointment.endTime }}</div>
-    </div>
-    <i class="pi pi-calendar fs-1 text-primary"></i>
+<button
+  type="button"
+  class="appointment-row"
+  (click)="sendMessage()"
+>
+  <div>
+    <h2>{{ appointment.specialty }}</h2>
+    <p>
+      {{ appointment.date }}
+      Ώρα {{ appointment.startTime }} - {{ appointment.endTime }}
+    </p>
   </div>
-</article>
+
+  <span
+    class="status-pill"
+    [class.pending-status]="appointment.status === 'pending'"
+    [class.confirmed-status]="appointment.status === 'booked'"
+    [class.rejected-status]="appointment.status === 'rejected'"
+  >
+    @if (appointment.status === 'pending') {
+      Σε αναμονή
+    }
+
+    @if (appointment.status === 'booked') {
+      Επιβεβαιωμένο
+    }
+
+    @if (appointment.status === 'rejected') {
+      Απορρίφθηκε
+    }
+  </span>
+</button>

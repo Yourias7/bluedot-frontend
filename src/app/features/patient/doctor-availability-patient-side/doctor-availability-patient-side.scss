@@ -1,0 +1,92 @@
+.patient-availability {
+  padding-top: 6px;
+}
+
+.availability-header {
+  margin-bottom: 22px;
+}
+
+.availability-header h2 {
+  margin: 0 0 8px;
+  color: #1f2a44;
+  font-size: 28px;
+  font-weight: 800;
+}
+
+.availability-header p {
+  margin: 0;
+  color: #7c8499;
+  font-size: 16px;
+}
+
+.date-box {
+  max-width: 280px;
+  margin-bottom: 22px;
+}
+
+.date-box label {
+  display: block;
+  margin-bottom: 8px;
+  color: #1f2a44;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.date-box input {
+  width: 100%;
+  height: 46px;
+  padding: 0 14px;
+  border: 1px solid #c8cde0;
+  border-radius: 14px;
+  background-color: #ffffff;
+  color: #1f2a44;
+  font-size: 15px;
+}
+
+.date-box input:focus {
+  outline: none;
+  border-color: #7f8cff;
+  box-shadow: 0 0 0 3px rgba(127, 140, 255, 0.15);
+}
+
+.slots-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(135px, 1fr));
+  gap: 14px;
+}
+
+.slot-card {
+  min-height: 52px;
+  padding: 0 14px;
+  border: 1px solid #ececec;
+  border-radius: 14px;
+  background-color: #ffffff;
+  color: #5b4bb7;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 5px 12px rgba(31, 42, 68, 0.08);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.slot-card:hover {
+  transform: translateY(-1px);
+  border-color: #d8dce8;
+  box-shadow: 0 8px 18px rgba(31, 42, 68, 0.12);
+}
+
+.slot-card.selected-slot {
+  background-color: #d8f5dd;
+  border-color: #9fd8aa;
+  color: #1f2a44;
+}
+
+@media (max-width: 768px) {
+  .slots-grid {
+    grid-template-columns: 1fr;
+  }
+}

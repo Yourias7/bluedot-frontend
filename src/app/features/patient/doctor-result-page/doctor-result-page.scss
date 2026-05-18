@@ -1,0 +1,171 @@
+.doctor-results-page {
+  min-height: 100vh;
+  padding: 48px 24px;
+  background-color: #eef1ff;
+}
+
+.page-header {
+  max-width: 1100px;
+  margin: 0 auto 28px;
+}
+
+.page-header h1 {
+  margin: 0 0 8px;
+  color: #1f2a44;
+  font-size: 36px;
+  font-weight: 700;
+}
+
+.page-header p {
+  margin: 0;
+  color: #7c8499;
+  font-size: 18px;
+}
+
+.results-card {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 32px;
+  background-color: #ffffff;
+  border: 1px solid #d6d6d6;
+  border-radius: 18px;
+  box-shadow: 0 8px 18px rgba(31, 42, 68, 0.12);
+}
+
+.sort-row {
+  margin-bottom: 28px;
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.sort-row span {
+  color: #1f2a44;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.sort-chip {
+  padding: 8px 14px;
+  border: 1px solid #d6d6d6;
+  border-radius: 999px;
+  background-color: #ffffff;
+  color: #1f2a44;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.sort-chip:hover {
+  background-color: #f4f6ff;
+  border-color: #c8cde0;
+}
+
+.sort-chip.active-chip {
+  background-color: #d8f5dd;
+  border-color: #c4e9cb;
+}
+
+.doctor-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 18px;
+}
+
+.pagination-wrapper {
+  margin-top: 30px;
+
+  display: flex;
+  justify-content: center;
+}
+
+.empty-state {
+  padding: 36px;
+  border: 1px dashed #c8cde0;
+  border-radius: 16px;
+  color: #7c8499;
+  text-align: center;
+  font-size: 16px;
+}
+
+/* PrimeNG paginator light styling */
+
+:host ::ng-deep .p-paginator {
+  padding: 14px 16px !important;
+  background-color: #ffffff !important;
+  color: #1f2a44 !important;
+  border: 1px solid #e0e3ee !important;
+  border-radius: 16px !important;
+  box-shadow: none !important;
+
+  display: flex !important;
+  justify-content: center !important;
+  gap: 6px !important;
+}
+
+:host ::ng-deep .p-paginator-page,
+:host ::ng-deep .p-paginator-first,
+:host ::ng-deep .p-paginator-prev,
+:host ::ng-deep .p-paginator-next,
+:host ::ng-deep .p-paginator-last {
+  min-width: 36px !important;
+  height: 36px !important;
+  border-radius: 50% !important;
+  background-color: #ffffff !important;
+  color: #1f2a44 !important;
+  border: 1px solid transparent !important;
+}
+
+:host ::ng-deep .p-paginator-page:hover,
+:host ::ng-deep .p-paginator-first:hover,
+:host ::ng-deep .p-paginator-prev:hover,
+:host ::ng-deep .p-paginator-next:hover,
+:host ::ng-deep .p-paginator-last:hover {
+  background-color: #f4f6ff !important;
+  border-color: #c8cde0 !important;
+}
+
+:host ::ng-deep .p-paginator-page.p-paginator-page-selected,
+:host ::ng-deep .p-paginator-page.p-highlight {
+  background-color: #1f2a44 !important;
+  color: #ffffff !important;
+}
+
+:host ::ng-deep .p-select,
+:host ::ng-deep .p-dropdown {
+  min-width: 82px !important;
+  height: 36px !important;
+  background-color: #ffffff !important;
+  color: #1f2a44 !important;
+  border: 1px solid #d6d6d6 !important;
+  border-radius: 12px !important;
+}
+
+:host ::ng-deep .p-select-label,
+:host ::ng-deep .p-dropdown-label {
+  color: #1f2a44 !important;
+}
+
+@media (max-width: 768px) {
+  .doctor-results-page {
+    padding: 32px 18px;
+  }
+
+  .page-header h1 {
+    font-size: 28px;
+  }
+
+  .page-header p {
+    font-size: 16px;
+  }
+
+  .results-card {
+    padding: 22px;
+  }
+
+  .doctor-grid {
+    grid-template-columns: 1fr;
+  }
+}

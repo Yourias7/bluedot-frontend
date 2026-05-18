@@ -1,32 +1,49 @@
-<!--the filter tags-->
+<section class="doctor-results-page">
+  <div class="page-header">
+    <h1>Συνεργαζόμενοι ιατροί</h1>
+    <p>Βρείτε τον κατάλληλο γιατρό και δείτε αναλυτικά το προφίλ του.</p>
+  </div>
 
-<div class="d-flex flex-row mb-3 justify-content-center align-items-center gap-2">
-    <p>Ταξινόμηση κατά:</p>
-    <p-tag value="Σχετικότητα" />
-    <p-tag severity="secondary" value="Κριτικές" />
-    <p-tag severity="secondary" value="Όνομα (Α -Ω)" />
-</div>
+  <div class="results-card">
+    <div class="sort-row">
+      <span>Ταξινόμηση κατά:</span>
 
-<!--The paginator-->
+      <button type="button" class="sort-chip active-chip">
+        Σχετικότητα
+      </button>
 
-<div class="flex justify-center">
-    <p-paginator (onPageChange)="onPage($event)" [first]="first" [rows]="rows" [totalRecords]="doctors?.length ?? 0"
-        [rowsPerPageOptions]="[10, 20, 30]" />
-</div>
+      <button type="button" class="sort-chip">
+        Κριτικές
+      </button>
 
-<section class="d-flex flex-row flex-wrap mb-3">
-    @if(pagedDoctors && pagedDoctors.length > 0)
-    {
-    @for (doc of pagedDoctors; track $index) {
-    <app-doctor-result-card [doctor]=doc (cardClicked)="onCardClicked(doc.id)"></app-doctor-result-card>
+      <button type="button" class="sort-chip">
+        Όνομα Α-Ω
+      </button>
+    </div>
+
+    @if (pagedDoctors && pagedDoctors.length > 0) {
+      <section class="doctor-grid">
+        @for (doc of pagedDoctors; track doc.id) {
+          <app-doctor-result-card
+            [doctor]="doc"
+            (cardClicked)="onCardClicked(doc.id)"
+          ></app-doctor-result-card>
+        }
+      </section>
+
+      <div class="pagination-wrapper">
+        <p-paginator
+          (onPageChange)="onPage($event)"
+          [first]="first"
+          [rows]="rows"
+          [totalRecords]="doctors?.length ?? 0"
+          [rowsPerPageOptions]="[5, 10, 20]"
+        ></p-paginator>
+      </div>
+    } @else {
+      <div class="empty-state">
+        Δεν βρέθηκαν διαθέσιμοι γιατροί.
+      </div>
     }
-    }
-    @else {
-    <p>no doctors found</p>
-    }
+  </div>
 </section>
-
-<div class="flex justify-center">
-    <p-paginator (onPageChange)="onPage($event)" [first]="first" [rows]="rows" [totalRecords]="doctors?.length ?? 0"
-        [rowsPerPageOptions]="[10, 20, 30]" />
-</div>

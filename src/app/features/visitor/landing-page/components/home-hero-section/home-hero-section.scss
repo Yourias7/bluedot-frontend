@@ -1,3 +1,118 @@
-section{
-    background-color: var(--bs-secondary-bg);
+section {
+  min-height: 420px;
+  padding: 56px 24px 64px;
+  background-color: #eef1ff;
+
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 36px;
+}
+
+h1 {
+  margin: 0;
+  color: #1f2a44;
+  font-size: 36px;
+  font-weight: 800;
+  text-align: center;
+}
+
+search {
+  width: min(720px, 100%);
+
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.container-fluid {
+  width: 100%;
+  padding: 0;
+
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 10px;
+}
+
+h2 {
+  margin: 0;
+  color: #1f2a44;
+  font-size: 24px;
+  font-weight: 700;
+  text-align: center;
+}
+
+p-iconfield,
+:host ::ng-deep p-iconfield {
+  width: min(360px, 100%);
+  position: relative;
+  display: block;
+}
+
+p-iconfield.card,
+:host ::ng-deep p-iconfield.card {
+  padding: 0;
+  margin: 0;
+  background-color: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+
+  display: block;
+}
+
+.pi-search {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  z-index: 2;
+  transform: translateY(-50%);
+  color: #7c8499;
+  font-size: 16px;
+}
+
+:host ::ng-deep input[pInputText],
+:host ::ng-deep .p-inputtext {
+  width: 100% !important;
+  height: 48px !important;
+  padding: 0 16px 0 42px !important;
+
+  background-color: #ffffff !important;
+  color: #1f2a44 !important;
+  border: 1px solid #c8cde0 !important;
+  border-radius: 14px !important;
+  box-shadow: 0 6px 14px rgba(31, 42, 68, 0.08) !important;
+
+  font-size: 15px !important;
+  font-weight: 500 !important;
+}
+
+:host ::ng-deep input[pInputText]::placeholder,
+:host ::ng-deep .p-inputtext::placeholder {
+  color: #7c8499 !important;
+  opacity: 1 !important;
+}
+
+:host ::ng-deep input[pInputText]:focus,
+:host ::ng-deep .p-inputtext:focus {
+  outline: none !important;
+  border-color: #7f8cff !important;
+  box-shadow: 0 0 0 3px rgba(127, 140, 255, 0.15) !important;
+}
+
+@media (max-width: 768px) {
+  section {
+    min-height: auto;
+    padding: 40px 20px 48px;
+  }
+
+  h1 {
+    font-size: 28px;
+  }
+
+  h2 {
+    font-size: 21px;
+  }
 }

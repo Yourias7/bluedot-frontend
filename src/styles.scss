@@ -23,3 +23,27 @@ body {
 * {
   box-sizing: border-box;
 }
+
+.p-inputtext,
+input[pInputText],
+.p-dropdown,
+.p-listbox,
+.p-listbox-list,
+.p-listbox-option,
+.p-datepicker,
+.p-datepicker-panel {
+  background-color: #ffffff !important;
+  color: #1f2a44 !important;
+}
+
+.p-inputtext::placeholder,
+input[pInputText]::placeholder {
+  color: #7c8499 !important;
+  opacity: 1 !important;
+}
+
+.p-inputtext:focus,
+input[pInputText]:focus {
+  border-color: #7f8cff !important;
+  box-shadow: 0 0 0 3px rgba(127, 140, 255, 0.15) !important;
+}
