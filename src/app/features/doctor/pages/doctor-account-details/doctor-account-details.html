@@ -22,28 +22,20 @@
 
         <div class="field-content">
           @if (!editing['firstName']) {
-            <span>{{ doctorInfo.firstName }}</span>
+          <span>{{ doctorInfo.firstName }}</span>
           } @else {
-            <input
-              class="form-control"
-              formControlName="firstName"
-              [class.is-invalid]="getControl('firstName').invalid && getControl('firstName').touched"
-            >
+          <input class="form-control" formControlName="firstName"
+            [class.is-invalid]="getControl('firstName').invalid && getControl('firstName').touched">
 
-            @if (getControl('firstName').invalid && getControl('firstName').touched) {
-              <div class="invalid-feedback d-block">
-                Το όνομα είναι υποχρεωτικό.
-              </div>
-            }
+          @if (getControl('firstName').invalid && getControl('firstName').touched) {
+          <div class="invalid-feedback d-block">
+            Το όνομα είναι υποχρεωτικό.
+          </div>
+          }
           }
         </div>
 
-        <button
-          type="button"
-          class="edit-button"
-          (click)="editField('firstName')"
-          [hidden]="editing['firstName']"
-        >
+        <button type="button" class="edit-button" (click)="editField('firstName')" [hidden]="editing['firstName']">
           Επεξεργασία
         </button>
       </div>
@@ -53,28 +45,20 @@
 
         <div class="field-content">
           @if (!editing['lastName']) {
-            <span>{{ doctorInfo.lastName }}</span>
+          <span>{{ doctorInfo.lastName }}</span>
           } @else {
-            <input
-              class="form-control"
-              formControlName="lastName"
-              [class.is-invalid]="getControl('lastName').invalid && getControl('lastName').touched"
-            >
+          <input class="form-control" formControlName="lastName"
+            [class.is-invalid]="getControl('lastName').invalid && getControl('lastName').touched">
 
-            @if (getControl('lastName').invalid && getControl('lastName').touched) {
-              <div class="invalid-feedback d-block">
-                Το επώνυμο είναι υποχρεωτικό.
-              </div>
-            }
+          @if (getControl('lastName').invalid && getControl('lastName').touched) {
+          <div class="invalid-feedback d-block">
+            Το επώνυμο είναι υποχρεωτικό.
+          </div>
+          }
           }
         </div>
 
-        <button
-          type="button"
-          class="edit-button"
-          (click)="editField('lastName')"
-          [hidden]="editing['lastName']"
-        >
+        <button type="button" class="edit-button" (click)="editField('lastName')" [hidden]="editing['lastName']">
           Επεξεργασία
         </button>
       </div>
@@ -84,28 +68,20 @@
 
         <div class="field-content">
           @if (!editing['email']) {
-            <span>{{ doctorInfo.email }}</span>
+          <span>{{ doctorInfo.email }}</span>
           } @else {
-            <input
-              class="form-control"
-              formControlName="email"
-              [class.is-invalid]="getControl('email').invalid && getControl('email').touched"
-            >
+          <input class="form-control" formControlName="email"
+            [class.is-invalid]="getControl('email').invalid && getControl('email').touched">
 
-            @if (getControl('email').invalid && getControl('email').touched) {
-              <div class="invalid-feedback d-block">
-                Συμπληρώστε ένα έγκυρο email.
-              </div>
-            }
+          @if (getControl('email').invalid && getControl('email').touched) {
+          <div class="invalid-feedback d-block">
+            Συμπληρώστε ένα έγκυρο email.
+          </div>
+          }
           }
         </div>
 
-        <button
-          type="button"
-          class="edit-button"
-          (click)="editField('email')"
-          [hidden]="editing['email']"
-        >
+        <button type="button" class="edit-button" (click)="editField('email')" [hidden]="editing['email']">
           Επεξεργασία
         </button>
       </div>
@@ -115,29 +91,20 @@
 
         <div class="field-content">
           @if (!editing['password']) {
-            <span>••••••••</span>
+          <span>••••••••</span>
           } @else {
-            <input
-              type="password"
-              class="form-control"
-              formControlName="password"
-              [class.is-invalid]="getControl('password').invalid && getControl('password').touched"
-            >
+          <input type="password" class="form-control" formControlName="password"
+            [class.is-invalid]="getControl('password').invalid && getControl('password').touched">
 
-            @if (getControl('password').invalid && getControl('password').touched) {
-              <div class="invalid-feedback d-block">
-                Ο κωδικός πρέπει να έχει τουλάχιστον 6 χαρακτήρες.
-              </div>
-            }
+          @if (getControl('password').invalid && getControl('password').touched) {
+          <div class="invalid-feedback d-block">
+            Ο κωδικός πρέπει να έχει τουλάχιστον 6 χαρακτήρες.
+          </div>
+          }
           }
         </div>
 
-        <button
-          type="button"
-          class="edit-button"
-          (click)="editField('password')"
-          [hidden]="editing['password']"
-        >
+        <button type="button" class="edit-button" (click)="editField('password')" [hidden]="editing['password']">
           Επεξεργασία
         </button>
       </div>
@@ -147,28 +114,20 @@
 
         <div class="field-content">
           @if (!editing['phoneNumber']) {
-            <span>{{ doctorInfo.phoneNumber }}</span>
+          <span>{{ doctorInfo.phoneNumber }}</span>
           } @else {
-            <input
-              class="form-control"
-              formControlName="phoneNumber"
-              [class.is-invalid]="getControl('phoneNumber').invalid && getControl('phoneNumber').touched"
-            >
+          <input class="form-control" formControlName="phoneNumber"
+            [class.is-invalid]="getControl('phoneNumber').invalid && getControl('phoneNumber').touched">
 
-            @if (getControl('phoneNumber').invalid && getControl('phoneNumber').touched) {
-              <div class="invalid-feedback d-block">
-                Το τηλέφωνο πρέπει να έχει 10 ψηφία.
-              </div>
-            }
+          @if (getControl('phoneNumber').invalid && getControl('phoneNumber').touched) {
+          <div class="invalid-feedback d-block">
+            Το τηλέφωνο πρέπει να έχει 10 ψηφία.
+          </div>
+          }
           }
         </div>
 
-        <button
-          type="button"
-          class="edit-button"
-          (click)="editField('phoneNumber')"
-          [hidden]="editing['phoneNumber']"
-        >
+        <button type="button" class="edit-button" (click)="editField('phoneNumber')" [hidden]="editing['phoneNumber']">
           Επεξεργασία
         </button>
       </div>
@@ -177,36 +136,8 @@
         <label>Ειδικότητα</label>
 
         <div class="field-content">
-          @if (!editing['specialty']) {
-            <span>{{ doctorInfo.specialty?.name }}</span>
-          } @else {
-            <select
-              class="form-control"
-              formControlName="specialty"
-              [class.is-invalid]="getControl('specialty').invalid && getControl('specialty').touched"
-            >
-              <option [ngValue]="null" disabled>Επιλέξτε ειδικότητα</option>
-              @for (option of specialties; track option.id) {
-                <option [ngValue]="option.id">{{ option.name }}</option>
-              }
-            </select>
-
-            @if (getControl('specialty').invalid && getControl('specialty').touched) {
-              <div class="invalid-feedback d-block">
-                Η ειδικότητα είναι υποχρεωτική.
-              </div>
-            }
-          }
+          <span>{{ doctorInfo.specialty?.name }}</span>
         </div>
-
-        <button
-          type="button"
-          class="edit-button"
-          (click)="editField('specialty')"
-          [hidden]="editing['specialty']"
-        >
-          Επεξεργασία
-        </button>
       </div>
 
       <div class="form-row">
@@ -214,28 +145,39 @@
 
         <div class="field-content">
           @if (!editing['clinicAddress']) {
-            <span>{{ doctorInfo.clinicAddress }}</span>
+          <span>{{ doctorInfo.clinicAddress }}</span>
           } @else {
-            <input
-              class="form-control"
-              formControlName="clinicAddress"
-              [class.is-invalid]="getControl('clinicAddress').invalid && getControl('clinicAddress').touched"
-            >
-
-            @if (getControl('clinicAddress').invalid && getControl('clinicAddress').touched) {
-              <div class="invalid-feedback d-block">
-                Η διεύθυνση είναι υποχρεωτική.
-              </div>
+          <input class="form-control" formControlName="clinicAddress"
+            [class.is-invalid]="getControl('clinicAddress').invalid && getControl('clinicAddress').touched"
+            autocomplete="off" (blur)="hideSuggestions()"
+            (focus)="addressSuggestions.length > 0 ? showSuggestions = true : null">
+          <!-- Address Suggestions Dropdown -->
+          @if(showSuggestions) {
+          <div class="list-group position-absolute w-100 shadow-sm"
+            style="z-index: 1000; max-height: 200px; overflow-y: auto;">
+            @for (addr of addressSuggestions; track $index) {
+            <!-- Using mousedown instead of click to fire before input blur -->
+            <button type="button" class="list-group-item list-group-item-action text-start"
+              (mousedown)="selectAddress(addr)">
+              {{ addr.displayName }}
+            </button>
             }
+          </div>
+          }
+
+          @if(isSearchingAddress) {
+          <div class="form-text text-muted">Αναζήτηση διεύθυνσης...</div>
+          }
+          @if (getControl('clinicAddress').invalid && getControl('clinicAddress').touched) {
+          <div class="invalid-feedback d-block">
+            Η διεύθυνση είναι υποχρεωτική.
+          </div>
+          }
           }
         </div>
 
-        <button
-          type="button"
-          class="edit-button"
-          (click)="editField('clinicAddress')"
-          [hidden]="editing['clinicAddress']"
-        >
+        <button type="button" class="edit-button" (click)="editField('clinicAddress')"
+          [hidden]="editing['clinicAddress']">
           Επεξεργασία
         </button>
       </div>
@@ -245,29 +187,21 @@
 
         <div class="field-content">
           @if (!editing['yearsOfExperience']) {
-            <span>{{ doctorInfo.yearsOfExperience }}</span>
+          <span>{{ doctorInfo.yearsOfExperience }}</span>
           } @else {
-            <input
-              type="number"
-              class="form-control"
-              formControlName="yearsOfExperience"
-              [class.is-invalid]="getControl('yearsOfExperience').invalid && getControl('yearsOfExperience').touched"
-            >
+          <input type="number" class="form-control" formControlName="yearsOfExperience"
+            [class.is-invalid]="getControl('yearsOfExperience').invalid && getControl('yearsOfExperience').touched">
 
-            @if (getControl('yearsOfExperience').invalid && getControl('yearsOfExperience').touched) {
-              <div class="invalid-feedback d-block">
-                Συμπληρώστε έγκυρα έτη εμπειρίας.
-              </div>
-            }
+          @if (getControl('yearsOfExperience').invalid && getControl('yearsOfExperience').touched) {
+          <div class="invalid-feedback d-block">
+            Συμπληρώστε έγκυρα έτη εμπειρίας.
+          </div>
+          }
           }
         </div>
 
-        <button
-          type="button"
-          class="edit-button"
-          (click)="editField('yearsOfExperience')"
-          [hidden]="editing['yearsOfExperience']"
-        >
+        <button type="button" class="edit-button" (click)="editField('yearsOfExperience')"
+          [hidden]="editing['yearsOfExperience']">
           Επεξεργασία
         </button>
       </div>
@@ -277,52 +211,34 @@
 
         <div class="field-content">
           @if (!editing['bio']) {
-            <span>{{ doctorInfo.bio }}</span>
+          <span>{{ doctorInfo.bio }}</span>
           } @else {
-            <textarea
-              class="form-control"
-              rows="4"
-              formControlName="bio"
-              [class.is-invalid]="getControl('bio').invalid && getControl('bio').touched"
-            ></textarea>
+          <textarea class="form-control" rows="4" formControlName="bio"
+            [class.is-invalid]="getControl('bio').invalid && getControl('bio').touched"></textarea>
 
-            @if (getControl('bio').invalid && getControl('bio').touched) {
-              <div class="invalid-feedback d-block">
-                Το βιογραφικό είναι υποχρεωτικό.
-              </div>
-            }
+          @if (getControl('bio').invalid && getControl('bio').touched) {
+          <div class="invalid-feedback d-block">
+            Το βιογραφικό είναι υποχρεωτικό.
+          </div>
+          }
           }
         </div>
 
-        <button
-          type="button"
-          class="edit-button"
-          (click)="editField('bio')"
-          [hidden]="editing['bio']"
-        >
+        <button type="button" class="edit-button" (click)="editField('bio')" [hidden]="editing['bio']">
           Επεξεργασία
         </button>
       </div>
 
       @if (isAnyEditing()) {
-        <div class="form-actions">
-          <button
-            type="button"
-            class="save-button"
-            (click)="saveChanges()"
-            [disabled]="form.invalid"
-          >
-            Αποθήκευση αλλαγών
-          </button>
+      <div class="form-actions">
+        <button type="button" class="save-button" (click)="saveChanges()" [disabled]="form.invalid">
+          Αποθήκευση αλλαγών
+        </button>
 
-          <button
-            type="button"
-            class="cancel-button"
-            (click)="cancelChanges()"
-          >
-            Ακύρωση
-          </button>
-        </div>
+        <button type="button" class="cancel-button" (click)="cancelChanges()">
+          Ακύρωση
+        </button>
+      </div>
       }
     </form>
   </div>

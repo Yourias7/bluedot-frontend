@@ -101,7 +101,7 @@ export class AccountDetails implements OnInit {
       firstName: this.patientInfo.firstName ?? '',
       lastName: this.patientInfo.lastName ?? '',
       email: this.patientInfo.email ?? '',
-      password: this.patientInfo.password ?? '',
+      password: '',
       role: this.patientInfo.role ?? '',
       dateOfBirth: this.formatDate(this.patientInfo.dateOfBirth),
       phoneNumber: this.patientInfo.phoneNumber ?? '',
@@ -120,7 +120,7 @@ export class AccountDetails implements OnInit {
     return Object.values(this.editing).some(Boolean);
   }
 
-  saveChanges() {
+  /* saveChanges() {
     this.form.markAllAsTouched();
     if (this.form.invalid) return;
 
@@ -151,6 +151,63 @@ export class AccountDetails implements OnInit {
       },
     });
   }
+ */
+
+  saveChanges() {
+
+    let hasInvalidFields = false;
+
+    //safeguard for non edited fields
+    for (const key of Object.keys(this.editing)) {
+
+      if (!this.editing[key]) continue;
+
+      const control = this.form.get(key);
+
+      control?.markAsTouched();
+      control?.updateValueAndValidity();
+
+      if (control?.invalid) {
+        hasInvalidFields = true;
+      }
+    }
+
+    if (hasInvalidFields) return;
+
+    const patch = this.buildPatchPayload();
+
+    if (Object.keys(patch).length === 0) {
+      this.editing = {};
+      return;
+    }
+
+    this.isSaving = true;
+    this.errorMessage = '';
+
+    this.authenticationServices.updateMe(patch).subscribe({
+      next: (account) => {
+
+        this.applyEditedFieldsToModel();
+
+        if (account) {
+          this.applyAccountToModel(account);
+        }
+
+        this.patchFormFromModel();
+        this.editing = {};
+        this.isSaving = false;
+      },
+
+      error: (error) => {
+        console.error('Failed to update account:', error);
+        this.errorMessage =
+          'Αποτυχία αποθήκευσης αλλαγών. Δοκιμάστε ξανά.';
+        this.isSaving = false;
+      },
+    });
+  }
+
+
 
   private buildPatchPayload(): UpdateAccountMeDto {
     const patch: UpdateAccountMeDto = {};
