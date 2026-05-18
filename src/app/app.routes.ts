@@ -58,15 +58,15 @@ export const routes: Routes = [
     component: AppointmentConfirm
   },
   {
-    path: 'patient-account-details/:id',
+    path: 'patient-account-details',
     component: AccountDetails
   },
   {
-    path: 'patient-appointments/:id',
+    path: 'patient-appointments',
     component: PatientAppointments
   },
   {
-    path: 'patient-appointments/:id/:appointmentId',
+    path: 'patient-appointments/:id',
     component: AppointmentDetails
   },
   {

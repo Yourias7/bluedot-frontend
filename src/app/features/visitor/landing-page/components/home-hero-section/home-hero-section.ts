@@ -5,6 +5,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabel } from 'primeng/floatlabel';
 import { Specialty } from '../../../../../shared/domain/specialty';
 import { DoctorSearchService } from '../../../../../shared/services/doctor-search-service';
+import { LocationSuggestion } from '../../../../../shared/services/nominatim.service';
 
 
 @Component({
@@ -24,6 +25,7 @@ export class HomeHeroSection {
   @Output() specialtyQueryChange = new EventEmitter<string>();
   @Output() locationQueryChange = new EventEmitter<string>();
   @Output() locationSearch = new EventEmitter<string>();
+  @Output() locationSelected = new EventEmitter<LocationSuggestion>();
   @Output() searchClicked = new EventEmitter<void>();
 
   constructor(private doctorSearchService:DoctorSearchService){
