@@ -6,6 +6,11 @@
             <p-iconfield class="card flex flex-wrap gap-4">
                 <span class="pi pi-search" ></span>
                 <input type="text" pInputText placeholder="Ειδικότητα πχ. Παθολόγος" />
+                <datalist id="specialty-options">
+                    @for (specialty of specialties; track specialty.id) {
+                        <option [value]="specialty.name"></option>
+                    }
+                </datalist>
             </p-iconfield>
         </div>
         <div class="container-fluid">
