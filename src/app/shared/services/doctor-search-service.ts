@@ -149,33 +149,33 @@ export class DoctorSearchService {
     return this.httpClient.get<DoctorSearchResultDto[]>(`${this.baseUrl}/doctor`);
   }
 
-  searchDoctors(
-    specialtyId?: number,
-    lat?: number,
-    lng?: number,
-    radiusKm?: number
-  ): Observable<any> {
+  // searchDoctors(
+  //   specialtyId?: number,
+  //   lat?: number,
+  //   lng?: number,
+  //   radiusKm?: number
+  // ): Observable<any> {
 
-    let params = new HttpParams();
+  //   let params = new HttpParams();
 
-    if (specialtyId !== undefined) {
-      params = params.set('specialtyId', specialtyId);
-    }
+  //   if (specialtyId !== undefined) {
+  //     params = params.set('specialtyId', specialtyId);
+  //   }
 
-    if (lat !== undefined) {
-      params = params.set('lat', lat);
-    }
+  //   if (lat !== undefined) {
+  //     params = params.set('lat', lat);
+  //   }
 
-    if (lng !== undefined) {
-      params = params.set('lng', lng);
-    }
+  //   if (lng !== undefined) {
+  //     params = params.set('lng', lng);
+  //   }
 
-    if (radiusKm !== undefined) {
-      params = params.set('radiusKm', radiusKm);
-    }
+  //   if (radiusKm !== undefined) {
+  //     params = params.set('radiusKm', radiusKm);
+  //   }
 
-    return this.httpClient.get(`${this.baseUrl}/doctors/SearchDoctors`, { params });
-  }
+  //   return this.httpClient.get(`${this.baseUrl}/doctors/SearchDoctors`, { params });
+  // }
 
 
   searchDoctors(
