@@ -1,47 +1,73 @@
-@if(userDetailedInfo){
-<section class="container mt-4 d-flex flex-row gap-4">
-    <div>
-        <p-avatar icon="pi pi-user" class="mr-2" size="xlarge" />
-    </div>
-    <div>
-        <h1>{{userDetailedInfo.firstName}} {{userDetailedInfo.lastName}}</h1>
-        <p>{{userDetailedInfo.specialty?.name}}</p>
-        <div class="rating-container d-flex flex-row gap-2 align-items-center">
-            @for (n of [1,2,3,4,5]; track $index) {
-            @if(n>getfilledStars()){
-            <i class="pi pi-star"></i>
+@if (userDetailedInfo) {
+<section class="doctor-details-page">
+  <div class="doctor-details-card">
+    <div class="doctor-profile-header">
+      <p-avatar icon="pi pi-user" size="xlarge"></p-avatar>
+
+      <div>
+        <h1>{{ userDetailedInfo.firstName }} {{ userDetailedInfo.lastName }}</h1>
+        <p class="specialty-text">{{ userDetailedInfo.specialty?.name }}</p>
+
+        <div class="rating-container">
+          @for (n of [1, 2, 3, 4, 5]; track $index) {
+            @if (n > getfilledStars()) {
+              <i class="pi pi-star"></i>
+            } @else {
+              <i class="pi pi-star-fill"></i>
             }
-            @else{
-            <i class="pi pi-star-fill"></i>
-            }
-            }
-            <p>{{ review }}/5</p>
-            <p>(39)</p>
+          }
+
+          <span>{{ review }}/5</span>
+          <span>(39)</span>
         </div>
-        <br>
-         <p>Διεύθυνση: {{userDetailedInfo.clinicAddress}}</p>
-         <p>Τηλέφωνο: {{userDetailedInfo.phoneNumber}}</p>
-         <p>Email: {{userDetailedInfo.email}}</p>
+      </div>
     </div>
-</section>
-<section class="container mt-4">
-    <p-tabs value="0" class="mb-3">
+
+    <div class="doctor-info-grid">
+      <p>
+        <strong>Διεύθυνση:</strong>
+        {{ userDetailedInfo.clinicAddress }}
+      </p>
+
+      <p>
+        <strong>Τηλέφωνο:</strong>
+        {{ userDetailedInfo.phoneNumber }}
+      </p>
+
+      <p>
+        <strong>Email:</strong>
+        {{ userDetailedInfo.email }}
+      </p>
+    </div>
+
+    <div class="details-tabs-card">
+      <p-tabs value="0" class="details-tabs">
         <p-tablist>
-            <p-tab value="0">Γενικά</p-tab>
-            <p-tab value="1">Αξιολογήσεις</p-tab>
+          <p-tab value="0">Γενικά</p-tab>
+          <p-tab value="1">Αξιολογήσεις</p-tab>
         </p-tablist>
+
         <p-tabpanel value="0">
-            <p>{{userDetailedInfo.bio}}</p>
+          <p>{{ userDetailedInfo.bio }}</p>
         </p-tabpanel>
+
         <p-tabpanel value="1">
-            <p>Εδώ θα εμφανίζονται οι κριτικές του γιατρού.</p>
+          <p>Εδώ θα εμφανίζονται οι κριτικές του γιατρού.</p>
         </p-tabpanel>
-    </p-tabs>
-</section>
-<section class="container mt-4">
-  <app-doctor-availability-patient-side></app-doctor-availability-patient-side>
-</section>
-<section class="container mt-4">
-    <button class="btn btn-primary" (click)="closeAppointment(userDetailedInfo.id)">Κλείστε ραντεβού</button>
+      </p-tabs>
+    </div>
+
+    <app-doctor-availability-patient-side></app-doctor-availability-patient-side>
+
+    <div class="details-actions">
+      <button
+        type="button"
+        class="book-button"
+        (click)="closeAppointment(userDetailedInfo.id)"
+      >
+        Κλείστε ραντεβού
+      </button>
+    </div>
+  </div>
 </section>
 }

@@ -1,0 +1,182 @@
+.doctor-details-page {
+  min-height: 100vh;
+  padding: 48px 24px;
+  background-color: #eef1ff;
+}
+
+.doctor-details-card {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 34px 38px;
+  background-color: #ffffff;
+  border: 1px solid #d6d6d6;
+  border-radius: 18px;
+  box-shadow: 0 8px 18px rgba(31, 42, 68, 0.12);
+}
+
+.doctor-profile-header {
+  padding-bottom: 26px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid #ececec;
+
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.doctor-profile-header h1 {
+  margin: 0 0 6px;
+  color: #1f2a44;
+  font-size: 36px;
+  font-weight: 800;
+}
+
+.specialty-text {
+  margin: 0 0 12px;
+  color: #7c8499;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.rating-container {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.rating-container i {
+  color: #ffc107;
+  font-size: 16px;
+}
+
+.rating-container span {
+  margin-left: 6px;
+  color: #6e7894;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.doctor-info-grid {
+  margin-bottom: 26px;
+
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.doctor-info-grid p {
+  margin: 0;
+  color: #4c556b;
+  font-size: 16px;
+}
+
+.doctor-info-grid strong {
+  color: #1f2a44;
+}
+
+.details-tabs-card {
+  margin-bottom: 34px;
+}
+
+/* PrimeNG tabs styled like the doctor-side tab UI */
+
+:host ::ng-deep .details-tabs .p-tablist {
+  margin-bottom: 18px;
+  border-bottom: 2px solid #cfcfcf;
+  background-color: transparent;
+
+  display: flex;
+  gap: 0;
+}
+
+:host ::ng-deep .details-tabs .p-tab {
+  position: relative;
+  padding: 0 28px 10px;
+  border: none;
+  background-color: transparent;
+  color: #7b7b7b;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+:host ::ng-deep .details-tabs .p-tab:hover {
+  color: #3b3b3b;
+  background-color: transparent;
+}
+
+:host ::ng-deep .details-tabs .p-tab.p-tab-active {
+  color: #2f2f2f;
+  background-color: transparent;
+}
+
+:host ::ng-deep .details-tabs .p-tab.p-tab-active::after {
+  content: '';
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  bottom: -2px;
+  height: 2px;
+  background-color: #2f2f2f;
+  border-radius: 999px;
+}
+
+:host ::ng-deep .details-tabs .p-tabpanels {
+  padding: 0;
+  background-color: transparent;
+}
+
+:host ::ng-deep .details-tabs .p-tabpanel p {
+  margin: 0;
+  color: #4c556b;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.details-actions {
+  margin-top: 30px;
+
+  display: flex;
+  justify-content: flex-end;
+}
+
+.book-button {
+  padding: 13px 22px;
+  border: 1px solid #1f2a44;
+  border-radius: 14px;
+  background-color: #1f2a44;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.book-button:hover {
+  background-color: #2b3858;
+}
+
+@media (max-width: 768px) {
+  .doctor-details-page {
+    padding: 32px 18px;
+  }
+
+  .doctor-details-card {
+    padding: 26px 20px;
+  }
+
+  .doctor-profile-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .doctor-profile-header h1 {
+    font-size: 28px;
+  }
+
+  .details-actions {
+    justify-content: stretch;
+  }
+
+  .book-button {
+    width: 100%;
+  }
+}

@@ -1,0 +1,71 @@
+.appointment-row {
+  width: 100%;
+  min-height: 92px;
+  padding: 20px 26px;
+  border: 1px solid #ececec;
+  border-radius: 16px;
+  background-color: #ffffff;
+  color: #1f2a44;
+  text-align: left;
+  cursor: pointer;
+  box-shadow: 0 5px 14px rgba(31, 42, 68, 0.08);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.appointment-row:hover {
+  transform: translateY(-1px);
+  border-color: #d8dce8;
+  box-shadow: 0 8px 18px rgba(31, 42, 68, 0.12);
+}
+
+.appointment-row h2 {
+  margin: 0 0 8px;
+  color: #1f2a44;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.appointment-row p {
+  margin: 0;
+  color: #6e7894;
+  font-size: 15px;
+}
+
+.status-pill {
+  min-width: 126px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  color: #1f2a44;
+  font-size: 14px;
+  font-weight: 800;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.pending-status {
+  background-color: #ffe79a;
+}
+
+.confirmed-status {
+  background-color: #d8f5dd;
+}
+
+.rejected-status {
+  background-color: #ffb3b3;
+}
+
+@media (max-width: 768px) {
+  .appointment-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .status-pill {
+    min-width: 0;
+  }
+}
