@@ -4,7 +4,15 @@ import { UserRole } from '../domain/user';
 import { Specialty } from '../domain/specialty';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../../environments/environment.development';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
+
+type PagedResultDto<T> = {
+  totalCount: number;
+  page: number;
+  pageSize: number;
+  items: T[];
+};
+
 
 type DoctorSearchResultDto =
   {
@@ -141,32 +149,52 @@ export class DoctorSearchService {
     return this.httpClient.get<DoctorSearchResultDto[]>(`${this.baseUrl}/doctor`);
   }
 
+  // searchDoctors(
+  //   specialtyId?: number,
+  //   lat?: number,
+  //   lng?: number,
+  //   radiusKm?: number
+  // ): Observable<any> {
+
+  //   let params = new HttpParams();
+
+  //   if (specialtyId !== undefined) {
+  //     params = params.set('specialtyId', specialtyId);
+  //   }
+
+  //   if (lat !== undefined) {
+  //     params = params.set('lat', lat);
+  //   }
+
+  //   if (lng !== undefined) {
+  //     params = params.set('lng', lng);
+  //   }
+
+  //   if (radiusKm !== undefined) {
+  //     params = params.set('radiusKm', radiusKm);
+  //   }
+
+  //   return this.httpClient.get(`${this.baseUrl}/doctors/SearchDoctors`, { params });
+  // }
+
+
   searchDoctors(
-    specialtyId?: number,
-    lat?: number,
-    lng?: number,
-    radiusKm?: number
-  ): Observable<any> {
+    specialtyId?: number | null,
+    page: number = 1,
+    pageSize: number = 200
+  ): Observable<Doctor[]> {
+    let params = new HttpParams()
+      .set('page', String(page))
+      .set('pageSize', String(pageSize));
 
-    let params = new HttpParams();
-
-    if (specialtyId !== undefined) {
-      params = params.set('specialtyId', specialtyId);
+    if (specialtyId !== undefined && specialtyId !== null) {
+      params = params.set('specialtyId', String(specialtyId));
     }
 
-    if (lat !== undefined) {
-      params = params.set('lat', lat);
-    }
-
-    if (lng !== undefined) {
-      params = params.set('lng', lng);
-    }
-
-    if (radiusKm !== undefined) {
-      params = params.set('radiusKm', radiusKm);
-    }
-
-    return this.httpClient.get(`${this.baseUrl}/doctors`, { params });
+    return this.httpClient
+      .get<PagedResultDto<Doctor> | Doctor[]>(`${this.baseUrl}/doctors`, { params })
+      .pipe(
+        map(response => Array.isArray(response) ? response : response.items ?? [])
+      );
   }
-
 }

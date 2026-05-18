@@ -2,25 +2,34 @@
   <div class="map-search-overlay d-flex align-items-center p-2">
     <div class="flex-grow-1">
       <div class="input-group">
-        <p-autoComplete [(ngModel)]="selectedSpecialty" [suggestions]="filteredSpecialties"
-          (completeMethod)="filterSpecialties($event)" [minLength]="1" placeholder="Ειδικότητα"
-          inputStyleClass="form-control border-end-0"></p-autoComplete>
-        <button pButton type="button" class="btn btn-outline-primary">
-          <i class="pi pi-search"></i>
-        </button>
-      </div>
-    </div>
-    <div class="nested-search ms-3">
-      <div class="input-group">
-        <p-autoComplete [(ngModel)]="selectedLocation" [suggestions]="filteredLocations"
-          (completeMethod)="filterLocations($event)" [minLength]="1" placeholder="Τοποθεσία"
-          inputStyleClass="form-control border-end-0"></p-autoComplete>
-        <button pButton type="button" class="btn btn-primary">
+        <p-autoComplete
+          [(ngModel)]="selectedSpecialty"
+          [suggestions]="filteredSpecialties"
+          (completeMethod)="filterSpecialties($event)"
+          (onSelect)="applySpecialtyFilter()"
+          (onClear)="applySpecialtyFilter()"
+          [minLength]="1"
+          field="name"
+          dataKey="id"
+          placeholder="Ειδικότητα"
+          inputStyleClass="form-control border-end-0">
+        </p-autoComplete>
+        <button pButton type="button" class="btn btn-outline-primary" (click)="applySpecialtyFilter()">
           <i class="pi pi-search"></i>
         </button>
       </div>
     </div>
   </div>
+  @if (userLocationError) {
+    <div class="map-location-warning alert alert-warning py-2 px-3 m-0 small">
+      {{ userLocationError }}
+    </div>
+  }
+  @if (doctorLoadError) {
+    <div class="map-doctor-error alert alert-danger py-2 px-3 m-0 small">
+      {{ doctorLoadError }}
+    </div>
+  }
   <div id="map"></div>
   @if (sidebarOpen) {
   <section class="map-drawer card shadow p-3">
