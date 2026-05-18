@@ -19,6 +19,8 @@ import { PatientAppointments } from './features/patient/patient-appointments/pat
 import { Error403 } from './shared/components/error-403/error-403';
 import { Error500 } from './shared/components/error-500/error-500';
 import { AppointmentDetails } from './shared/components/appointment-details/appointment-details';
+import { Help } from './features/visitor/help/help';
+import { About } from './features/visitor/about/about';
 
 export const routes: Routes = [
   {
@@ -91,6 +93,14 @@ export const routes: Routes = [
     path: 'doctor/account-details',
     component: DoctorAccountDetails,
     canActivate: [doctorOnlyGuard]
+  },
+  {
+    path: 'help',
+    component:Help
+  },
+  {
+    path: 'about',
+    component:About
   },
   {
     path: '404',

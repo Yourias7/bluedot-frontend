@@ -1,13 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { Subscription } from 'rxjs'; // <-- Add Subscription
-
 import { DialogModule } from 'primeng/dialog';
 import { Button } from 'primeng/button';
 import { Avatar } from 'primeng/avatar';
 import { MenuModule } from 'primeng/menu';
 import { MenuItem } from 'primeng/api';
-
 import { UserRole } from '../../../../shared/domain/user-role';
 import { AuthenticationServices } from '../../../../shared/services/authentication-services';
 import { Logo } from '../common/logo/logo';
@@ -45,8 +43,8 @@ export class Header implements OnInit, OnDestroy {
     { path: '/landing-page', title: 'Αρχική' },
     { path: '/map-results', title: 'Ιατροί κοντά μου' },
     { path: '/search-results', title: 'Συνεργαζόμενοι ιατροί' },
-    { path: '/landing-page', title: 'Σχετικά' },
-    { path: '/landing-page', title: 'Βοήθεια' }
+    { path: '/about', title: 'Σχετικά' },
+    { path: '/help', title: 'Βοήθεια' }
   ];
 
   doctorNavRoutes: NavRoute[] = [
@@ -68,11 +66,11 @@ export class Header implements OnInit, OnDestroy {
     this.loggedInOptions = [
       {
         label: 'Ο λογαριασμός μου',
-        command: () => { this.router.navigate(['/patient-account-details/1']); }
+        command: () => { this.router.navigate(['/patient-account-details']); }
       },
       {
         label: 'Τα ραντεβού μου',
-        command: () => { this.router.navigate(['/patient-appointments/1']); }
+        command: () => { this.router.navigate(['/patient-appointments']); }
       },
       { separator: true },
       {
