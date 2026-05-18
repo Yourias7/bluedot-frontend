@@ -166,7 +166,7 @@ export class DoctorSearchService {
       params = params.set('radiusKm', radiusKm);
     }
 
-    return this.httpClient.get(`${this.baseUrl}/doctors/SearchDoctors`, { params });
+    return this.httpClient.get(`${this.baseUrl}/doctors`, { params });
   }
 
 }

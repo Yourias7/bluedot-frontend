@@ -9,12 +9,12 @@
                 <h3>Ειδικότητες</h3>
 
                 <ul>
-                    <li><a href="#">ΩΡΛ</a></li>
-                    <li><a href="#">Παθολόγος</a></li>
-                    <li><a href="#">Οφθαλμίατρος</a></li>
-                    <li><a href="#">Γυναικολόγος</a></li>
-                    <li><a href="#">Καρδιολόγος</a></li>
-                    <li><a href="#">Χειρούργος</a></li>
+                    <li><a (click)="searchDoctorsBySpecialty('Cardiologist')">Cardiologist</a></li>
+                    <li><a (click)="searchDoctorsBySpecialty('General Practitioner')">General Practitioner</a></li>
+                    <li><a (click)="searchDoctorsBySpecialty('Gynecologist')">Gynecologist</a></li>
+                    <li><a (click)="searchDoctorsBySpecialty('Orthopedist')">Orthopedist</a></li>
+                    <li><a (click)="searchDoctorsBySpecialty('Psychiatrist')">Psychiatrist</a></li>
+                    <li><a (click)="searchDoctorsBySpecialty('Pathologist')">Pathologist</a></li>
                 </ul>
             </article>
 
@@ -22,11 +22,11 @@
                 <h3>Περιοχές</h3>
 
                 <ul>
-                    <li><a href="#">Αθήνα</a></li>
-                    <li><a href="#">Θεσσαλονίκη</a></li>
-                    <li><a href="#">Πάτρα</a></li>
-                    <li><a href="#">Κυκλάδες</a></li>
-                    <li><a href="#">Δράμα</a></li>
+                    <li><a (click)="searchCityDoctors('Athens')">Athens</a></li>
+                    <li><a (click)="searchCityDoctors('Thessaloniki')">Thessaloniki</a></li>
+                    <li><a (click)="searchCityDoctors('Patra')">Patra</a></li>
+                    <li><a (click)="searchCityDoctors('Syros')">Syros</a></li>
+                    <li><a (click)="searchCityDoctors('Drama')">Drama</a></li>
                 </ul>
             </article>
 
@@ -34,11 +34,11 @@
                 <h3>Σχετικά</h3>
 
                 <ul>
-                    <li><a href="#">Συχνές ερωτήσεις</a></li>
-                    <li><a href="#">Επικοινωνία</a></li>
-                    <li><a href="#">Όροι χρήσης</a></li>
-                    <li><a href="#">Cookies</a></li>
-                    <li><a href="#">Πολιτική απορρήτου</a></li>
+                    <li><a [routerLink]="['/help']">Βοήθεια</a></li>
+                    <li><a [routerLink]="['/about']">Σχετικά</a></li>
+                    <li><a>Όροι χρήσης</a></li>
+                    <li><a>Cookies</a></li>
+                    <li><a>Πολιτική απορρήτου</a></li>
                 </ul>
             </article>
         </section>

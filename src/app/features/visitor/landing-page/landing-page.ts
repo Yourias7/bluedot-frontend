@@ -5,6 +5,7 @@ import { Specialty } from '../../../shared/domain/specialty';
 import { NominatimService, LocationSuggestion } from '../../../shared/services/nominatim.service';
 import { Route, Router } from '@angular/router';
 
+const radiusKm = 10;
 
 @Component({
   selector: 'app-landing-page',
@@ -13,7 +14,6 @@ import { Route, Router } from '@angular/router';
   styleUrl: './landing-page.scss',
 })
 export class LandingPage {
-
   items: Specialty[] = [];
 
   locationSuggestions: LocationSuggestion[] = [];
@@ -56,13 +56,16 @@ export class LandingPage {
       this.selectedSpecialty = this.items.find(item => item.name?.toLowerCase() === this.specialtyQuery.toLowerCase());
     }
 
-    this.router.navigate(['/doctors'], {
-      queryParams: {
-        specialtyId: this.selectedSpecialty?.id,
-        lat: this.selectedLocationSuggestion?.lat,
-        lng: this.selectedLocationSuggestion?.lon,
-        radiusKm: 10
-      }
-    });
+    if (!this.selectedLocationSuggestion && this.locationQuery) {
+      this.selectedLocationSuggestion = this.locationSuggestions.find(item => item.displayName?.toLowerCase() === this.locationQuery.toLowerCase());
+    }
+
+  
+    this.searchService.searchDoctors(this.selectedSpecialty?.id,
+      this.selectedLocationSuggestion?.lat,
+      this.selectedLocationSuggestion?.lon,
+      radiusKm).subscribe((response) => {
+          this.router.navigate(['/search-results', response]);
+      });
   }
 }
