@@ -56,7 +56,7 @@ export class LandingPage {
       this.selectedSpecialty = this.items.find(item => item.name?.toLowerCase() === this.specialtyQuery.toLowerCase());
     }
 
-    this.router.navigate(['/doctors'], {
+    this.router.navigate(['/search-results'], {
       queryParams: {
         specialtyId: this.selectedSpecialty?.id,
         lat: this.selectedLocationSuggestion?.lat,
