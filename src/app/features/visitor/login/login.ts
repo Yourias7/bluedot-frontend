@@ -59,12 +59,13 @@ export class Login {
       email,
       password
     }).subscribe({
-      next: () => {
+      next: (response) => { // <-- Add 'response' here to read the API data directly
         this.isLoading = false;
         this.loginSucceeded.emit();
         this.closeModal();
 
-        const role = this.authenticationServices.getCurrentUserRole();
+        // Use the response directly to decide where to route
+        const role = response.role?.toLowerCase();
 
         if (role === 'doctor') {
           this.router.navigate(['/doctor']);

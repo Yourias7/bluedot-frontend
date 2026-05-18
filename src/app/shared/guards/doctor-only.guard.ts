@@ -3,27 +3,17 @@ import { Router } from '@angular/router';
 import { AuthenticationServices } from '../services/authentication-services';
 
 export const doctorOnlyGuard = () => {
-  const fakeAuthService = inject(AuthenticationServices);
+  const authService = inject(AuthenticationServices);
   const router = inject(Router);
 
-  /*
-    TEMPORARY FRONTEND-ONLY LOGIC.
+  // Synchronously grab the current role from our BehaviorSubject
+  const currentUserRole = authService.getCurrentUserRole();
 
-    Later this should use JWT role claims, for example:
-    - AuthService.isLoggedIn()
-    - AuthService.getCurrentUserRole()
-    - check if role === 'doctor'
-  */
-  const isLoggedIn = fakeAuthService.isLoggedIn();
-  const currentUserRole = fakeAuthService.getCurrentUserRole();
-
-  if (!isLoggedIn) {
-    return router.createUrlTree(['/landing-page']);
-  }
-
+  // If they are not a doctor (which includes being a 'guest' or 'patient'), kick them out
   if (currentUserRole !== 'doctor') {
     return router.createUrlTree(['/landing-page']);
   }
 
+  // If they are a doctor, allow the route to load
   return true;
 };

@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { Subscription } from 'rxjs'; // <-- Add Subscription
 
 import { DialogModule } from 'primeng/dialog';
 import { Button } from 'primeng/button';
@@ -32,11 +33,13 @@ type NavRoute = {
   templateUrl: './header.html',
   styleUrl: './header.scss'
 })
-export class Header {
-  currentUserRole: UserRole;
-  currentUserName: string;
+export class Header implements OnInit, OnDestroy {
+  currentUserRole: UserRole = 'guest';
+  currentUserName: string = '';
 
   isLoginModalOpen = false;
+
+  private authSubscription: Subscription = new Subscription();
 
   patientNavRoutes: NavRoute[] = [
     { path: '/landing-page', title: 'Αρχική' },
@@ -55,76 +58,85 @@ export class Header {
   loggedInOptions: MenuItem[];
   doctorOptions: MenuItem[];
 
-  refreshCurrentUser() {
-    this.currentUserRole = this.authenticationServices.getCurrentUserRole();
-    this.currentUserName = this.authenticationServices.getCurrentUserName();
-  }
-
   constructor(
     private authenticationServices: AuthenticationServices,
     private router: Router
   ) {
-    this.currentUserRole = this.authenticationServices.getCurrentUserRole();
-    this.currentUserName = this.authenticationServices.getCurrentUserName();
+    // You no longer need to call getCurrentUserRole() here. 
+    // The subscription in ngOnInit will handle it!
 
     this.loggedInOptions = [
       {
         label: 'Ο λογαριασμός μου',
-        command: () => {
-          this.router.navigate(['/patient-account-details/1']);
-        }
+        command: () => { this.router.navigate(['/patient-account-details/1']); }
       },
       {
         label: 'Τα ραντεβού μου',
-        command: () => {
-          this.router.navigate(['/patient-appointments/1']);
-        }
+        command: () => { this.router.navigate(['/patient-appointments/1']); }
       },
       { separator: true },
       {
         label: 'Αποσύνδεση',
-        routerLink: ['/404']
+        command: () => this.onLogout()
       }
     ];
 
     this.doctorOptions = [
       {
         label: 'Ο λογαριασμός μου',
-        command: () => {
-          this.router.navigate(['/doctor/account-details']);
-        }
+        command: () => { this.router.navigate(['/doctor/account-details']); }
       },
       {
         label: 'Αρχική σελίδα',
-        command: () => {
-          this.router.navigate(['/doctor']);
-        }
+        command: () => { this.router.navigate(['/doctor']); }
       },
       {
         label: 'Διαθεσιμότητα',
-        command: () => {
-          this.router.navigate(['/doctor/availability']);
-        }
+        command: () => { this.router.navigate(['/doctor/availability']); }
       },
       {
         label: 'Τα ραντεβού μου',
-        command: () => {
-          this.router.navigate(['/doctor/appointments']);
-        }
+        command: () => { this.router.navigate(['/doctor/appointments']); }
       },
       { separator: true },
       {
         label: 'Αποσύνδεση',
-        routerLink: ['/404']
+        command: () => this.onLogout()
       }
     ];
+  }
+
+  ngOnInit(): void {
+    // Listen to changes in the role
+    this.authSubscription.add(
+      this.authenticationServices.currentUserRole$.subscribe(role => {
+        this.currentUserRole = role;
+      })
+    );
+
+    // Listen to changes in the name
+    this.authSubscription.add(
+      this.authenticationServices.currentUserName$.subscribe(name => {
+        this.currentUserName = name;
+      })
+    );
+  }
+
+  ngOnDestroy(): void {
+    // Clean up to prevent memory leaks
+    this.authSubscription.unsubscribe();
+  }
+
+  onLogout(): void {
+    this.authenticationServices.logout();
+    // Note: your service's logout() already navigates to /landing-page
+    // and updates the BehaviorSubject, so you don't need refreshCurrentUser() anymore!
   }
 
   get navRoutes(): NavRoute[] {
     if (this.currentUserRole === 'doctor') {
       return this.doctorNavRoutes;
     }
-
     return this.patientNavRoutes;
   }
 

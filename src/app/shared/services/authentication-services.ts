@@ -1,6 +1,7 @@
 import { Injectable, inject, Type } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, tap } from 'rxjs';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { Router } from '@angular/router';
 
 import { environment } from '../../../environments/environment.development';
 import { UserRole } from '../domain/user-role';
@@ -49,15 +50,19 @@ export class AuthenticationServices {
   private http = inject(HttpClient);
   private baseUrl = environment.apiUrl;
 
-  private isUserLoggedIn = localStorage.getItem('token') !== null;
-  private currentUserRole: UserRole = this.getStoredRole();
-  private currentUserName = localStorage.getItem('userName') ?? '';
+  private currentUserRoleSubject = new BehaviorSubject<UserRole>(this.getRoleFromStorage());
+  public currentUserRole$ = this.currentUserRoleSubject.asObservable();
+
+  private currentUserNameSubject = new BehaviorSubject<string>(this.getNameFromStorage());
+  public currentUserName$ = this.currentUserNameSubject.asObservable();
+
+  constructor(private router: Router) {}
 
   login(model: LoginDto): Observable<LoginResponseDto> {
     return this.http.post<LoginResponseDto>(`${this.baseUrl}/account/login`, model).pipe(
       tap((response: LoginResponseDto) => {
         if (!response || !response.token) {
-          return;
+          this.setLoggedInUser(response);
         }
 
         localStorage.setItem('token', response.token);
@@ -68,9 +73,8 @@ export class AuthenticationServices {
         const displayName = response.emailAddress;
         localStorage.setItem('userName', displayName);
 
-        this.isUserLoggedIn = true;
-        this.currentUserRole = role;
-        this.currentUserName = displayName;
+        this.currentUserRoleSubject.next(role);
+        this.currentUserNameSubject.next(displayName);
       })
     );
   }
@@ -83,63 +87,51 @@ export class AuthenticationServices {
     return this.http.post(`${this.baseUrl}/account/register/doctor`, model);
   }
 
-  isLoggedIn(): boolean {
-    return this.isUserLoggedIn || localStorage.getItem('token') !== null;
+  public getCurrentUserRole(): UserRole {
+    return this.currentUserRoleSubject.value;
   }
 
-  getCurrentUserRole(): UserRole {
-    if (!this.isLoggedIn()) {
-      return 'guest';
+  private getRoleFromStorage(): UserRole {
+    const userJson = localStorage.getItem('currentUser');
+    if (userJson) {
+      const user = JSON.parse(userJson) as LoginResponseDto;
+      return this.normalizeRole(user.role);
     }
-
-    return this.getStoredRole();
+    return 'guest';
   }
 
-  getCurrentUserName(): string {
-    return localStorage.getItem('userName') ?? this.currentUserName;
+  private getNameFromStorage(): string {
+    const userJson = localStorage.getItem('currentUser');
+    if (userJson) {
+      const user = JSON.parse(userJson) as LoginResponseDto;
+      return user.emailAddress; // Matches what we set in setLoggedInUser
+    }
+    return '';
   }
 
   getToken(): string | null {
     return localStorage.getItem('token');
   }
 
-  setCurrentUserRole(role: UserRole): void {
-    this.currentUserRole = role;
-    this.isUserLoggedIn = role !== 'guest';
-
-    if (role === 'guest') {
-      localStorage.removeItem('role');
-      return;
-    }
-
-    localStorage.setItem('role', role);
-  }
-
-  setCurrentUserName(name: string): void {
-    this.currentUserName = name;
-    localStorage.setItem('userName', name);
-  }
-
-  logIn(user: User): void {
-    const fullName = `${user.firstName ?? ''} ${user.lastName ?? ''}`.trim();
-
-    this.setCurrentUserName(fullName);
-
-    if (user.role) {
-      this.setCurrentUserRole(this.normalizeRole(user.role));
-    }
-
-    this.isUserLoggedIn = true;
+  public setLoggedInUser(userDto: any): void {
+    localStorage.setItem('token', userDto.token);
+    localStorage.setItem('currentUser', JSON.stringify(userDto));
+    
+    // Broadcast the new state to anyone listening (like the Header!)
+    this.currentUserRoleSubject.next(userDto.role);
+    this.currentUserNameSubject.next(`${userDto.firstName} ${userDto.lastName}`);
   }
 
   logout(): void {
     localStorage.removeItem('token');
-    localStorage.removeItem('role');
-    localStorage.removeItem('userName');
+    localStorage.removeItem('currentUser');
 
-    this.isUserLoggedIn = false;
-    this.currentUserRole = 'guest';
-    this.currentUserName = '';
+    // Broadcast that nobody is logged in anymore
+    this.currentUserRoleSubject.next('guest');
+    this.currentUserNameSubject.next('');
+
+    // Navigate to the landing page
+    this.router.navigate(['/landing-page']);
   }
 
   private getStoredRole(): UserRole {
@@ -149,24 +141,13 @@ export class AuthenticationServices {
   }
 
   private normalizeRole(role: string | null | undefined): UserRole {
-    if (!role) {
-      return 'guest';
-    }
+    if (!role) return 'guest';
 
     const normalizedRole = role.toLowerCase();
-
-    if (normalizedRole === 'doctor') {
-      return 'doctor';
-    }
-
-    if (normalizedRole === 'patient') {
-      return 'patient';
-    }
-
-    if (normalizedRole === 'manager' || normalizedRole === 'admin') {
-      return 'manager';
-    }
-
+    if (normalizedRole === 'doctor') return 'doctor';
+    if (normalizedRole === 'patient') return 'patient';
+    if (normalizedRole === 'manager' || normalizedRole === 'admin') return 'manager';
+    
     return 'guest';
   }
 }
