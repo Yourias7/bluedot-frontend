@@ -9,15 +9,16 @@
   </div>
 
   <div class="rating-container">
-    @for (n of [1, 2, 3, 4, 5]; track $index) {
-      @if (n > getfilledStars()) {
+    @for (n of starPositions; track $index) {
+      @if (n > getFilledStars()) {
         <i class="pi pi-star"></i>
       } @else {
         <i class="pi pi-star-fill"></i>
       }
     }
 
-    <span>{{ review }}/5</span>
+    <span>{{ rating | number:'1.1-1' }}/5</span>
+    <span>({{ reviewCount }})</span>
   </div>
 
   <p class="doctor-address">

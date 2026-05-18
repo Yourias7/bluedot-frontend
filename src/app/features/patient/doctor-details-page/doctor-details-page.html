@@ -9,16 +9,16 @@
         <p class="specialty-text">{{ userDetailedInfo.specialty?.name }}</p>
 
         <div class="rating-container">
-          @for (n of [1, 2, 3, 4, 5]; track $index) {
-            @if (n > getfilledStars()) {
+          @for (n of starPositions; track $index) {
+            @if (n > getFilledStars()) {
               <i class="pi pi-star"></i>
             } @else {
               <i class="pi pi-star-fill"></i>
             }
           }
 
-          <span>{{ review }}/5</span>
-          <span>(39)</span>
+          <span>{{ rating | number:'1.1-1' }}/5</span>
+          <span>({{ reviewCount }})</span>
         </div>
       </div>
     </div>
@@ -52,7 +52,39 @@
         </p-tabpanel>
 
         <p-tabpanel value="1">
-          <p>Εδώ θα εμφανίζονται οι κριτικές του γιατρού.</p>
+          @if (!reviewsLoaded) {
+            <p class="reviews-empty">Φόρτωση αξιολογήσεων…</p>
+          } @else if (reviewsError) {
+            <p class="reviews-error">{{ reviewsError }}</p>
+          } @else if (reviews.length === 0) {
+            <p class="reviews-empty">Δεν υπάρχουν αξιολογήσεις ακόμη.</p>
+          } @else {
+            <ul class="reviews-list">
+              @for (review of reviews; track review.id) {
+                <li class="review-item">
+                  <div class="review-header">
+                    <span class="review-author">{{ review.patientName ?? 'Ανώνυμος' }}</span>
+                    @if (review.createdAt) {
+                      <span class="review-date">{{ review.createdAt | date:'dd/MM/yyyy' }}</span>
+                    }
+                  </div>
+                  <div class="rating-container review-rating">
+                    @for (n of starPositions; track $index) {
+                      @if (n > getReviewFilledStars(review.rating)) {
+                        <i class="pi pi-star"></i>
+                      } @else {
+                        <i class="pi pi-star-fill"></i>
+                      }
+                    }
+                    <span>{{ review.rating }}/5</span>
+                  </div>
+                  @if (review.comment) {
+                    <p class="review-comment">{{ review.comment }}</p>
+                  }
+                </li>
+              }
+            </ul>
+          }
         </p-tabpanel>
       </p-tabs>
     </div>

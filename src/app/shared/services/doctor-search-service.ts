@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Doctor } from '../domain/doctor';
 import { UserRole } from '../domain/user';
 import { Specialty } from '../domain/specialty';
+import { Review } from '../domain/review';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../../environments/environment.development';
 import { Observable, map } from 'rxjs';
@@ -139,6 +140,18 @@ export class DoctorSearchService {
     return this.doctors.find(doctor => doctor.id === id);
   }
 
+  loadDoctorById(id: number): Observable<Doctor> {
+    return this.httpClient.get<Doctor>(`${this.baseUrl}/doctors/${id}`);
+  }
+
+  loadReviewsByDoctorId(id: number): Observable<Review[]> {
+    return this.httpClient
+      .get<Review[] | { items: Review[] }>(`${this.baseUrl}/doctors/${id}/reviews`)
+      .pipe(
+        map(response => Array.isArray(response) ? response : response.items ?? [])
+      );
+  }
+
   //TODO: Test meee
   getSpecialties(): Observable<Specialty[]> {
     //return this.specialties;
@@ -180,6 +193,9 @@ export class DoctorSearchService {
 
   searchDoctors(
     specialtyId?: number | null,
+    lat?: number | null,
+    lng?: number | null,
+    radiusKm?: number | null,
     page: number = 1,
     pageSize: number = 200
   ): Observable<Doctor[]> {
@@ -189,6 +205,18 @@ export class DoctorSearchService {
 
     if (specialtyId !== undefined && specialtyId !== null) {
       params = params.set('specialtyId', String(specialtyId));
+    }
+
+    if (lat !== undefined && lat !== null) {
+      params = params.set('lat', String(lat));
+    }
+
+    if (lng !== undefined && lng !== null) {
+      params = params.set('lng', String(lng));
+    }
+
+    if (radiusKm !== undefined && radiusKm !== null) {
+      params = params.set('radiusKm', String(radiusKm));
     }
 
     return this.httpClient

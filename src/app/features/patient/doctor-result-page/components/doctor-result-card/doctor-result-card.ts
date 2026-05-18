@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AvatarModule } from 'primeng/avatar';
 import { Doctor } from '../../../../../shared/domain/doctor';
@@ -13,14 +13,21 @@ export class DoctorResultCard {
   @Input() doctor?: Doctor;
   @Output() cardClicked = new EventEmitter<number>();
 
-  review:number = 2;
-  getfilledStars(): number {
-    return Math.min(Math.max(Math.round(this.review), 1), 5);
+  readonly starPositions = [1, 2, 3, 4, 5];
+
+  get rating(): number {
+    return this.doctor?.averageRating ?? 0;
   }
+
+  get reviewCount(): number {
+    return this.doctor?.reviewCount ?? 0;
+  }
+
+  getFilledStars(): number {
+    return Math.min(Math.max(Math.round(this.rating), 0), 5);
+  }
+
   viewDetails(id?: number) {
-    {
-      console.log("clicked card with id: " + id);
-      this.cardClicked.emit(id);
-    }
+    this.cardClicked.emit(id);
   }
 }
