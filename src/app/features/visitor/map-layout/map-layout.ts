@@ -39,13 +39,6 @@ export class MapLayout implements AfterViewInit {
   filteredSpecialties: Specialty[] = [];
   selectedSpecialty: Specialty | string | null = null;
 
-  locations: string[] = [
-    'Αθήνα',
-    'Θεσσαλονίκη',
-    'Πάτρα',
-    'Ηράκλειο',
-    'Λάρισα'
-  ];
 
   filteredLocations: string[] = [];
   selectedLocation?: string;
@@ -264,11 +257,6 @@ export class MapLayout implements AfterViewInit {
     this.filteredSpecialties = this.specialties.filter(
       specialty => specialty.name.toLowerCase().includes(query)
     );
-  }
-
-  filterLocations(event: { originalEvent: Event; query: string }) {
-    const query = event.query?.toLowerCase() ?? '';
-    this.filteredLocations = this.locations.filter(item => item.toLowerCase().includes(query));
   }
 
   showDoctorInfo(id: number | undefined) {

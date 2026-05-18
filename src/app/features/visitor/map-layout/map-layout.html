@@ -19,16 +19,6 @@
         </button>
       </div>
     </div>
-    <div class="nested-search ms-3">
-      <div class="input-group">
-        <p-autoComplete [(ngModel)]="selectedLocation" [suggestions]="filteredLocations"
-          (completeMethod)="filterLocations($event)" [minLength]="1" placeholder="Τοποθεσία"
-          inputStyleClass="form-control border-end-0"></p-autoComplete>
-        <button pButton type="button" class="btn btn-primary">
-          <i class="pi pi-search"></i>
-        </button>
-      </div>
-    </div>
   </div>
   @if (userLocationError) {
     <div class="map-location-warning alert alert-warning py-2 px-3 m-0 small">
