@@ -37,7 +37,7 @@ export const routes: Routes = [
   },
   {
     path: 'search-results',
-    component: DoctorResultPage
+    component: DoctorResultPage,
   },
   {
     path: 'map-results',
