@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-
+import { NominatimService } from '../../../../shared/services/nominatim.service';
 import { Doctor } from '../../../../shared/domain/doctor';
 import { Specialty } from '../../../../shared/domain/specialty';
 import { UserRole } from '../../../../shared/domain/user';
@@ -12,6 +12,10 @@ import {
   AuthenticationServices,
   UpdateAccountMeDto,
 } from '../../../../shared/services/authentication-services';
+import { LocationSuggestion } from '../../../../shared/services/nominatim.service';
+import { debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
+import { of } from 'rxjs';
+
 
 @Component({
   selector: 'app-doctor-account-details',
@@ -31,7 +35,6 @@ export class DoctorAccountDetails implements OnInit {
     clinicAddress: new FormControl('', [Validators.required]),
     yearsOfExperience: new FormControl(0, [Validators.required, Validators.min(0)]),
     bio: new FormControl('', [Validators.required]),
-    specialty: new FormControl<number | null>(null, [Validators.required])
   });
 
   editing: { [key: string]: boolean } = {};
@@ -42,10 +45,17 @@ export class DoctorAccountDetails implements OnInit {
   isSaving = false;
   errorMessage = '';
 
+    // Autocomplete state variables
+    addressSuggestions: LocationSuggestion[] = [];
+    isSearchingAddress = false;
+    showSuggestions = false;
+  
+
   constructor(
     private doctorService: DoctorService,
     private authenticationServices: AuthenticationServices,
-    private doctorSearchService: DoctorSearchService
+    private doctorSearchService: DoctorSearchService,
+    private nomatimService:NominatimService
   ) {
     this.doctorInfo = this.doctorService.getDoctorProfile() ?? {
       id: 0,
@@ -62,22 +72,9 @@ export class DoctorAccountDetails implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadSpecialties();
+    //this.loadSpecialties();
     this.loadAccount();
-  }
-
-  private loadSpecialties(): void {
-    this.doctorSearchService.getSpecialties().subscribe({
-      next: (specialties) => {
-        this.specialties = specialties ?? [];
-        // Re-patch the form so the dropdown selection matches the loaded specialty.
-        this.patchFormFromModel();
-      },
-      error: (error) => {
-        console.error('Failed to load specialties:', error);
-        this.specialties = [];
-      },
-    });
+    this.setupAddressAutocomplete();
   }
 
   private loadAccount(): void {
@@ -115,8 +112,7 @@ export class DoctorAccountDetails implements OnInit {
       phoneNumber: account.phoneNumber ?? this.doctorInfo.phoneNumber ?? '',
       clinicAddress: account.clinicAddress ?? this.doctorInfo.clinicAddress ?? '',
       yearsOfExperience: account.yearsOfExperience ?? this.doctorInfo.yearsOfExperience ?? 0,
-      bio: account.bio ?? this.doctorInfo.bio ?? '',
-      specialty,
+      bio: account.bio ?? this.doctorInfo.bio ?? ''
     };
   }
 
@@ -129,8 +125,7 @@ export class DoctorAccountDetails implements OnInit {
       phoneNumber: this.doctorInfo.phoneNumber ?? '',
       clinicAddress: this.doctorInfo.clinicAddress ?? '',
       yearsOfExperience: this.doctorInfo.yearsOfExperience ?? 0,
-      bio: this.doctorInfo.bio ?? '',
-      specialty: this.doctorInfo.specialty?.id ?? null
+      bio: this.doctorInfo.bio ?? ''
     });
   }
 
@@ -147,11 +142,25 @@ export class DoctorAccountDetails implements OnInit {
   }
 
   saveChanges() {
-    this.form.markAllAsTouched();
+ 
+    let hasInvalidFields = false;
 
-    if (this.form.invalid) {
-      return;
+    //safeguard for non edited fields
+    for (const key of Object.keys(this.editing)) {
+
+      if (!this.editing[key]) continue;
+
+      const control = this.form.get(key);
+
+      control?.markAsTouched();
+      control?.updateValueAndValidity();
+
+      if (control?.invalid) {
+        hasInvalidFields = true;
+      }
     }
+
+    if (hasInvalidFields) return;
 
     const patch = this.buildPatchPayload();
 
@@ -238,4 +247,50 @@ export class DoctorAccountDetails implements OnInit {
     this.patchFormFromModel();
     this.editing = {};
   }
+
+  ///location stuff
+
+  // Set up reactive listener for the clinic address field
+    setupAddressAutocomplete() {
+      this.form.get('clinicAddress')?.valueChanges.pipe(
+        debounceTime(500), // Wait 500ms after the user stops typing
+        distinctUntilChanged(),
+        tap(value => {
+          this.isSearchingAddress = typeof value === 'string' && value.length > 2;
+        }),
+        switchMap(value => {
+          if (typeof value === 'string' && value.length > 2) {
+            return this.nomatimService.searchAddress(value);
+          }
+          return of([]);
+        })
+      ).subscribe({
+        next: (results) => {
+          this.addressSuggestions = results;
+          this.isSearchingAddress = false;
+          this.showSuggestions = results.length > 0;
+        },
+        error: () => {
+          this.isSearchingAddress = false;
+          this.addressSuggestions = [];
+        }
+      });
+    }
+  
+    // Handle user selecting an address from the dropdown
+    selectAddress(address: LocationSuggestion) {
+      // We emitEvent: false to prevent the valueChanges subscription from firing again
+      this.form.patchValue({
+        clinicAddress: address.displayName
+      }, { emitEvent: false }); 
+      
+      this.showSuggestions = false;
+    }
+  
+    // Hide suggestions when clicking outside the input
+    hideSuggestions() {
+      // Small timeout to allow mousedown event on dropdown to fire first
+      setTimeout(() => this.showSuggestions = false, 200);
+    }
+  
 }
