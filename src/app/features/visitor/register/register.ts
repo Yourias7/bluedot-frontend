@@ -9,7 +9,7 @@ import { RegisterCommonFields } from './components/register-common-fields/regist
 import { DoctorSearchService } from '../../../shared/services/doctor-search-service';
 import { Specialty } from '../../../shared/domain/specialty';
 import { AuthenticationServices } from '../../../shared/services/authentication-services';
-import { NominatimService, NominatimResponse } from '../../../shared/services/nominatim.service';
+import { NominatimService, LocationSuggestion } from '../../../shared/services/nominatim.service';
 import { debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
 
@@ -30,7 +30,7 @@ export class Register implements OnInit {
   errorMessage = '';
 
   // Autocomplete state variables
-  addressSuggestions: NominatimResponse[] = [];
+  addressSuggestions: LocationSuggestion[] = [];
   isSearchingAddress = false;
   showSuggestions = false;
 
@@ -106,10 +106,10 @@ export class Register implements OnInit {
   }
 
   // Handle user selecting an address from the dropdown
-  selectAddress(address: NominatimResponse) {
+  selectAddress(address: LocationSuggestion) {
     // We emitEvent: false to prevent the valueChanges subscription from firing again
     this.doctor_registerForm.patchValue({
-      clinicAddress: address.display_name
+      clinicAddress: address.displayName
     }, { emitEvent: false }); 
     
     this.showSuggestions = false;

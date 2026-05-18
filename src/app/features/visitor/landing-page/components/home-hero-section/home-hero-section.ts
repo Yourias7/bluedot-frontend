@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
@@ -14,4 +14,15 @@ import { Specialty } from '../../../../../shared/domain/specialty';
 })
 export class HomeHeroSection {
   @Input() specialties: Specialty[] = [];
+
+  @Input() locations: any[] = [];
+
+  @Output() locationSearch = new EventEmitter<string>();
+
+  onLocationInput(event: Event) {
+    const query = (event.target as HTMLInputElement).value;
+    if (query.length > 2) {
+      this.locationSearch.emit(query);
+    }
+  }
 }

@@ -17,7 +17,13 @@
             <h2 class="text-center fs-4 fw-semibold">σε</h2>
             <p-iconfield class="card flex gap-4">
                 <span class="pi pi-search" ></span>
-                <input type="text" pInputText placeholder="Τοποθεσία πχ. Αθήνα" />
+                <input type="text" pInputText list="location-options" placeholder="Τοποθεσία πχ. Αθήνα" (input)="onLocationInput($event)"/>
+                <datalist id="location-options">
+                    <!-- Assuming your Nominatim service returns objects with a 'display_name' property -->
+                    @for (location of locations; track $index) {
+                        <option [value]="location.display_name"></option>
+                    }
+                </datalist>
             </p-iconfield>
         </div>
     </search>
