@@ -54,11 +54,10 @@ export class Footer {
 
   searchDoctorsBySpecialty(spec: string) {
     this.searchService.getSpecialties().subscribe((specs) => {
-      this.specialty = specs.find((val) => {val.name == spec;});
-      this.searchService.searchDoctors(this.specialty?.id,
-        undefined,
-        undefined).subscribe((response) => {
-          this.router.navigate(['/search-results', response]);
+      this.specialty = specs.find((val) => {val.name.includes(spec);});
+      this.searchService.searchDoctors(this.specialty?.id).subscribe((response) => {
+          console.log(response);
+          this.router.navigate(['/search-results']);
         });
     });
 
@@ -67,10 +66,9 @@ export class Footer {
 
   searchCityDoctors(city: string) {
     let cityCoords = cities.find((_city) => _city.name == city);
-    this.searchService.searchDoctors(undefined,
-      cityCoords?.lat,
-      cityCoords?.lng).subscribe((response) => {
-        this.router.navigate(['/search-results', response]);
+    this.searchService.searchDoctors(undefined).subscribe((response) => {
+        console.log(response);
+        this.router.navigate(['/search-results']);
       });
   }
 }
