@@ -57,8 +57,7 @@ export class Footer {
       this.specialty = specs.find((val) => {val.name == spec;});
       this.searchService.searchDoctors(this.specialty?.id,
         undefined,
-        undefined,
-        10).subscribe((response) => {
+        undefined).subscribe((response) => {
           this.router.navigate(['/search-results', response]);
         });
     });
@@ -70,8 +69,7 @@ export class Footer {
     let cityCoords = cities.find((_city) => _city.name == city);
     this.searchService.searchDoctors(undefined,
       cityCoords?.lat,
-      cityCoords?.lng,
-      10).subscribe((response) => {
+      cityCoords?.lng).subscribe((response) => {
         this.router.navigate(['/search-results', response]);
       });
   }
