@@ -121,6 +121,14 @@ export class AuthenticationServices {
   }
 
   private getRoleFromStorage(): UserRole {
+    // A previous version of login() stored the whole user dto under 'currentUser'.
+    // The current login() stores the role under its own 'role' key, so we read
+    // from there first and fall back to 'currentUser' for backwards compatibility.
+    const storedRole = localStorage.getItem('role');
+    if (storedRole) {
+      return this.normalizeRole(storedRole);
+    }
+
     const userJson = localStorage.getItem('currentUser');
     if (userJson) {
       const user = JSON.parse(userJson) as LoginResponseDto;
@@ -130,6 +138,11 @@ export class AuthenticationServices {
   }
 
   private getNameFromStorage(): string {
+    const storedName = localStorage.getItem('userName');
+    if (storedName) {
+      return storedName;
+    }
+
     const userJson = localStorage.getItem('currentUser');
     if (userJson) {
       const user = JSON.parse(userJson) as LoginResponseDto;
@@ -154,6 +167,8 @@ export class AuthenticationServices {
   logout(): void {
     localStorage.removeItem('token');
     localStorage.removeItem('currentUser');
+    localStorage.removeItem('role');
+    localStorage.removeItem('userName');
 
     // Broadcast that nobody is logged in anymore
     this.currentUserRoleSubject.next('guest');
