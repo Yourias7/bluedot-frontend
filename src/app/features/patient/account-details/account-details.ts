@@ -1,8 +1,14 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Patient } from '../../../shared/domain/patient';
+import { UserRole } from '../../../shared/domain/user';
 import { FormGroup, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { PatientService } from '../../../shared/services/patient-service';
+import {
+  AccountMeDto,
+  AuthenticationServices,
+  UpdateAccountMeDto,
+} from '../../../shared/services/authentication-services';
 
 @Component({
   selector: 'app-account-details',
@@ -26,15 +32,67 @@ export class AccountDetails implements OnInit {
   // track which fields are currently being edited
   editing: { [key: string]: boolean } = {};
 
-  constructor(private patientService: PatientService) {
+  isLoading = false;
+  isSaving = false;
+  errorMessage = '';
+
+  constructor(
+    private patientService: PatientService,
+    private authenticationServices: AuthenticationServices
+  ) {
     const patient = this.patientService.getPatient();
     if (patient) {
       this.patientInfo = patient;
+    } else {
+      this.patientInfo = {
+        id: 0,
+        firstName: '',
+        lastName: '',
+        email: '',
+        password: '',
+        role: UserRole.Patient,
+        dateOfBirth: new Date(),
+        phoneNumber: '',
+      };
     }
   }
 
   ngOnInit(): void {
-    this.patchFormFromModel();
+    this.loadAccount();
+  }
+
+  private loadAccount(): void {
+    this.isLoading = true;
+    this.errorMessage = '';
+
+    this.authenticationServices.getMe().subscribe({
+      next: (account) => {
+        this.applyAccountToModel(account);
+        this.patchFormFromModel();
+        this.isLoading = false;
+      },
+      error: (error) => {
+        console.error('Failed to load account:', error);
+        this.errorMessage = 'Αποτυχία φόρτωσης στοιχείων λογαριασμού.';
+        this.patchFormFromModel();
+        this.isLoading = false;
+      },
+    });
+  }
+
+  private applyAccountToModel(account: AccountMeDto): void {
+    const email = account.email ?? account.emailAddress ?? this.patientInfo.email ?? '';
+
+    this.patientInfo = {
+      ...this.patientInfo,
+      firstName: account.firstName ?? this.patientInfo.firstName ?? '',
+      lastName: account.lastName ?? this.patientInfo.lastName ?? '',
+      email,
+      phoneNumber: account.phoneNumber ?? this.patientInfo.phoneNumber ?? '',
+      dateOfBirth: account.dateOfBirth
+        ? new Date(account.dateOfBirth)
+        : this.patientInfo.dateOfBirth,
+    };
   }
 
   private patchFormFromModel() {
@@ -66,19 +124,69 @@ export class AccountDetails implements OnInit {
     this.form.markAllAsTouched();
     if (this.form.invalid) return;
 
-    // copy only edited fields back to the model
+    const patch = this.buildPatchPayload();
+
+    if (Object.keys(patch).length === 0) {
+      this.editing = {};
+      return;
+    }
+
+    this.isSaving = true;
+    this.errorMessage = '';
+
+    this.authenticationServices.updateMe(patch).subscribe({
+      next: (account) => {
+        this.applyEditedFieldsToModel();
+        if (account) {
+          this.applyAccountToModel(account);
+        }
+        this.patchFormFromModel();
+        this.editing = {};
+        this.isSaving = false;
+      },
+      error: (error) => {
+        console.error('Failed to update account:', error);
+        this.errorMessage = 'Αποτυχία αποθήκευσης αλλαγών. Δοκιμάστε ξανά.';
+        this.isSaving = false;
+      },
+    });
+  }
+
+  private buildPatchPayload(): UpdateAccountMeDto {
+    const patch: UpdateAccountMeDto = {};
+
     for (const key of Object.keys(this.editing)) {
       if (!this.editing[key]) continue;
+
       const value = this.form.get(key)?.value;
+
+      if (key === 'role') continue;
+
       if (key === 'dateOfBirth') {
-        this.patientInfo.dateOfBirth = value ? new Date(value) : value;
-      } else {
-        // @ts-ignore - dynamic assignment to Patient
-        this.patientInfo[key] = value;
+        patch.dateOfBirth = value ? value : null;
+        continue;
       }
+
+      (patch as any)[key] = value;
     }
-    // clear editing state
-    this.editing = {};
+
+    return patch;
+  }
+
+  private applyEditedFieldsToModel(): void {
+    for (const key of Object.keys(this.editing)) {
+      if (!this.editing[key]) continue;
+
+      const value = this.form.get(key)?.value;
+
+      if (key === 'dateOfBirth') {
+        this.patientInfo.dateOfBirth = value ? new Date(value) : this.patientInfo.dateOfBirth;
+        continue;
+      }
+
+      // @ts-ignore - dynamic assignment to Patient
+      this.patientInfo[key] = value;
+    }
   }
 
   cancelChanges() {

@@ -42,6 +42,27 @@ type LoginResponseDto = {
   dateOfBirth?: string;
 };
 
+export type AccountMeDto = {
+  id?: number;
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  emailAddress?: string;
+  phoneNumber?: string;
+  dateOfBirth?: string | null;
+  gender?: string;
+  role?: string;
+  clinicAddress?: string;
+  yearsOfExperience?: number;
+  bio?: string;
+  specialty?: { id: number; name: string };
+  specialties?: { id: number; name: string }[];
+};
+
+export type UpdateAccountMeDto = Partial<AccountMeDto> & {
+  password?: string;
+};
+
 @Injectable({
   providedIn: 'root',
 })
@@ -85,6 +106,14 @@ export class AuthenticationServices {
 
   registerDoctor(model: RegisterDoctorDto): Observable<unknown> {
     return this.http.post(`${this.baseUrl}/account/register/doctor`, model);
+  }
+
+  getMe(): Observable<AccountMeDto> {
+    return this.http.get<AccountMeDto>(`${this.baseUrl}/account/me`);
+  }
+
+  updateMe(model: UpdateAccountMeDto): Observable<AccountMeDto> {
+    return this.http.patch<AccountMeDto>(`${this.baseUrl}/account/me`, model);
   }
 
   public getCurrentUserRole(): UserRole {

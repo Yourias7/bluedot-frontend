@@ -3,7 +3,13 @@ import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { Doctor } from '../../../../shared/domain/doctor';
+import { UserRole } from '../../../../shared/domain/user';
 import { DoctorService } from '../../../../shared/services/doctor-service';
+import {
+  AccountMeDto,
+  AuthenticationServices,
+  UpdateAccountMeDto,
+} from '../../../../shared/services/authentication-services';
 
 @Component({
   selector: 'app-doctor-account-details',
@@ -28,12 +34,70 @@ export class DoctorAccountDetails implements OnInit {
 
   editing: { [key: string]: boolean } = {};
 
-  constructor(private doctorService: DoctorService) {
-    this.doctorInfo = this.doctorService.getDoctorProfile();
+  isLoading = false;
+  isSaving = false;
+  errorMessage = '';
+
+  constructor(
+    private doctorService: DoctorService,
+    private authenticationServices: AuthenticationServices
+  ) {
+    this.doctorInfo = this.doctorService.getDoctorProfile() ?? {
+      id: 0,
+      firstName: '',
+      lastName: '',
+      email: '',
+      password: '',
+      role: UserRole.Doctor,
+      bio: '',
+      clinicAddress: '',
+      phoneNumber: '',
+      yearsOfExperience: 0,
+    };
   }
 
   ngOnInit(): void {
-    this.patchFormFromModel();
+    this.loadAccount();
+  }
+
+  private loadAccount(): void {
+    this.isLoading = true;
+    this.errorMessage = '';
+
+    this.authenticationServices.getMe().subscribe({
+      next: (account) => {
+        this.applyAccountToModel(account);
+        this.patchFormFromModel();
+        this.isLoading = false;
+      },
+      error: (error) => {
+        console.error('Failed to load account:', error);
+        this.errorMessage = 'Αποτυχία φόρτωσης στοιχείων λογαριασμού.';
+        this.patchFormFromModel();
+        this.isLoading = false;
+      },
+    });
+  }
+
+  private applyAccountToModel(account: AccountMeDto): void {
+    const email = account.email ?? account.emailAddress ?? this.doctorInfo.email ?? '';
+    const specialty =
+      account.specialty ??
+      (account.specialties && account.specialties.length > 0
+        ? account.specialties[0]
+        : this.doctorInfo.specialty);
+
+    this.doctorInfo = {
+      ...this.doctorInfo,
+      firstName: account.firstName ?? this.doctorInfo.firstName ?? '',
+      lastName: account.lastName ?? this.doctorInfo.lastName ?? '',
+      email,
+      phoneNumber: account.phoneNumber ?? this.doctorInfo.phoneNumber ?? '',
+      clinicAddress: account.clinicAddress ?? this.doctorInfo.clinicAddress ?? '',
+      yearsOfExperience: account.yearsOfExperience ?? this.doctorInfo.yearsOfExperience ?? 0,
+      bio: account.bio ?? this.doctorInfo.bio ?? '',
+      specialty,
+    };
   }
 
   private patchFormFromModel() {
@@ -69,6 +133,59 @@ export class DoctorAccountDetails implements OnInit {
       return;
     }
 
+    const patch = this.buildPatchPayload();
+
+    if (Object.keys(patch).length === 0) {
+      this.editing = {};
+      return;
+    }
+
+    this.isSaving = true;
+    this.errorMessage = '';
+
+    this.authenticationServices.updateMe(patch).subscribe({
+      next: (account) => {
+        this.applyEditedFieldsToModel();
+        if (account) {
+          this.applyAccountToModel(account);
+        }
+        this.patchFormFromModel();
+        this.editing = {};
+        this.isSaving = false;
+      },
+      error: (error) => {
+        console.error('Failed to update account:', error);
+        this.errorMessage = 'Αποτυχία αποθήκευσης αλλαγών. Δοκιμάστε ξανά.';
+        this.isSaving = false;
+      },
+    });
+  }
+
+  private buildPatchPayload(): UpdateAccountMeDto {
+    const patch: UpdateAccountMeDto = {};
+
+    for (const key of Object.keys(this.editing)) {
+      if (!this.editing[key]) {
+        continue;
+      }
+
+      const value = this.form.get(key)?.value;
+
+      if (key === 'specialty') {
+        patch.specialty = {
+          id: this.doctorInfo.specialty?.id ?? 0,
+          name: value,
+        };
+        continue;
+      }
+
+      (patch as any)[key] = value;
+    }
+
+    return patch;
+  }
+
+  private applyEditedFieldsToModel(): void {
     for (const key of Object.keys(this.editing)) {
       if (!this.editing[key]) {
         continue;
@@ -78,18 +195,15 @@ export class DoctorAccountDetails implements OnInit {
 
       if (key === 'specialty') {
         this.doctorInfo.specialty = {
-          id: this.doctorInfo.specialty?.id ?? 1,
-          name: value
+          id: this.doctorInfo.specialty?.id ?? 0,
+          name: value,
         };
-
         continue;
       }
 
       // dynamic assignment, same logic style as patient account page
       (this.doctorInfo as any)[key] = value;
     }
-
-    this.editing = {};
   }
 
   cancelChanges() {
