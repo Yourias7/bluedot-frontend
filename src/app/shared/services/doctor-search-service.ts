@@ -2,9 +2,16 @@ import { Injectable } from '@angular/core';
 import { Doctor } from '../domain/doctor';
 import { UserRole } from '../domain/user';
 import { Specialty } from '../domain/specialty';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../../environments/environment.development';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
+
+type PagedResultDto<T> = {
+  totalCount: number;
+  page: number;
+  pageSize: number;
+  items: T[];
+};
 
 @Injectable({
   providedIn: 'root',
@@ -123,5 +130,25 @@ export class DoctorSearchService {
   getSpecialties(): Observable<Specialty[]> {
     //return this.specialties;
     return this.httpClient.get<Specialty[]>(`${this.baseUrl}/specialty`);
+  }
+
+  searchDoctors(
+    specialtyId?: number | null,
+    page: number = 1,
+    pageSize: number = 200
+  ): Observable<Doctor[]> {
+    let params = new HttpParams()
+      .set('page', String(page))
+      .set('pageSize', String(pageSize));
+
+    if (specialtyId !== undefined && specialtyId !== null) {
+      params = params.set('specialtyId', String(specialtyId));
+    }
+
+    return this.httpClient
+      .get<PagedResultDto<Doctor> | Doctor[]>(`${this.baseUrl}/doctors`, { params })
+      .pipe(
+        map(response => Array.isArray(response) ? response : response.items ?? [])
+      );
   }
 }
