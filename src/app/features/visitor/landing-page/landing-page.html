@@ -2,6 +2,11 @@
     <app-home-hero-section 
         [specialties]="items" 
         [locations]="locationSuggestions" 
-        (locationSearch)="onSearchLocation($event)">
+        [specialtyQuery]="specialtyQuery"
+        [locationQuery]="locationQuery"
+        (specialtyQueryChange)="onSpecialtyInput($event)"
+        (locationQueryChange)="onLocationTextChange($event)"
+        (locationSearch)="onSearchLocation($event)"
+        (searchClicked)="search()">
     </app-home-hero-section>
 </main>
