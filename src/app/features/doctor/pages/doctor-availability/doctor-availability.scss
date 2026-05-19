@@ -22,8 +22,6 @@
   font-size: 18px;
 }
 
-/* Main layout */
-
 .content-card {
   max-width: 1080px;
   margin: 0 auto;
@@ -42,8 +40,6 @@
 .left-column {
   padding-top: 8px;
 }
-
-/* Date calendar */
 
 .date-box {
   width: 320px;
@@ -226,6 +222,62 @@
   opacity: 1 !important;
 }
 
+/* Appointment markers inside calendar */
+
+:host ::ng-deep .calendar-day-content {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+:host ::ng-deep .pending-calendar-day {
+  border: 2px solid #f3d574;
+  background-color: #fff8dc;
+  color: #1f2a44;
+  font-weight: 800;
+}
+
+:host ::ng-deep .p-datepicker-day-selected .calendar-day-content {
+  color: #ffffff;
+}
+
+:host ::ng-deep .p-datepicker-day-selected .pending-calendar-day {
+  background-color: #7658b8;
+  border-color: #ffffff;
+  color: #ffffff;
+}
+
+.calendar-legend {
+  margin-top: 14px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.calendar-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #5d6475;
+  font-size: 13px;
+}
+
+.calendar-legend-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+}
+
+.pending-dot {
+  background-color: #fff8dc;
+  border: 2px solid #f3d574;
+}
+
 /* Slots section */
 
 .availability-header-row {
@@ -250,6 +302,10 @@
   color: #7c8499;
   font-size: 14px;
   line-height: 1.45;
+}
+
+.warning-text {
+  color: #9d6b00;
 }
 
 .edit-mode-button {
@@ -280,6 +336,22 @@
   background-color: #2b3858;
 }
 
+.edit-mode-button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  background-color: #ffffff;
+  color: #7c8499;
+}
+
+.empty-state {
+  padding: 28px;
+  border: 1px dashed #c8cde0;
+  border-radius: 16px;
+  color: #7c8499;
+  text-align: center;
+  font-size: 16px;
+}
+
 .slots-grid {
   display: grid;
   grid-template-columns: repeat(2, 220px);
@@ -287,16 +359,17 @@
 }
 
 .slot-card {
-  min-height: 72px;
-  padding: 12px 16px;
+  position: relative;
+  min-height: 92px;
+  padding: 14px 16px 12px;
   border: 1px solid #ececec;
-  border-radius: 14px;
+  border-radius: 16px;
   background-color: #ffffff;
   color: #5b4bb7;
   font-size: 16px;
   font-weight: 600;
   box-shadow: 0 5px 12px rgba(0, 0, 0, 0.13);
-  transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
 
   display: flex;
   flex-direction: column;
@@ -315,6 +388,8 @@
 }
 
 .slot-main-content {
+  min-height: 24px;
+
   display: flex;
   align-items: center;
   justify-content: center;
@@ -348,15 +423,26 @@
   color: #1f2a44;
 }
 
-.slot-edit-button {
+.slot-card.past-slot {
+  opacity: 0.72;
+}
+
+.slot-edit-button,
+.past-slot-label {
   width: fit-content;
   max-width: 100%;
-  padding: 6px 12px;
+  min-height: 26px;
+  padding: 5px 12px;
   border-radius: 999px;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 800;
-  cursor: pointer;
   line-height: 1.2;
+  white-space: nowrap;
+}
+
+.slot-edit-button {
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(31, 42, 68, 0.12);
 }
 
 .disable-button {
@@ -378,6 +464,15 @@
 
 .enable-button:hover {
   background-color: #f4f6ff;
+}
+
+.past-slot-label {
+  background-color: rgba(255, 255, 255, 0.75);
+  color: #7c8499;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Legend */
