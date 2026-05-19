@@ -9,10 +9,11 @@ import {
   AuthenticationServices,
   UpdateAccountMeDto,
 } from '../../../shared/services/authentication-services';
+import { DeleteAccountButton } from '../../../shared/components/delete-account-button/delete-account-button';
 
 @Component({
   selector: 'app-account-details',
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, DeleteAccountButton],
   templateUrl: './account-details.html',
   styleUrl: './account-details.scss',
 })

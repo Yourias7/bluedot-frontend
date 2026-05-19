@@ -6,6 +6,7 @@ import { Specialty } from '../../../../shared/domain/specialty';
 import { AuthenticationServices } from '../../../../shared/services/authentication-services';
 import { UserRole } from '../../../../shared/domain/user-role';
 import { Subscription } from 'rxjs';
+import { NgClass } from '@angular/common';
 
 export interface CityCoordinates {
   name: string;
@@ -43,7 +44,7 @@ export const cities: CityCoordinates[] = [
 
 @Component({
   selector: 'app-footer',
-  imports: [Logo, RouterLink],
+  imports: [Logo, RouterLink, NgClass],
   templateUrl: './footer.html',
   styleUrl: './footer.scss',
 })

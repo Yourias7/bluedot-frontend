@@ -57,6 +57,17 @@
   text-decoration: none;
 }
 
+.row-link {
+  color: #2f2f2f;
+  font-size: 16px;
+  font-weight: 400;
+  text-decoration: none;
+}
+
+.row-link:hover {
+  text-decoration: underline;
+}
+
 .footer-column a:hover {
   text-decoration: underline;
 }
@@ -86,6 +97,10 @@
   .footer-links {
     grid-template-columns: 1fr;
     gap: 28px;
+  }
+
+  .footer-row{
+    
   }
 
   .footer-column h3 {

@@ -15,11 +15,12 @@ import {
 import { LocationSuggestion } from '../../../../shared/services/nominatim.service';
 import { debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
+import { DeleteAccountButton } from '../../../../shared/components/delete-account-button/delete-account-button';
 
 
 @Component({
   selector: 'app-doctor-account-details',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, DeleteAccountButton],
   templateUrl: './doctor-account-details.html',
   styleUrl: './doctor-account-details.scss'
 })
