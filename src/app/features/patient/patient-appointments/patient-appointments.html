@@ -1,6 +1,6 @@
 <section class="patient-appointments-page">
   <div class="page-header">
-    <h1>Τα ραντεβού μου</h1>
+    <h1>Ραντεβού</h1>
 
     @if (selectedDate !== null) {
       <p>Προβολή για την ημερομηνία: {{ selectedDate }}</p>
@@ -37,6 +37,15 @@
       >
         Απορριφθέντα
       </button>
+
+      <button
+        type="button"
+        class="tab-button"
+        [class.active-tab]="selectedTab === 'history'"
+        (click)="selectTab('history')"
+      >
+        Ιστορικό
+      </button>
     </div>
 
     <div class="appointment-list">
@@ -55,38 +64,56 @@
       @if (!isLoading && !errorMessage) {
         @if (visibleAppointments.length > 0) {
           @for (appointment of visibleAppointments; track appointment.id) {
-            <button
-              type="button"
-              class="appointment-row"
-              (click)="openAppointment(appointment)"
-            >
+            <div class="appointment-row">
               <div>
                 <h2>{{ appointment.doctorName }}</h2>
-                <p>
+                @if (appointment.specialties.length > 0) {
+                  <p class="doctor-specialties">{{ appointment.specialties.join(', ') }}</p>
+                }
+                <p class="appointment-datetime">
                   {{ appointment.date }}
                   Ώρα {{ appointment.startTime }} - {{ appointment.endTime }}
                 </p>
               </div>
 
-              <span
-                class="status-pill"
-                [class.pending-status]="appointment.status === 'pending'"
-                [class.confirmed-status]="appointment.status === 'booked'"
-                [class.rejected-status]="appointment.status === 'rejected'"
-              >
-                @if (appointment.status === 'pending') {
-                  Σε αναμονή
-                }
+              @if (selectedTab === 'history') {
+                <div class="appointment-row-actions">
+                  <span class="status-pill completed-status">Ολοκληρωμένο</span>
+                  <button
+                    type="button"
+                    class="review-button"
+                    [disabled]="hasReviewedAppointment(appointment.id)"
+                    (click)="openReviewDialog(appointment)"
+                  >
+                    {{ hasReviewedAppointment(appointment.id) ? 'Υποβλήθηκε' : 'Κριτική' }}
+                  </button>
+                </div>
+              } @else {
+                <span
+                  class="status-pill"
+                  [class.pending-status]="appointment.status === 'pending'"
+                  [class.confirmed-status]="appointment.status === 'booked'"
+                  [class.rejected-status]="appointment.status === 'rejected'"
+                  [class.completed-status]="appointment.status === 'completed'"
+                >
+                  @if (appointment.status === 'pending') {
+                    Σε αναμονή
+                  }
 
-                @if (appointment.status === 'booked') {
-                  Επιβεβαιωμένο
-                }
+                  @if (appointment.status === 'booked') {
+                    Επιβεβαιωμένο
+                  }
 
-                @if (appointment.status === 'rejected') {
-                  Απορρίφθηκε
-                }
-              </span>
-            </button>
+                  @if (appointment.status === 'rejected') {
+                    Απορρίφθηκε
+                  }
+
+                  @if (appointment.status === 'completed') {
+                    Ολοκληρωμένο
+                  }
+                </span>
+              }
+            </div>
           }
         } @else {
           <div class="empty-state">
@@ -96,4 +123,89 @@
       }
     </div>
   </div>
+
+  <p-dialog
+    header="Κριτική γιατρού"
+    [modal]="true"
+    [(visible)]="reviewDialogVisible"
+    [style]="{ width: '28rem' }"
+    (onHide)="closeReviewDialog()"
+  >
+    @if (reviewTargetAppointment) {
+      <p class="review-dialog-doctor">{{ reviewTargetAppointment.doctorName }}</p>
+      @if (reviewTargetAppointment.specialties.length > 0) {
+        <p class="doctor-specialties">{{ reviewTargetAppointment.specialties.join(', ') }}</p>
+      }
+      <p class="review-dialog-date">
+        {{ reviewTargetAppointment.date }}
+        · Ώρα {{ reviewTargetAppointment.startTime }} - {{ reviewTargetAppointment.endTime }}
+      </p>
+    }
+
+    <div class="review-rating-field">
+      <label>Βαθμολογία</label>
+      <div class="review-star-picker" role="group" aria-label="Βαθμολογία">
+        @for (star of starPositions; track star) {
+          <span class="review-star">
+            <span class="review-star-visual" aria-hidden="true">
+              <i class="pi pi-star"></i>
+              @if (isStarFilled(star)) {
+                <i class="pi pi-star-fill review-star-overlay"></i>
+              } @else if (isStarHalfFilled(star)) {
+                <i class="pi pi-star-fill review-star-overlay review-star-overlay-half"></i>
+              }
+            </span>
+            <button
+              type="button"
+              class="review-star-zone review-star-zone-left"
+              [attr.aria-label]="(star - 0.5) + ' αστέρια'"
+              (click)="setReviewRating(star - 0.5)"
+            ></button>
+            <button
+              type="button"
+              class="review-star-zone review-star-zone-right"
+              [attr.aria-label]="star + ' αστέρια'"
+              (click)="setReviewRating(star)"
+            ></button>
+          </span>
+        }
+      </div>
+      @if (reviewRating > 0) {
+        <span class="review-rating-value">{{ reviewRating | number:'1.1-1' }}/5</span>
+      }
+    </div>
+
+    <div class="review-comment-field">
+      <label for="review-comment">Κριτική</label>
+      <textarea
+        id="review-comment"
+        rows="4"
+        [(ngModel)]="reviewComment"
+        placeholder="Γράψτε την εμπειρία σας..."
+      ></textarea>
+    </div>
+
+    @if (reviewErrorMessage) {
+      <p class="review-error">{{ reviewErrorMessage }}</p>
+    }
+
+    <div class="review-dialog-actions">
+      <button
+        type="button"
+        class="review-cancel-button"
+        [disabled]="isSubmittingReview"
+        (click)="closeReviewDialog()"
+      >
+        Ακύρωση
+      </button>
+      <button
+        type="button"
+        class="review-submit-button"
+        [disabled]="isSubmittingReview"
+        (click)="submitReview()"
+      >
+        {{ isSubmittingReview ? 'Υποβολή...' : 'Υποβολή' }}
+      </button>
+    </div>
+  </p-dialog>
 </section>

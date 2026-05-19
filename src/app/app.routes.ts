@@ -18,7 +18,6 @@ import { AccountDetails } from "./features/patient/account-details/account-detai
 import { PatientAppointments } from './features/patient/patient-appointments/patient-appointments';
 import { Error403 } from './shared/components/error-403/error-403';
 import { Error500 } from './shared/components/error-500/error-500';
-import { AppointmentDetails } from './shared/components/appointment-details/appointment-details';
 import { Help } from './features/visitor/help/help';
 import { About } from './features/visitor/about/about';
 import { AppointmentConfirmEnd } from './features/patient/appointment-confirm-end/appointment-confirm-end';
@@ -71,10 +70,6 @@ export const routes: Routes = [
   {
     path: 'patient-appointments',
     component: PatientAppointments
-  },
-  {
-    path: 'patient-appointments/:id',
-    component: AppointmentDetails
   },
   {
     path: 'doctor',

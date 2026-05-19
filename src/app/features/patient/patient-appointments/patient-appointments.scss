@@ -91,9 +91,7 @@
   background-color: #ffffff;
   color: #1f2a44;
   text-align: left;
-  cursor: pointer;
   box-shadow: 0 5px 14px rgba(31, 42, 68, 0.08);
-  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
 
   display: flex;
   align-items: center;
@@ -101,20 +99,22 @@
   gap: 24px;
 }
 
-.appointment-row:hover {
-  transform: translateY(-1px);
-  border-color: #d8dce8;
-  box-shadow: 0 8px 18px rgba(31, 42, 68, 0.12);
-}
-
 .appointment-row h2 {
-  margin: 0 0 8px;
+  margin: 0 0 4px;
   color: #1f2a44;
   font-size: 20px;
   font-weight: 700;
 }
 
-.appointment-row p {
+.doctor-specialties {
+  margin: 0 0 8px;
+  color: #6e7894;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.appointment-row p,
+.appointment-datetime {
   margin: 0;
   color: #6e7894;
   font-size: 15px;
@@ -143,6 +143,185 @@
 .rejected-status {
   background-color: #ffb3b3;
   color: #1f2a44;
+}
+
+.completed-status {
+  background-color: #dfe4ee;
+  color: #1f2a44;
+}
+
+.appointment-row-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.review-button {
+  min-width: 110px;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 999px;
+  background-color: #1f2a44;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background-color 0.15s ease, opacity 0.15s ease;
+}
+
+.review-button:hover:not(:disabled) {
+  background-color: #2f3f66;
+}
+
+.review-button:disabled {
+  background-color: #9aa3b8;
+  cursor: not-allowed;
+}
+
+.review-dialog-doctor {
+  margin: 0 0 4px;
+  color: #1f2a44;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.review-dialog-date {
+  margin: 0 0 20px;
+  color: #6e7894;
+  font-size: 14px;
+}
+
+.review-rating-field,
+.review-comment-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.review-rating-field label,
+.review-comment-field label {
+  color: #1f2a44;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.review-star-picker {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.review-star {
+  position: relative;
+  width: 30px;
+  height: 30px;
+  display: inline-block;
+}
+
+.review-star-visual {
+  position: relative;
+  display: inline-block;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.review-star-visual .pi-star {
+  color: #d5dae8;
+  font-size: 28px;
+}
+
+.review-star-overlay {
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: #ffc107;
+  font-size: 28px;
+}
+
+.review-star-overlay-half {
+  clip-path: inset(0 50% 0 0);
+}
+
+.review-star-zone {
+  position: absolute;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+}
+
+.review-star-zone-left {
+  left: 0;
+}
+
+.review-star-zone-right {
+  right: 0;
+}
+
+.review-rating-value {
+  color: #6e7894;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.review-comment-field textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #d6d6d6;
+  border-radius: 12px;
+  color: #1f2a44;
+  font-size: 14px;
+  resize: vertical;
+}
+
+.review-comment-field textarea:focus {
+  outline: none;
+  border-color: #1f2a44;
+}
+
+.review-error {
+  margin: 0 0 16px;
+  color: #c0392b;
+  font-size: 14px;
+}
+
+.review-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.review-cancel-button,
+.review-submit-button {
+  min-width: 96px;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.review-cancel-button {
+  background-color: #e8ebf5;
+  color: #1f2a44;
+}
+
+.review-submit-button {
+  background-color: #1f2a44;
+  color: #ffffff;
+}
+
+.review-cancel-button:disabled,
+.review-submit-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .empty-state {
@@ -189,5 +368,10 @@
 
   .status-pill {
     min-width: 0;
+  }
+
+  .appointment-row-actions {
+    width: 100%;
+    justify-content: space-between;
   }
 }

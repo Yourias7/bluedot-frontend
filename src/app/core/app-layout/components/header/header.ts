@@ -41,8 +41,8 @@ export class Header implements OnInit, OnDestroy {
 
   patientNavRoutes: NavRoute[] = [
     { path: '/landing-page', title: 'Αρχική' },
-    { path: '/map-results', title: 'Ιατροί κοντά μου' },
-    { path: '/search-results', title: 'Συνεργαζόμενοι ιατροί' },
+    { path: '/map-results', title: 'Ιατροί Κοντά' },
+    { path: '/search-results', title: 'Συνεργαζόμενοι Ιατροί' },
     { path: '/about', title: 'Σχετικά' },
     { path: '/help', title: 'Βοήθεια' }
   ];
@@ -64,13 +64,13 @@ export class Header implements OnInit, OnDestroy {
   ) {
     this.loggedInOptions = [
       {
-        label: 'Ο λογαριασμός μου',
+        label: 'Λογαριασμος',
         command: () => {
           this.router.navigate(['/patient-account-details']);
         }
       },
       {
-        label: 'Τα ραντεβού μου',
+        label: 'Ραντεβού',
         command: () => {
           this.router.navigate(['/patient-appointments']);
         }
@@ -84,7 +84,7 @@ export class Header implements OnInit, OnDestroy {
 
     this.doctorOptions = [
       {
-        label: 'Ο λογαριασμός μου',
+        label: 'Λογαριασμός',
         command: () => {
           this.router.navigate(['/doctor/account-details']);
         }

@@ -1,18 +1,24 @@
+import { DecimalPipe } from '@angular/common';
 import { ChangeDetectorRef, Component } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { DialogModule } from 'primeng/dialog';
 
 import { Appointment } from '../../../shared/domain/appointment';
 import { AppointmentService } from '../../../shared/services/appointment-service';
+import { ReviewService } from '../../../shared/services/review-service';
 
-type AppointmentTab = 'appointments' | 'requests' | 'rejected';
+type AppointmentTab = 'appointments' | 'requests' | 'rejected' | 'history';
 
 @Component({
   selector: 'app-patient-appointments',
-  imports: [],
+  imports: [DecimalPipe, DialogModule, FormsModule],
   templateUrl: './patient-appointments.html',
   styleUrl: './patient-appointments.scss',
 })
 export class PatientAppointments {
+  readonly starPositions = [1, 2, 3, 4, 5];
+
   selectedTab: AppointmentTab = 'appointments';
 
   selectedDate: string | null = null;
@@ -22,10 +28,18 @@ export class PatientAppointments {
   isLoading = false;
   errorMessage = '';
 
+  reviewDialogVisible = false;
+  reviewTargetAppointment: Appointment | null = null;
+  reviewRating = 0;
+  reviewComment = '';
+  isSubmittingReview = false;
+  reviewErrorMessage = '';
+  reviewedAppointmentIds = new Set<number>();
+
   constructor(
     private route: ActivatedRoute,
-    private router: Router,
     private appointmentService: AppointmentService,
+    private reviewService: ReviewService,
     private changeDetectorRef: ChangeDetectorRef
   ) {
     const date = this.route.snapshot.queryParams['date'];
@@ -33,7 +47,12 @@ export class PatientAppointments {
 
     this.selectedDate = date ?? null;
 
-    if (tab === 'requests' || tab === 'appointments' || tab === 'rejected') {
+    if (
+      tab === 'requests' ||
+      tab === 'appointments' ||
+      tab === 'rejected' ||
+      tab === 'history'
+    ) {
       this.selectedTab = tab;
     }
 
@@ -77,6 +96,10 @@ export class PatientAppointments {
     return this.allAppointments.filter(appointment => appointment.status === 'rejected');
   }
 
+  get completedAppointments(): Appointment[] {
+    return this.allAppointments.filter(appointment => appointment.status === 'completed');
+  }
+
   get visibleAppointments(): Appointment[] {
     if (this.selectedTab === 'appointments') {
       return this.confirmedAppointments;
@@ -86,7 +109,11 @@ export class PatientAppointments {
       return this.pendingRequests;
     }
 
-    return this.rejectedAppointments;
+    if (this.selectedTab === 'rejected') {
+      return this.rejectedAppointments;
+    }
+
+    return this.completedAppointments;
   }
 
   selectTab(tab: AppointmentTab): void {
@@ -94,9 +121,73 @@ export class PatientAppointments {
     this.changeDetectorRef.detectChanges();
   }
 
-  openAppointment(appointment: Appointment): void {
-    this.router.navigate(['/patient-appointments', appointment.id], {
-      queryParams: this.selectedDate !== null ? { date: this.selectedDate } : {}
-    });
+  openReviewDialog(appointment: Appointment): void {
+    this.reviewTargetAppointment = appointment;
+    this.reviewRating = 0;
+    this.reviewComment = '';
+    this.reviewErrorMessage = '';
+    this.reviewDialogVisible = true;
+    this.changeDetectorRef.detectChanges();
+  }
+
+  closeReviewDialog(): void {
+    this.reviewDialogVisible = false;
+    this.reviewTargetAppointment = null;
+    this.reviewRating = 0;
+    this.reviewComment = '';
+    this.reviewErrorMessage = '';
+    this.isSubmittingReview = false;
+    this.changeDetectorRef.detectChanges();
+  }
+
+  setReviewRating(rating: number): void {
+    this.reviewRating = rating;
+    this.changeDetectorRef.detectChanges();
+  }
+
+  isStarFilled(star: number): boolean {
+    return this.reviewRating >= star;
+  }
+
+  isStarHalfFilled(star: number): boolean {
+    return this.reviewRating >= star - 0.5 && this.reviewRating < star;
+  }
+
+  hasReviewedAppointment(appointmentId: number): boolean {
+    return this.reviewedAppointmentIds.has(appointmentId);
+  }
+
+  submitReview(): void {
+    if (this.reviewTargetAppointment === null) {
+      return;
+    }
+
+    if (this.reviewRating < 0.5) {
+      this.reviewErrorMessage = 'Επιλέξτε βαθμολογία από 0.5 έως 5 αστέρια.';
+      this.changeDetectorRef.detectChanges();
+      return;
+    }
+
+    this.isSubmittingReview = true;
+    this.reviewErrorMessage = '';
+
+    this.reviewService
+      .submitReview(this.reviewTargetAppointment.id, {
+        rating: this.reviewRating,
+        comment: this.reviewComment.trim(),
+      })
+      .subscribe({
+        next: () => {
+          this.reviewedAppointmentIds.add(this.reviewTargetAppointment!.id);
+          this.isSubmittingReview = false;
+          this.closeReviewDialog();
+        },
+        error: error => {
+          console.error('Failed to submit review:', error);
+          this.isSubmittingReview = false;
+          this.reviewErrorMessage = 'Δεν ήταν δυνατή η υποβολή της κριτικής. Δοκιμάστε ξανά.';
+          this.changeDetectorRef.detectChanges();
+        },
+      });
   }
 }
