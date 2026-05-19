@@ -1,3 +1,41 @@
+:host ::ng-deep .p-dialog {
+  background-color: #ffffff !important;
+  color: #1f2a44 !important;
+  border: 1px solid #d6d6d6 !important;
+  border-radius: 18px !important;
+  box-shadow: 0 18px 40px rgba(31, 42, 68, 0.18) !important;
+}
+
+:host ::ng-deep .p-dialog-header {
+  padding: 22px 24px 10px !important;
+  background-color: #ffffff !important;
+  color: #1f2a44 !important;
+  border-bottom: none !important;
+  border-radius: 18px 18px 0 0 !important;
+}
+
+:host ::ng-deep .p-dialog-title {
+  color: #1f2a44 !important;
+  font-size: 24px !important;
+  font-weight: 800 !important;
+}
+
+:host ::ng-deep .p-dialog-content {
+  padding: 14px 24px 24px !important;
+  background-color: #ffffff !important;
+  color: #1f2a44 !important;
+  border-radius: 0 0 18px 18px !important;
+}
+
+:host ::ng-deep .p-dialog-header-close {
+  color: #1f2a44 !important;
+  border-radius: 50% !important;
+}
+
+:host ::ng-deep .p-dialog-header-close:hover {
+  background-color: #f4f6ff !important;
+}
+
 .login-form {
   display: flex;
   flex-direction: column;
@@ -12,11 +50,18 @@
 }
 
 .p-field input {
-  padding: 10px 12px;
+  width: 100%;
+  padding: 11px 13px;
   border: 1px solid #c8cde0;
-  border-radius: 10px;
+  border-radius: 12px;
+  background-color: #ffffff;
   color: #1f2a44;
   font-size: 15px;
+}
+
+.p-field input::placeholder {
+  color: #7c8499;
+  opacity: 1;
 }
 
 .p-field input:focus {
@@ -44,6 +89,22 @@
 .login-submit-button {
   width: 100%;
   justify-content: center;
+  padding: 12px 18px !important;
+  border: 1px solid #1f2a44 !important;
+  border-radius: 14px !important;
+  background-color: #1f2a44 !important;
+  color: #ffffff !important;
+  font-size: 15px !important;
+  font-weight: 800 !important;
+}
+
+.login-submit-button:hover {
+  background-color: #2b3858 !important;
+}
+
+.login-submit-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
 }
 
 .register-link-wrapper {
@@ -54,7 +115,7 @@
 .register-link-wrapper a {
   color: #1f2a44;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 700;
   text-decoration: none;
 }
 

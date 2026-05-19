@@ -1,0 +1,327 @@
+.register-page {
+  min-height: 100vh;
+  padding: 48px 24px;
+  background-color: #eef1ff;
+}
+
+.page-header {
+  max-width: 980px;
+  margin: 0 auto 28px;
+}
+
+.page-header h1 {
+  margin: 0 0 8px;
+  color: #1f2a44;
+  font-size: 36px;
+  font-weight: 700;
+}
+
+.page-header p {
+  margin: 0;
+  color: #7c8499;
+  font-size: 18px;
+}
+
+.register-card {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 34px 38px;
+  background-color: #ffffff;
+  border: 1px solid #d6d6d6;
+  border-radius: 18px;
+  box-shadow: 0 8px 18px rgba(31, 42, 68, 0.12);
+}
+
+.form-section {
+  margin-bottom: 18px;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 8px;
+  color: #1f2a44;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.form-control {
+  width: 100%;
+  padding: 11px 13px;
+  border: 1px solid #c8cde0;
+  border-radius: 12px;
+  background-color: #ffffff;
+  color: #1f2a44;
+  font-size: 15px;
+}
+
+.form-control::placeholder {
+  color: #7c8499;
+  opacity: 1;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: #7f8cff;
+  box-shadow: 0 0 0 3px rgba(127, 140, 255, 0.15);
+}
+
+textarea.form-control {
+  min-height: 110px;
+  resize: vertical;
+}
+
+.form-error {
+  margin-top: 6px;
+  color: #c74343;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.helper-text {
+  margin-top: 6px;
+  color: #7c8499;
+  font-size: 13px;
+}
+
+.terms-row {
+  margin-top: 10px;
+  color: #1f2a44;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.terms-row input {
+  width: 16px;
+  height: 16px;
+  accent-color: #1f2a44;
+}
+
+.form-actions {
+  margin-top: 26px;
+  display: flex;
+  justify-content: center;
+}
+
+.register-button {
+  padding: 13px 28px;
+  border: 1px solid #1f2a44;
+  border-radius: 14px;
+  background-color: #1f2a44;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.register-button:hover {
+  background-color: #2b3858;
+}
+
+.register-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.selected-specialties {
+  margin-top: 14px;
+}
+
+.selected-specialties p {
+  margin: 0 0 8px;
+  color: #1f2a44;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.selected-specialties-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.selected-specialties-list span {
+  padding: 7px 12px;
+  border-radius: 999px;
+  background-color: #eef1ff;
+  color: #1f2a44;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.address-field {
+  position: relative;
+}
+
+.address-suggestions {
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  max-height: 220px;
+  overflow-y: auto;
+  margin-top: 6px;
+  padding: 6px;
+  background-color: #ffffff;
+  border: 1px solid #d6d6d6;
+  border-radius: 14px;
+  box-shadow: 0 10px 24px rgba(31, 42, 68, 0.14);
+}
+
+.address-suggestion {
+  width: 100%;
+  padding: 10px 12px;
+  border: none;
+  border-radius: 10px;
+  background-color: #ffffff;
+  color: #1f2a44;
+  text-align: left;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.address-suggestion:hover {
+  background-color: #f4f6ff;
+}
+
+.alert-message {
+  margin-top: 22px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.success-message {
+  background-color: #d8f5dd;
+  color: #1f2a44;
+}
+
+.error-message {
+  background-color: #ffe5e5;
+  color: #9d2f2f;
+}
+
+/* PrimeNG tabs */
+
+:host ::ng-deep .register-tabs .p-tablist {
+  margin-bottom: 28px;
+  border-bottom: 2px solid #cfcfcf;
+  background-color: transparent;
+
+  display: flex;
+  gap: 0;
+}
+
+:host ::ng-deep .register-tabs .p-tab {
+  position: relative;
+  padding: 0 28px 10px;
+  border: none;
+  background-color: transparent;
+  color: #7b7b7b;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+:host ::ng-deep .register-tabs .p-tab:hover {
+  color: #3b3b3b;
+  background-color: transparent;
+}
+
+:host ::ng-deep .register-tabs .p-tab.p-tab-active {
+  color: #2f2f2f;
+  background-color: transparent;
+}
+
+:host ::ng-deep .register-tabs .p-tab.p-tab-active::after {
+  content: '';
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  bottom: -2px;
+  height: 2px;
+  background-color: #2f2f2f;
+  border-radius: 999px;
+}
+
+:host ::ng-deep .register-tabs .p-tabpanels {
+  padding: 0;
+  background-color: transparent;
+}
+
+/* PrimeNG listbox forced light */
+
+:host ::ng-deep .specialty-listbox,
+:host ::ng-deep .p-listbox {
+  width: 100% !important;
+  background-color: #ffffff !important;
+  color: #1f2a44 !important;
+  border: 1px solid #d6d6d6 !important;
+  border-radius: 14px !important;
+}
+
+:host ::ng-deep .p-listbox-list {
+  background-color: #ffffff !important;
+  color: #1f2a44 !important;
+}
+
+:host ::ng-deep .p-listbox-option,
+:host ::ng-deep .p-listbox-item {
+  color: #1f2a44 !important;
+  background-color: #ffffff !important;
+}
+
+:host ::ng-deep .p-listbox-option:hover,
+:host ::ng-deep .p-listbox-item:hover {
+  background-color: #f4f6ff !important;
+}
+
+:host ::ng-deep .p-listbox-option-selected,
+:host ::ng-deep .p-highlight {
+  background-color: #eef1ff !important;
+  color: #1f2a44 !important;
+}
+
+:host ::ng-deep .p-listbox-filter,
+:host ::ng-deep .p-inputtext {
+  background-color: #ffffff !important;
+  color: #1f2a44 !important;
+  border: 1px solid #c8cde0 !important;
+  border-radius: 12px !important;
+}
+
+@media (max-width: 768px) {
+  .register-page {
+    padding: 32px 18px;
+  }
+
+  .page-header h1 {
+    font-size: 28px;
+  }
+
+  .page-header p {
+    font-size: 16px;
+  }
+
+  .register-card {
+    padding: 26px 20px;
+  }
+
+  :host ::ng-deep .register-tabs .p-tablist {
+    overflow-x: auto;
+  }
+
+  :host ::ng-deep .register-tabs .p-tab {
+    flex: 0 0 auto;
+    padding: 0 18px 10px;
+    font-size: 20px;
+  }
+
+  .register-button {
+    width: 100%;
+  }
+}
