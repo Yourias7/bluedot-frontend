@@ -331,8 +331,6 @@ export class DoctorService {
       patientPhone: appointment.patientPhone ?? '-',
       patientEmail: appointment.patientEmail ?? '-',
       patientMessage: appointment.appointmentNotes ?? '',
-      doctorId: appointment.doctorId,
-      doctorName: appointment.doctorFullName,
       conversation: []
     };
   }
