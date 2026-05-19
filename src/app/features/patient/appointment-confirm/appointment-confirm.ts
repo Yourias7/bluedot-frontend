@@ -10,7 +10,7 @@ import { DoctorSearchService } from '../../../shared/services/doctor-search-serv
 
 @Component({
   selector: 'app-appointment-confirm',
-  imports: [CommonModule, AvatarModule, ReactiveFormsModule],
+  imports: [AvatarModule, DoctorBasicInfo, CommonModule, AvatarModule, ReactiveFormsModule],
   templateUrl: './appointment-confirm.html',
   styleUrl: './appointment-confirm.scss',
 })

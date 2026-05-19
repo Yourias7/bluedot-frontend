@@ -7,7 +7,7 @@ import { AutoCompleteModule } from 'primeng/autocomplete';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Doctor } from '../../../shared/domain/doctor';
 import { Specialty } from '../../../shared/domain/specialty';
 import { DoctorSearchService } from '../../../shared/services/doctor-search-service';
@@ -56,12 +56,33 @@ export class DoctorResultPage implements OnInit {
     private searchService: DoctorSearchService,
     private nominatimService: NominatimService,
     private router: Router,
+    private route: ActivatedRoute,
     private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
-    this.loadDoctors();
     this.loadSpecialties();
+
+    const params = this.route.snapshot.queryParams;
+    const specialtyId = params['specialtyId'] ? +params['specialtyId'] : null;
+    const specialtyName: string = params['specialtyName'] ?? '';
+    const lat = params['lat'] ? +params['lat'] : null;
+    const lon = params['lon'] ? +params['lon'] : null;
+    const locationName: string = params['locationName'] ?? '';
+
+    if (specialtyId && specialtyName) {
+      this.selectedSpecialty = { id: specialtyId, name: specialtyName };
+    }
+
+    if (locationName) {
+      this.locationQuery = locationName;
+    }
+
+    if (lat && lon && locationName) {
+      this.selectedLocationSuggestion = { lat, lon, displayName: locationName };
+    }
+
+    this.loadDoctors(specialtyId, lat, lon);
   }
 
   get pagedDoctors(): Doctor[] {

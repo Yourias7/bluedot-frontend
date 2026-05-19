@@ -14,6 +14,7 @@
           dateFormat="dd/mm/yy"
           [inline]="true"
           [showIcon]="false"
+          [minDate]="todayDate"
           (onSelect)="onDateChanged($event)"
         >
           <ng-template pTemplate="date" let-date>
@@ -27,6 +28,11 @@
           <div class="calendar-legend-item">
             <span class="calendar-legend-dot pending-dot"></span>
             <span>Αίτημα σε αναμονή</span>
+          </div>
+
+          <div class="calendar-legend-item">
+            <span class="calendar-legend-dot confirmed-dot"></span>
+            <span>Επιβεβαιωμένο ραντεβού</span>
           </div>
         </div>
       </div>
@@ -43,7 +49,7 @@
             </p>
           } @else if (isEditMode) {
             <p class="edit-mode-help">
-              Επιλέξτε ποιες μελλοντικές διαθέσιμες ώρες θέλετε να ενεργοποιήσετε ή να απενεργοποιήσετε.
+              Επιλέξτε ποιες διαθέσιμες ώρες θέλετε να ενεργοποιήσετε ή να απενεργοποιήσετε.
             </p>
           } @else {
             <p class="edit-mode-help">
@@ -82,51 +88,50 @@
       }
 
       @if (!isLoading && !errorMessage) {
-        <div class="slots-grid">
-          @for (slot of availabilitySlots; track slot.id) {
-            <div
-              class="slot-card"
-              [class.free-slot]="slot.status === 'free'"
-              [class.pending-slot]="slot.status === 'pending'"
-              [class.booked-slot]="slot.status === 'booked'"
-              [class.disabled-slot]="slot.status === 'disabled'"
-              [class.past-slot]="isSlotInPast(slot)"
-              [class.is-clickable]="!isEditMode && slot.appointmentId !== null"
-              (click)="openSlot(slot)"
-            >
-              <div class="slot-main-content">
-                <span class="slot-icon">▣</span>
-                <span>{{ slot.startTime }} - {{ slot.endTime }}</span>
+        @if (visibleAvailabilitySlots.length > 0) {
+          <div class="slots-grid">
+            @for (slot of visibleAvailabilitySlots; track slot.id) {
+              <div
+                class="slot-card"
+                [class.free-slot]="slot.status === 'free'"
+                [class.pending-slot]="slot.status === 'pending'"
+                [class.booked-slot]="slot.status === 'booked'"
+                [class.disabled-slot]="slot.status === 'disabled'"
+                [class.is-clickable]="!isEditMode && slot.appointmentId !== null"
+                (click)="openSlot(slot)"
+              >
+                <div class="slot-main-content">
+                  <span class="slot-icon">▣</span>
+                  <span>{{ slot.startTime }} - {{ slot.endTime }}</span>
+                </div>
+
+                @if (isEditMode && slot.status === 'free') {
+                  <button
+                    type="button"
+                    class="slot-edit-button disable-button"
+                    (click)="disableSlot(slot); $event.stopPropagation()"
+                  >
+                    Απενεργοποίηση
+                  </button>
+                }
+
+                @if (isEditMode && slot.status === 'disabled') {
+                  <button
+                    type="button"
+                    class="slot-edit-button enable-button"
+                    (click)="enableSlot(slot); $event.stopPropagation()"
+                  >
+                    Ενεργοποίηση
+                  </button>
+                }
               </div>
-
-              @if (isEditMode && slot.status === 'free' && !isSlotInPast(slot)) {
-                <button
-                  type="button"
-                  class="slot-edit-button disable-button"
-                  (click)="disableSlot(slot); $event.stopPropagation()"
-                >
-                  Απενεργοποίηση
-                </button>
-              }
-
-              @if (isEditMode && slot.status === 'disabled' && !isSlotInPast(slot)) {
-                <button
-                  type="button"
-                  class="slot-edit-button enable-button"
-                  (click)="enableSlot(slot); $event.stopPropagation()"
-                >
-                  Ενεργοποίηση
-                </button>
-              }
-
-              @if (isEditMode && isSlotInPast(slot)) {
-                <span class="past-slot-label">
-                  Παρελθοντική ώρα
-                </span>
-              }
-            </div>
-          }
-        </div>
+            }
+          </div>
+        } @else {
+          <div class="empty-state">
+            Δεν υπάρχουν άλλες διαθέσιμες ώρες για σήμερα.
+          </div>
+        }
       }
 
       <div class="legend">
