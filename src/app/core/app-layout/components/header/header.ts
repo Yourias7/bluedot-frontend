@@ -186,4 +186,22 @@ export class Header implements OnInit, OnDestroy {
   register() {
     this.router.navigate(['/register']);
   }
+
+  onNavClick(event: MouseEvent, path: string): void {
+    const isActive = this.router.isActive(path, {
+      paths: 'exact',
+      queryParams: 'ignored',
+      fragment: 'ignored',
+      matrixParams: 'ignored'
+    });
+
+    if (!isActive) {
+      return;
+    }
+
+    event.preventDefault();
+    void this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+      void this.router.navigateByUrl(path);
+    });
+  }
 }

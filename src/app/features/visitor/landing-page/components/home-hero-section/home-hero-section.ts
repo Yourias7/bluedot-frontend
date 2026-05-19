@@ -1,48 +1,62 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { IconFieldModule } from 'primeng/iconfield';
-import { InputIconModule } from 'primeng/inputicon';
-import { InputTextModule } from 'primeng/inputtext';
-import { FloatLabel } from 'primeng/floatlabel';
+import { FormsModule } from '@angular/forms';
+import { AutoCompleteModule } from 'primeng/autocomplete';
 import { Specialty } from '../../../../../shared/domain/specialty';
-import { DoctorSearchService } from '../../../../../shared/services/doctor-search-service';
-import { LocationSuggestion } from '../../../../../shared/services/nominatim.service';
-
+import {
+  LocationSuggestion,
+  NominatimService,
+} from '../../../../../shared/services/nominatim.service';
 
 @Component({
   selector: 'app-home-hero-section',
-  imports: [IconFieldModule, InputIconModule, InputTextModule],
+  imports: [FormsModule, AutoCompleteModule],
   templateUrl: './home-hero-section.html',
   styleUrl: './home-hero-section.scss',
 })
 export class HomeHeroSection {
   @Input() specialties: Specialty[] = [];
+  @Input() selectedSpecialty: Specialty | string | null = null;
+  @Input() selectedLocation: LocationSuggestion | string | null = null;
 
-  @Input() locations: any[] = [];
+  filteredSpecialties: Specialty[] = [];
+  filteredLocations: LocationSuggestion[] = [];
 
-  @Input() specialtyQuery = '';
-  @Input() locationQuery = '';
-
-  @Output() specialtyQueryChange = new EventEmitter<string>();
-  @Output() locationQueryChange = new EventEmitter<string>();
-  @Output() locationSearch = new EventEmitter<string>();
-  @Output() locationSelected = new EventEmitter<LocationSuggestion>();
+  @Output() selectedSpecialtyChange = new EventEmitter<Specialty | string | null>();
+  @Output() selectedLocationChange = new EventEmitter<LocationSuggestion | string | null>();
   @Output() searchClicked = new EventEmitter<void>();
 
-  constructor(private doctorSearchService:DoctorSearchService){
+  constructor(private nominatimService: NominatimService) {}
 
+  onSpecialtyChange(value: Specialty | string | null) {
+    this.selectedSpecialtyChange.emit(value);
   }
 
-  onSpecialtyInput(event: Event) {
-    const query = (event.target as HTMLInputElement).value;
-    this.specialtyQueryChange.emit(query);
+  onLocationChange(value: LocationSuggestion | string | null) {
+    this.selectedLocationChange.emit(value);
   }
 
-  onLocationInput(event: Event) {
-    const query = (event.target as HTMLInputElement).value;
-    this.locationQueryChange.emit(query);
-    if (query.length > 2) {
-      this.locationSearch.emit(query);
+  filterSpecialties(event: { originalEvent: Event; query: string }) {
+    const query = event.query?.toLowerCase() ?? '';
+    this.filteredSpecialties = this.specialties.filter(specialty =>
+      specialty.name.toLowerCase().includes(query)
+    );
+  }
+
+  filterLocations(event: { originalEvent: Event; query: string }) {
+    const query = event.query?.trim() ?? '';
+
+    if (query.length < 3) {
+      this.filteredLocations = [];
+      return;
     }
-  }
 
+    this.nominatimService.searchAddress(query).subscribe({
+      next: results => {
+        this.filteredLocations = results ?? [];
+      },
+      error: () => {
+        this.filteredLocations = [];
+      },
+    });
+  }
 }

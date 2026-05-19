@@ -2,10 +2,8 @@ import { Component } from '@angular/core';
 import { HomeHeroSection } from "./components/home-hero-section/home-hero-section";
 import { DoctorSearchService } from '../../../shared/services/doctor-search-service';
 import { Specialty } from '../../../shared/domain/specialty';
-import { NominatimService, LocationSuggestion } from '../../../shared/services/nominatim.service';
-import { Route, Router } from '@angular/router';
-
-const radiusKm = 3.5;
+import { LocationSuggestion } from '../../../shared/services/nominatim.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-landing-page',
@@ -16,14 +14,10 @@ const radiusKm = 3.5;
 export class LandingPage {
   items: Specialty[] = [];
 
-  locationSuggestions: LocationSuggestion[] = [];
-  selectedSpecialty?: Specialty;
-  selectedLocationSuggestion?: LocationSuggestion;
+  selectedSpecialty: Specialty | string | null = null;
+  selectedLocation: LocationSuggestion | string | null = null;
 
-  specialtyQuery = '';
-  locationQuery = '';
-
-  constructor(private searchService: DoctorSearchService, private nominatimService: NominatimService, private router: Router) {
+  constructor(private searchService: DoctorSearchService, private router: Router) {
 
   }
 
@@ -34,45 +28,68 @@ export class LandingPage {
     })
   }
 
-  onSpecialtyInput(query: string) {
-    this.specialtyQuery = query;
-    const match = this.items.find(item => item.name?.toLowerCase() === query.toLowerCase());
-    this.selectedSpecialty = match;
+  onSpecialtyChange(value: Specialty | string | null) {
+    this.selectedSpecialty = value;
+
+    if (value && typeof value === 'object') {
+      return;
+    }
+
+    if (typeof value === 'string' && value.trim().length > 0) {
+      const needle = value.trim().toLowerCase();
+      this.selectedSpecialty =
+        this.items.find(item => item.name?.toLowerCase() === needle) ?? value;
+    }
   }
 
-  onLocationTextChange(query: string) {
-    this.locationQuery = query;
-  }
-
-  onSearchLocation(query: string) {
-    this.locationQuery = query;
-    this.nominatimService.searchAddress(query).subscribe((results: LocationSuggestion[]) => {
-      this.locationSuggestions = results;
-    });
+  onLocationChange(value: LocationSuggestion | string | null) {
+    this.selectedLocation = value;
   }
 
   search() {
-    if (!this.selectedSpecialty && this.specialtyQuery) {
-      this.selectedSpecialty = this.items.find(item => item.name?.toLowerCase() === this.specialtyQuery.toLowerCase());
-    }
-
-    if (!this.selectedLocationSuggestion && this.locationQuery) {
-      this.selectedLocationSuggestion = this.locationSuggestions.find(item => item.displayName?.toLowerCase() === this.locationQuery.toLowerCase());
-    }
+    const resolvedSpecialty = this.resolveSelectedSpecialty();
+    const resolvedLocation = this.resolveSelectedLocation();
 
     const queryParams: Record<string, string | number> = {};
 
-    if (this.selectedSpecialty) {
-      queryParams['specialtyId'] = this.selectedSpecialty.id;
-      queryParams['specialtyName'] = this.selectedSpecialty.name;
+    if (resolvedSpecialty) {
+      queryParams['specialtyId'] = resolvedSpecialty.id;
+      queryParams['specialtyName'] = resolvedSpecialty.name;
     }
 
-    if (this.selectedLocationSuggestion) {
-      queryParams['lat'] = this.selectedLocationSuggestion.lat;
-      queryParams['lon'] = this.selectedLocationSuggestion.lon;
-      queryParams['locationName'] = this.selectedLocationSuggestion.displayName;
+    if (resolvedLocation) {
+      queryParams['lat'] = resolvedLocation.lat;
+      queryParams['lon'] = resolvedLocation.lon;
+      queryParams['locationName'] = resolvedLocation.displayName;
     }
 
     this.router.navigate(['/search-results'], { queryParams });
+  }
+
+  private resolveSelectedSpecialty(): Specialty | null {
+    const value = this.selectedSpecialty;
+
+    if (value && typeof value === 'object') {
+      return value;
+    }
+
+    if (typeof value === 'string' && value.trim().length > 0) {
+      const needle = value.trim().toLowerCase();
+      return (
+        this.items.find(item => item.name?.toLowerCase() === needle) ?? null
+      );
+    }
+
+    return null;
+  }
+
+  private resolveSelectedLocation(): LocationSuggestion | null {
+    const value = this.selectedLocation;
+
+    if (value && typeof value === 'object') {
+      return value;
+    }
+
+    return null;
   }
 }

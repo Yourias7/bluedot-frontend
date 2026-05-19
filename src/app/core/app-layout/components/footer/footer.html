@@ -22,11 +22,11 @@
                 <h3>Περιοχές</h3>
 
                 <ul>
-                    <li><a (click)="searchCityDoctors('Athens')">Athens</a></li>
-                    <li><a (click)="searchCityDoctors('Thessaloniki')">Thessaloniki</a></li>
-                    <li><a (click)="searchCityDoctors('Patra')">Patra</a></li>
-                    <li><a (click)="searchCityDoctors('Syros')">Syros</a></li>
-                    <li><a (click)="searchCityDoctors('Drama')">Drama</a></li>
+                    <li><a (click)="searchCityDoctors('Αθήνα')">Αθήνα</a></li>
+                    <li><a (click)="searchCityDoctors('Θεσσαλονίκη')">Θεσσαλονίκη</a></li>
+                    <li><a (click)="searchCityDoctors('Πάτρα')">Πάτρα</a></li>
+                    <li><a (click)="searchCityDoctors('Σύρος')">Σύρος</a></li>
+                    <li><a (click)="searchCityDoctors('Δράμα')">Δράμα</a></li>
                 </ul>
             </article>}
 
@@ -35,9 +35,8 @@
                 <ul>
                     <li><a [routerLink]="['/help']">Βοήθεια</a></li>
                     <li><a [routerLink]="['/about']">Σχετικά</a></li>
-                    <li><a>Όροι χρήσης</a></li>
-                    <li><a>Cookies</a></li>
-                    <li><a>Πολιτική απορρήτου</a></li>
+                    <li><a [routerLink]="['/privacy-policy']">Πολιτική Απορρήτου</a></li>
+                    <li><a [routerLink]="['/cookies']">Cookies</a></li>
                 </ul>
             </article>
         </section>

@@ -66,6 +66,8 @@ export const routes: Routes = [
   {
     path: 'appointment-confirm-end',
     component: AppointmentConfirmEnd
+    path: 'appointment-confirm-end',
+    component: AppointmentConfirmEnd
   },
   {
     path: 'patient-account-details',
@@ -118,6 +120,7 @@ export const routes: Routes = [
   },
   {
     path: 'help',
+    component: Help
     component: Help
   },
   {

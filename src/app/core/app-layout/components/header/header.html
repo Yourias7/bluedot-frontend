@@ -17,6 +17,7 @@
           matrixParams: 'ignored'
         }"
         class="nav-link"
+        (click)="onNavClick($event, route.path)"
       >
         {{ route.title }}
       </a>
