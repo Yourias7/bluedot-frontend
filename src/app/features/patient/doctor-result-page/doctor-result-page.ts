@@ -1,13 +1,11 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AvatarModule } from 'primeng/avatar';
 import { PaginatorModule, PaginatorState } from 'primeng/paginator';
 import { AutoCompleteModule } from 'primeng/autocomplete';
-import { IconFieldModule } from 'primeng/iconfield';
-import { InputIconModule } from 'primeng/inputicon';
-import { InputTextModule } from 'primeng/inputtext';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { Doctor } from '../../../shared/domain/doctor';
 import { Specialty } from '../../../shared/domain/specialty';
 import { DoctorSearchService } from '../../../shared/services/doctor-search-service';
@@ -24,17 +22,15 @@ export type DoctorSortBy = 'reviews' | 'name';
     AvatarModule,
     PaginatorModule,
     AutoCompleteModule,
-    IconFieldModule,
-    InputIconModule,
-    InputTextModule,
     DoctorResultCard,
   ],
   templateUrl: './doctor-result-page.html',
   styleUrl: './doctor-result-page.scss',
 })
-export class DoctorResultPage implements OnInit {
+export class DoctorResultPage implements OnInit, OnDestroy {
 
   private static readonly DEFAULT_RADIUS_KM = 10;
+  private queryParamsSubscription?: Subscription;
 
   doctors: Doctor[] = [];
   first = 0;
@@ -49,8 +45,7 @@ export class DoctorResultPage implements OnInit {
   selectedSpecialty: Specialty | string | null = null;
 
   locationSuggestions: LocationSuggestion[] = [];
-  selectedLocationSuggestion: LocationSuggestion | null = null;
-  locationQuery = '';
+  selectedLocation: LocationSuggestion | string | null = null;
 
   constructor(
     private searchService: DoctorSearchService,
@@ -63,23 +58,35 @@ export class DoctorResultPage implements OnInit {
   ngOnInit(): void {
     this.loadSpecialties();
 
-    const params = this.route.snapshot.queryParams;
+    this.queryParamsSubscription = this.route.queryParams.subscribe(params => {
+      this.applyQueryParams(params);
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.queryParamsSubscription?.unsubscribe();
+  }
+
+  private applyQueryParams(params: Params): void {
     const specialtyId = params['specialtyId'] ? +params['specialtyId'] : null;
     const specialtyName: string = params['specialtyName'] ?? '';
     const lat = params['lat'] ? +params['lat'] : null;
     const lon = params['lon'] ? +params['lon'] : null;
     const locationName: string = params['locationName'] ?? '';
 
+    this.selectedSpecialty = null;
+    this.selectedLocation = null;
+
     if (specialtyId && specialtyName) {
       this.selectedSpecialty = { id: specialtyId, name: specialtyName };
+    } else if (specialtyName) {
+      this.selectedSpecialty = specialtyName;
     }
 
-    if (locationName) {
-      this.locationQuery = locationName;
-    }
-
-    if (lat && lon && locationName) {
-      this.selectedLocationSuggestion = { lat, lon, displayName: locationName };
+    if (lat != null && lon != null && locationName) {
+      this.selectedLocation = { lat, lon, displayName: locationName };
+    } else if (locationName) {
+      this.selectedLocation = locationName;
     }
 
     this.loadDoctors(specialtyId, lat, lon);
@@ -105,21 +112,8 @@ export class DoctorResultPage implements OnInit {
     );
   }
 
-  onLocationInput(event: Event) {
-    const query = (event.target as HTMLInputElement).value;
-    this.locationQuery = query;
-
-    const matchedSuggestion = this.locationSuggestions.find(
-      suggestion => suggestion.displayName === query
-    );
-
-    if (matchedSuggestion) {
-      this.selectedLocationSuggestion = matchedSuggestion;
-      this.applyFilters();
-      return;
-    }
-
-    this.selectedLocationSuggestion = null;
+  filterLocations(event: { originalEvent: Event; query: string }) {
+    const query = event.query?.trim() ?? '';
 
     if (query.length < 3) {
       this.locationSuggestions = [];
@@ -128,28 +122,23 @@ export class DoctorResultPage implements OnInit {
     }
 
     this.nominatimService.searchAddress(query).subscribe({
-      next: (results) => {
+      next: results => {
         this.locationSuggestions = results ?? [];
         this.cdr.detectChanges();
       },
-      error: (error) => {
+      error: error => {
         console.error('Failed to load location suggestions:', error);
         this.locationSuggestions = [];
         this.cdr.detectChanges();
-      }
+      },
     });
   }
 
   applyFilters() {
-    if (!this.selectedLocationSuggestion && this.locationQuery.trim().length > 0) {
-      this.selectedLocationSuggestion = this.locationSuggestions.find(
-        suggestion => suggestion.displayName.toLowerCase() === this.locationQuery.trim().toLowerCase()
-      ) ?? null;
-    }
-
+    const resolvedLocation = this.resolveSelectedLocation();
     const specialtyId = this.resolveSelectedSpecialtyId();
-    const lat = this.selectedLocationSuggestion?.lat ?? null;
-    const lng = this.selectedLocationSuggestion?.lon ?? null;
+    const lat = resolvedLocation?.lat ?? null;
+    const lng = resolvedLocation?.lon ?? null;
     // const radiusKm = this.selectedLocationSuggestion ? DoctorResultPage.DEFAULT_RADIUS_KM : null;
     var radiusKm = 3.5;
 
@@ -235,6 +224,25 @@ export class DoctorResultPage implements OnInit {
         specialty => specialty.name.toLowerCase() === needle
       );
       return match?.id ?? null;
+    }
+
+    return null;
+  }
+
+  private resolveSelectedLocation(): LocationSuggestion | null {
+    const value = this.selectedLocation;
+
+    if (value && typeof value === 'object') {
+      return value;
+    }
+
+    if (typeof value === 'string' && value.trim().length > 0) {
+      const needle = value.trim().toLowerCase();
+      return (
+        this.locationSuggestions.find(
+          suggestion => suggestion.displayName.toLowerCase() === needle
+        ) ?? null
+      );
     }
 
     return null;

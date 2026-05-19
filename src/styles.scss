@@ -47,3 +47,26 @@ input[pInputText]:focus {
   border-color: #7f8cff !important;
   box-shadow: 0 0 0 3px rgba(127, 140, 255, 0.15) !important;
 }
+
+/* PrimeNG autocomplete — light panel (matches map-results) */
+.p-autocomplete-overlay,
+.p-autocomplete-panel {
+  background-color: #ffffff !important;
+  color: #1f2a44 !important;
+  border: 1px solid #d6d6d6 !important;
+  border-radius: 14px !important;
+  box-shadow: 0 10px 24px rgba(31, 42, 68, 0.14) !important;
+}
+
+.p-autocomplete-option,
+.p-autocomplete-item {
+  color: #1f2a44 !important;
+  background-color: #ffffff !important;
+}
+
+.p-autocomplete-option:hover,
+.p-autocomplete-item:hover,
+.p-autocomplete-option.p-focus,
+.p-autocomplete-item.p-focus {
+  background-color: #f4f6ff !important;
+}
