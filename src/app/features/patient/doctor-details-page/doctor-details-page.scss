@@ -189,6 +189,19 @@
   line-height: 1.55;
 }
 
+.alert-message {
+  margin-top: 22px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.error-message {
+  background-color: #ffe5e5;
+  color: #9d2f2f;
+}
+
 .details-actions {
   margin-top: 30px;
 
