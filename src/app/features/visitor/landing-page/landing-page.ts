@@ -60,12 +60,19 @@ export class LandingPage {
       this.selectedLocationSuggestion = this.locationSuggestions.find(item => item.displayName?.toLowerCase() === this.locationQuery.toLowerCase());
     }
 
-  
-    this.searchService.searchDoctors(this.selectedSpecialty?.id,
-      this.selectedLocationSuggestion?.lat,
-      this.selectedLocationSuggestion?.lon).subscribe((response) => {
-           console.log(response);
-          this.router.navigate(['/search-results']);
-      });
+    const queryParams: Record<string, string | number> = {};
+
+    if (this.selectedSpecialty) {
+      queryParams['specialtyId'] = this.selectedSpecialty.id;
+      queryParams['specialtyName'] = this.selectedSpecialty.name;
+    }
+
+    if (this.selectedLocationSuggestion) {
+      queryParams['lat'] = this.selectedLocationSuggestion.lat;
+      queryParams['lon'] = this.selectedLocationSuggestion.lon;
+      queryParams['locationName'] = this.selectedLocationSuggestion.displayName;
+    }
+
+    this.router.navigate(['/search-results'], { queryParams });
   }
 }
