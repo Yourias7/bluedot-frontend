@@ -77,7 +77,7 @@ export class AuthenticationServices {
   private currentUserNameSubject = new BehaviorSubject<string>(this.getNameFromStorage());
   public currentUserName$ = this.currentUserNameSubject.asObservable();
 
-  constructor(private router: Router) {}
+  constructor(private router: Router) { }
 
   login(model: LoginDto): Observable<LoginResponseDto> {
     return this.http.post<LoginResponseDto>(`${this.baseUrl}/account/login`, model).pipe(
@@ -114,6 +114,21 @@ export class AuthenticationServices {
 
   updateMe(model: UpdateAccountMeDto): Observable<AccountMeDto> {
     return this.http.patch<AccountMeDto>(`${this.baseUrl}/account/me`, model);
+  }
+
+  deleteMe(): Observable<unknown> {
+    return this.http.delete(`${this.baseUrl}/account/me`).pipe(
+      tap(() => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('currentUser');
+        localStorage.removeItem('role');
+        localStorage.removeItem('userName');
+
+        // Broadcast that nobody is logged in anymore
+        this.currentUserRoleSubject.next('guest');
+        this.currentUserNameSubject.next('');
+      })
+    );
   }
 
   public getCurrentUserRole(): UserRole {
@@ -158,7 +173,7 @@ export class AuthenticationServices {
   public setLoggedInUser(userDto: any): void {
     localStorage.setItem('token', userDto.token);
     localStorage.setItem('currentUser', JSON.stringify(userDto));
-    
+
     // Broadcast the new state to anyone listening (like the Header!)
     this.currentUserRoleSubject.next(userDto.role);
     this.currentUserNameSubject.next(`${userDto.firstName} ${userDto.lastName}`);
@@ -191,7 +206,7 @@ export class AuthenticationServices {
     if (normalizedRole === 'doctor') return 'doctor';
     if (normalizedRole === 'patient') return 'patient';
     if (normalizedRole === 'manager' || normalizedRole === 'admin') return 'manager';
-    
+
     return 'guest';
   }
 }
