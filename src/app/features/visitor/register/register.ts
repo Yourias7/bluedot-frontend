@@ -1,4 +1,4 @@
-import { Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormGroup, ReactiveFormsModule, Validators, FormControl, FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -26,8 +26,8 @@ export class Register implements OnInit {
   doctor_registerForm: FormGroup;
 
   isLoading = false;
-  successMessage? = '';
-  errorMessage? = '';
+  successMessage = '';
+  errorMessage = '';
 
   // Autocomplete state variables
   addressSuggestions: LocationSuggestion[] = [];
@@ -73,7 +73,7 @@ export class Register implements OnInit {
   ngOnInit() {
     this.doctorSearchService.getSpecialties().subscribe((data) => {
       console.log(data)
-      this.items=data;
+      this.items = data;
     })
     this.setupAddressAutocomplete();
   }
@@ -110,8 +110,8 @@ export class Register implements OnInit {
     // We emitEvent: false to prevent the valueChanges subscription from firing again
     this.doctor_registerForm.patchValue({
       clinicAddress: address.displayName
-    }, { emitEvent: false }); 
-    
+    }, { emitEvent: false });
+
     this.showSuggestions = false;
   }
 
@@ -122,8 +122,8 @@ export class Register implements OnInit {
   }
 
   submitPatient() {
-    //this.errorMessage = 'Αποτυχία εγγραφής ασθενή. Ελέγξτε τα στοιχεία και δοκιμάστε ξανά.';
-    //this.successMessage = 'Η εγγραφή ολοκληρώθηκε επιτυχώς. Μπορείτε πλέον να συνδεθείτε.';
+    this.errorMessage = 'Αποτυχία εγγραφής ασθενή. Ελέγξτε τα στοιχεία και δοκιμάστε ξανά.';
+    this.successMessage = 'Η εγγραφή ολοκληρώθηκε επιτυχώς. Μπορείτε πλέον να συνδεθείτε.';
 
     this.patient_registerForm.markAllAsTouched();
 
@@ -171,8 +171,8 @@ export class Register implements OnInit {
   }
 
   submitDoctor() {
-    //this.errorMessage = 'Αποτυχία εγγραφής γιατρού. Ελέγξτε τα στοιχεία και δοκιμάστε ξανά.';
-    //this.successMessage = 'Η εγγραφή ολοκληρώθηκε επιτυχώς. Μπορείτε πλέον να συνδεθείτε.';
+    this.errorMessage = '';
+    this.successMessage = '';
 
     this.doctor_registerForm.markAllAsTouched();
 
@@ -221,18 +221,24 @@ export class Register implements OnInit {
     this.isLoading = true;
 
     this.authenticationServices.registerDoctor(doctorPayload).subscribe({
-      next: () => {
-        this.isLoading = false;
-        this.errorMessage = undefined;
-        this.successMessage = 'Η εγγραφή γιατρού ολοκληρώθηκε επιτυχώς. Μπορείτε πλέον να συνδεθείτε.';
-
+      next: (unknown) => {
+        /*  this.isLoading = false;
+         this.errorMessage = '';
+         this.successMessage = 'Η εγγραφή γιατρού ολοκληρώθηκε επιτυχώς. Μπορείτε πλέον να συνδεθείτε.'; */
         setTimeout(() => {
-          this.router.navigate(['/landing-page']);
-        }, 1200);
+          this.isLoading = false;
+          this.errorMessage = '';
+          this.successMessage = 'Η εγγραφή γιατρού ολοκληρώθηκε επιτυχώς. Μπορείτε πλέον να συνδεθείτε.';
+          setTimeout(() => {
+            console.log("success");
+            this.router.navigate(['/doctor']);
+          }, 2400);
+        }, 400);
+
       },
       error: error => {
         console.error('Doctor registration failed:', error);
-        this.successMessage = undefined;
+        this.successMessage = '';
         this.isLoading = false;
         this.errorMessage = this.getErrorMessage(
           error,

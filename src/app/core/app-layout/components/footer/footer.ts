@@ -1,8 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Logo } from '../common/logo/logo';
 import { Router, RouterLink } from "@angular/router";
 import { DoctorSearchService } from '../../../../shared/services/doctor-search-service';
 import { Specialty } from '../../../../shared/domain/specialty';
+import { AuthenticationServices } from '../../../../shared/services/authentication-services';
+import { UserRole } from '../../../../shared/domain/user-role';
+import { Subscription } from 'rxjs';
 
 export interface CityCoordinates {
   name: string;
@@ -44,12 +47,30 @@ export const cities: CityCoordinates[] = [
   templateUrl: './footer.html',
   styleUrl: './footer.scss',
 })
-export class Footer {
+export class Footer implements OnInit, OnDestroy {
 
   specialty?: Specialty;
+  currentUserRole?: UserRole;
+  private authSubscription: Subscription = new Subscription();
 
-  constructor(private searchService: DoctorSearchService, private router: Router) {
+  constructor(private searchService: DoctorSearchService, private router: Router, private authSevices:AuthenticationServices) {
 
+  }
+
+  ngOnInit(): void {
+      this.authSubscription.add(
+      this.authSevices.currentUserRole$.subscribe(role => {
+        this.currentUserRole = role;
+      })
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.authSubscription.unsubscribe();
+  }
+
+  isDoctor():boolean{
+    return this.currentUserRole=='doctor';
   }
 
   searchDoctorsBySpecialty(spec: string) {
