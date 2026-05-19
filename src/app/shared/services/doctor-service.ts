@@ -323,6 +323,10 @@ export class DoctorService {
       date: this.formatDate(startDate),
       startTime: this.formatTime(startDate),
       endTime: this.formatTime(endDate),
+
+      doctorName: appointment.doctorFullName,
+      doctorId: appointment.doctorId,
+
       patientName: appointment.patientFullName,
       patientPhone: appointment.patientPhone ?? '-',
       patientEmail: appointment.patientEmail ?? '-',
