@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Doctor } from '../domain/doctor';
 import { UserRole } from '../domain/user';
 import { Specialty } from '../domain/specialty';
+import { Review } from '../domain/review';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../../environments/environment.development';
 import { Observable, map } from 'rxjs';
@@ -137,6 +138,18 @@ export class DoctorSearchService {
 
   getDoctorById(id: number): Doctor | undefined {
     return this.doctors.find(doctor => doctor.id === id);
+  }
+
+  loadDoctorById(id: number): Observable<Doctor> {
+    return this.httpClient.get<Doctor>(`${this.baseUrl}/doctors/${id}`);
+  }
+
+  loadReviewsByDoctorId(id: number): Observable<Review[]> {
+    return this.httpClient
+      .get<Review[] | { items: Review[] }>(`${this.baseUrl}/doctors/${id}/reviews`)
+      .pipe(
+        map(response => Array.isArray(response) ? response : response.items ?? [])
+      );
   }
 
   //TODO: Test meee

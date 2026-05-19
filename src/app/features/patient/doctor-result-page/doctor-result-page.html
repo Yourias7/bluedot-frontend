@@ -5,18 +5,69 @@
   </div>
 
   <div class="results-card">
+    <div class="filters-row">
+      <p-autoComplete
+        [(ngModel)]="selectedSpecialty"
+        [suggestions]="filteredSpecialties"
+        (completeMethod)="filterSpecialties($event)"
+        (onSelect)="applyFilters()"
+        (onClear)="applyFilters()"
+        [minLength]="1"
+        field="name"
+        dataKey="id"
+        placeholder="Ειδικότητα"
+        inputStyleClass="form-control">
+      </p-autoComplete>
+
+      <p-iconfield class="location-field">
+        <p-inputicon styleClass="pi pi-search"></p-inputicon>
+        <input
+          type="text"
+          pInputText
+          list="doctor-result-location-options"
+          placeholder="Τοποθεσία πχ. Αθήνα"
+          [value]="locationQuery"
+          (input)="onLocationInput($event)" />
+        <datalist id="doctor-result-location-options">
+          @for (location of locationSuggestions; track $index) {
+            <option [value]="location.displayName"></option>
+          }
+        </datalist>
+      </p-iconfield>
+
+      <button type="button" class="filter-search-button" (click)="applyFilters()">
+        <i class="pi pi-search"></i>
+      </button>
+    </div>
+
+    @if (doctorLoadError) {
+      <div class="filter-error">{{ doctorLoadError }}</div>
+    }
+
     <div class="sort-row">
       <span>Ταξινόμηση κατά:</span>
 
-      <button type="button" class="sort-chip active-chip">
+      <button
+        type="button"
+        class="sort-chip"
+        [class.active-chip]="sortBy === 'relevance'"
+        (click)="setSortBy('relevance')">
         Σχετικότητα
       </button>
 
-      <button type="button" class="sort-chip">
+      <button
+        type="button"
+        class="sort-chip"
+        [class.active-chip]="sortBy === 'reviews'"
+        (click)="setSortBy('reviews')">
         Κριτικές
       </button>
 
-      <button type="button" class="sort-chip">
+      <button
+        type="button"
+        class="sort-chip"
+        [class.active-chip]="sortBy === 'name'"
+        (click)="setSortBy('name')">
         Όνομα Α-Ω
       </button>
     </div>
@@ -36,7 +87,7 @@
           (onPageChange)="onPage($event)"
           [first]="first"
           [rows]="rows"
-          [totalRecords]="doctors?.length ?? 0"
+          [totalRecords]="doctors.length"
           [rowsPerPageOptions]="[5, 10, 20]"
         ></p-paginator>
       </div>
