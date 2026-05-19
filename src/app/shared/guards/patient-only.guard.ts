@@ -3,13 +3,13 @@ import { Router } from '@angular/router';
 
 import { AuthenticationServices } from '../services/authentication-services';
 
-export const doctorOnlyGuard = () => {
+export const patientOnlyGuard = () => {
   const authService = inject(AuthenticationServices);
   const router = inject(Router);
 
   const currentUserRole = authService.getCurrentUserRole();
 
-  if (currentUserRole === 'doctor') {
+  if (currentUserRole === 'patient') {
     return true;
   }
 

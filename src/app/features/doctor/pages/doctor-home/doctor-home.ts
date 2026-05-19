@@ -24,6 +24,7 @@ export class DoctorHome implements OnInit, OnDestroy {
   currentUserName = '';
 
   isLoadingAppointments = false;
+  homeErrorMessage = '';
 
   private subscriptions = new Subscription();
 
@@ -155,6 +156,7 @@ export class DoctorHome implements OnInit, OnDestroy {
 
   loadAppointmentsForCalendar() {
     this.isLoadingAppointments = true;
+    this.homeErrorMessage = '';
 
     this.doctorService.loadDoctorAppointments().subscribe({
       next: () => {
@@ -166,6 +168,7 @@ export class DoctorHome implements OnInit, OnDestroy {
         console.error('Could not load doctor appointments for homepage:', error);
 
         this.isLoadingAppointments = false;
+        this.homeErrorMessage = 'Δεν ήταν δυνατή η φόρτωση των ραντεβού.';
         this.buildCalendar();
         this.changeDetectorRef.detectChanges();
       }
