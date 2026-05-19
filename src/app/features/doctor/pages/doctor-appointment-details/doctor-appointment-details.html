@@ -1,216 +1,208 @@
 <section class="appointment-details-page">
   @if (isLoading) {
-    <div class="not-found-card">
-      <h1>Φόρτωση ραντεβού...</h1>
-    </div>
+  <div class="not-found-card">
+    <h1>Φόρτωση ραντεβού...</h1>
+  </div>
   }
 
   @if (errorMessage) {
-    <div class="not-found-card">
-      <h1>{{ errorMessage }}</h1>
+  <div class="not-found-card">
+    <h1>{{ errorMessage }}</h1>
 
-      <button type="button" class="back-button" (click)="goBack()">
-        Επιστροφή στα ραντεβού
-      </button>
-    </div>
+    <button type="button" class="back-button" (click)="goBack()">
+      Επιστροφή στα ραντεβού
+    </button>
+  </div>
   }
 
   @if (!isLoading && !errorMessage && appointment !== undefined) {
-    <div class="page-header">
-      <button type="button" class="back-button" (click)="goBack()">
-        ← Πίσω στα ραντεβού
-      </button>
+  <div class="page-header">
+    <button type="button" class="back-button" (click)="goBack()">
+      ← Πίσω στα ραντεβού
+    </button>
 
-      <h1>Λεπτομέρειες ραντεβού</h1>
-      <p>
-        {{ appointment.date }}
-        Ώρα {{ appointment.startTime }} - {{ appointment.endTime }}
-      </p>
-    </div>
+    <h1>Λεπτομέρειες ραντεβού</h1>
+    <p>
+      {{ appointment.date }}
+      Ώρα {{ appointment.startTime }} - {{ appointment.endTime }}
+    </p>
+  </div>
 
-    <div class="details-card">
-      <div class="appointment-summary">
-        <div>
-          <h2>{{ appointment.patientName }}</h2>
-          <p>{{ appointment.specialty }}</p>
-        </div>
-
-        <span
-          class="status-pill"
-          [class.pending-status]="appointment.status === 'pending'"
-          [class.booked-status]="appointment.status === 'booked'"
-          [class.rejected-status]="appointment.status === 'rejected'"
-        >
-          @if (appointment.status === 'pending') {
-            Σε αναμονή
-          }
-
-          @if (appointment.status === 'booked') {
-            Επιβεβαιωμένο
-          }
-
-          @if (appointment.status === 'rejected') {
-            Απορρίφθηκε
-          }
-        </span>
+  <div class="details-card">
+    <div class="appointment-summary">
+      <div>
+        <h2>{{ appointment.patientName }}</h2>
+        <p>{{ appointment.specialty }}</p>
       </div>
 
-      <div class="patient-section">
-        <div class="patient-avatar">
-          <span>👤</span>
-        </div>
-
-        <div class="patient-info">
-          <h3>Στοιχεία ασθενή</h3>
-
-          <p>
-            <strong>Ονοματεπώνυμο:</strong>
-            {{ appointment.patientName }}
-          </p>
-
-          <p>
-            <strong>Τηλέφωνο:</strong>
-            {{ appointment.patientPhone }}
-          </p>
-
-          <p>
-            <strong>Email:</strong>
-            {{ appointment.patientEmail }}
-          </p>
-        </div>
-      </div>
-
-      <div class="message-section">
-        <h3>Επισυναπτόμενο μήνυμα</h3>
-
-        @if (appointment.patientMessage) {
-          <p>
-            {{ appointment.patientMessage }}
-          </p>
-        } @else {
-          <p>
-            Δεν υπάρχει μήνυμα από τον ασθενή.
-          </p>
+      <span class="status-pill" [class.pending-status]="appointment.status === 'pending'"
+        [class.booked-status]="appointment.status === 'booked'"
+        [class.rejected-status]="appointment.status === 'rejected'">
+        @if (appointment.status === 'pending') {
+        Σε αναμονή
         }
+
+        @if (appointment.status === 'booked') {
+        Επιβεβαιωμένο
+        }
+
+        @if (appointment.status === 'rejected') {
+        Απορρίφθηκε
+        }
+      </span>
+    </div>
+
+    <div class="patient-section">
+      <div class="patient-avatar">
+        <span>👤</span>
       </div>
 
-      @if (isPendingAppointment) {
-        <div class="actions">
-          <button type="button" class="accept-button" (click)="acceptAppointment()">
-            Αποδοχή
-          </button>
+      <div class="patient-info">
+        <h3>Στοιχεία ασθενή</h3>
 
-          <button type="button" class="reject-button" (click)="rejectAppointment()">
-            Απόρριψη
-          </button>
+        <p>
+          <strong>Ονοματεπώνυμο:</strong>
+          {{ appointment.patientName }}
+        </p>
 
-          <button type="button" class="reject-disable-button" (click)="rejectAppointmentAndDisableSlot()">
-            Απόρριψη & Απενεργοποίηση
-          </button>
-        </div>
-      }
+        <p>
+          <strong>Τηλέφωνο:</strong>
+          {{ appointment.patientPhone }}
+        </p>
 
-      @if (isBookedAppointment) {
-        <div class="actions">
-          <button type="button" class="transfer-button" (click)="openTransferModal()">
-            Αλλαγή Ραντεβού
-          </button>
-        </div>
-      }
-
+        <p>
+          <strong>Email:</strong>
+          {{ appointment.patientEmail }}
+        </p>
+      </div>
     </div>
-  } @else if (!isLoading && !errorMessage) {
-    <div class="not-found-card">
-      <h1>Το ραντεβού δεν βρέθηκε</h1>
 
-      <button type="button" class="back-button" (click)="goBack()">
-        Επιστροφή στα ραντεβού
+    <div class="message-section">
+      <h3>Επισυναπτόμενο μήνυμα</h3>
+
+      @if (appointment.patientMessage) {
+      <p>
+        {{ appointment.patientMessage }}
+      </p>
+      } @else {
+      <p>
+        Δεν υπάρχει μήνυμα από τον ασθενή.
+      </p>
+      }
+    </div>
+
+    @if (isPendingAppointment) {
+    <div class="actions">
+      <button type="button" class="accept-button" (click)="acceptAppointment()">
+        Αποδοχή
+      </button>
+
+      <button type="button" class="reject-button" (click)="rejectAppointment()">
+        Απόρριψη
+      </button>
+
+      <button type="button" class="reject-disable-button" (click)="rejectAppointmentAndDisableSlot()">
+        Απόρριψη & Απενεργοποίηση
       </button>
     </div>
+    }
+
+    @if (isBookedAppointment) {
+    <div class="actions">
+      <button type="button" class="transfer-button" (click)="openTransferModal()">
+        Αλλαγή Ραντεβού
+      </button>
+    </div>
+    }
+
+  </div>
+  } @else if (!isLoading && !errorMessage) {
+  <div class="not-found-card">
+    <h1>Το ραντεβού δεν βρέθηκε</h1>
+
+    <button type="button" class="back-button" (click)="goBack()">
+      Επιστροφή στα ραντεβού
+    </button>
+  </div>
   }
 
   @if (showTransferModal && appointment !== undefined) {
-    <div class="modal-backdrop" (click)="closeTransferModal()">
-      <div class="transfer-modal" (click)="$event.stopPropagation()">
-        <div class="modal-header">
-          <div>
-            <h2>Αλλαγή ραντεβού</h2>
-            <p>
-              Επιλέξτε νέα ημέρα και διαθέσιμη ώρα για το ραντεβού.
-            </p>
-          </div>
-
-          <button type="button" class="modal-close-button" (click)="closeTransferModal()">
-            ×
-          </button>
+  <div class="modal-backdrop" (click)="closeTransferModal()">
+    <div class="transfer-modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div>
+          <h2>Αλλαγή ραντεβού</h2>
+          <p>
+            Επιλέξτε νέα ημέρα και διαθέσιμη ώρα για το ραντεβού.
+          </p>
         </div>
 
-        <div class="current-appointment-box">
-          <strong>Τρέχον ραντεβού:</strong>
-          {{ appointment.date }}
-          Ώρα {{ appointment.startTime }} - {{ appointment.endTime }}
+        <button type="button" class="modal-close-button" (click)="closeTransferModal()">
+          ×
+        </button>
+      </div>
+
+      <div class="current-appointment-box">
+        <strong>Τρέχον ραντεβού:</strong>
+        {{ appointment.date }}
+        Ώρα {{ appointment.startTime }} - {{ appointment.endTime }}
+      </div>
+
+      <div class="transfer-content">
+        <div class="transfer-calendar">
+          <label>Νέα ημερομηνία</label>
+
+          <p-datepicker [(ngModel)]="transferDateObject" dateFormat="dd/mm/yy" [inline]="true" [showIcon]="false"
+            [minDate]="todayDate" (onSelect)="onTransferDateChanged($event)"></p-datepicker>
         </div>
 
-        <div class="transfer-content">
-          <div class="transfer-calendar">
-            <label>Νέα ημερομηνία</label>
+        <div class="transfer-slots">
+          <h3>Διαθέσιμες ώρες</h3>
 
-            <p-datepicker
-              [(ngModel)]="transferDateObject"
-              dateFormat="dd/mm/yy"
-              [inline]="true"
-              [showIcon]="false"
-              [minDate]="todayDate"
-              (onSelect)="onTransferDateChanged($event)"
-            ></p-datepicker>
-          </div>
-
-          <div class="transfer-slots">
-            <h3>Διαθέσιμες ώρες</h3>
-
-            @if (availableTransferSlots.length > 0) {
-              <div class="transfer-slots-grid">
-                @for (slot of availableTransferSlots; track slot.id) {
-                  <button
-                    type="button"
-                    class="transfer-slot-card"
-                    [class.selected-transfer-slot]="selectedTransferSlot?.id === slot.id"
-                    (click)="selectTransferSlot(slot)"
-                  >
-                    {{ slot.startTime }} - {{ slot.endTime }}
-                  </button>
-                }
-              </div>
-            } @else {
-              <p class="no-slots-message">
-                Δεν υπάρχουν διαθέσιμες ώρες για αυτή την ημέρα.
-              </p>
-            }
-
-            @if (selectedTransferSlot !== null) {
-              <p class="selected-slot-text">
-                Νέα ώρα:
-                {{ selectedTransferSlot.startTime }} - {{ selectedTransferSlot.endTime }}
-              </p>
+          @if (availableTransferSlots.length > 0) {
+          <div class="transfer-slots-grid">
+            @for (slot of availableTransferSlots; track slot.id) {
+            <button type="button" class="transfer-slot-card"
+              [class.selected-transfer-slot]="selectedTransferSlot?.id === slot.id" (click)="selectTransferSlot(slot)">
+              {{ slot.startTime }} - {{ slot.endTime }}
+            </button>
             }
           </div>
-        </div>
+          } @else {
+          <p class="no-slots-message">
+            Δεν υπάρχουν διαθέσιμες ώρες για αυτή την ημέρα.
+          </p>
+          }
 
-        <div class="modal-actions">
-          <button type="button" class="cancel-transfer-button" (click)="closeTransferModal()">
-            Άκυρο
-          </button>
-
-          <button
-            type="button"
-            class="confirm-transfer-button"
-            [disabled]="selectedTransferSlot === null"
-            (click)="confirmTransfer()"
-          >
-            Επιβεβαίωση αλλαγής
-          </button>
+          @if (selectedTransferSlot !== null) {
+          <p class="selected-slot-text">
+            Νέα ώρα:
+            {{ selectedTransferSlot.startTime }} - {{ selectedTransferSlot.endTime }}
+          </p>
+          }
+          @if (transferErrorMessage) {
+          <p class="no-slots-message">
+            {{ transferErrorMessage }}
+          </p>
+          }
         </div>
       </div>
+
+      <div class="modal-actions">
+        <button type="button" class="cancel-transfer-button" (click)="closeTransferModal()">
+          Άκυρο
+        </button>
+
+        <button type="button" class="confirm-transfer-button" [disabled]="!canConfirmTransfer"
+          (click)="confirmTransfer()">
+          @if (isTransferLoading) {
+          Αλλαγή...
+          } @else {
+          Επιβεβαίωση αλλαγής
+          }
+        </button>
+      </div>
     </div>
+  </div>
   }
 </section>

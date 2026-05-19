@@ -222,7 +222,7 @@
   opacity: 1 !important;
 }
 
-/* Pending request markers inside calendar */
+/* Appointment markers inside calendar */
 
 :host ::ng-deep .calendar-day-content {
   width: 30px;
@@ -241,7 +241,15 @@
   font-weight: 800;
 }
 
-:host ::ng-deep .p-datepicker-day-selected .pending-calendar-day {
+:host ::ng-deep .confirmed-calendar-day {
+  border: 2px solid #9fd8aa;
+  background-color: #eaf9ed;
+  color: #1f2a44;
+  font-weight: 800;
+}
+
+:host ::ng-deep .p-datepicker-day-selected .pending-calendar-day,
+:host ::ng-deep .p-datepicker-day-selected .confirmed-calendar-day {
   background-color: #7658b8;
   border-color: #ffffff;
   color: #ffffff;
@@ -272,6 +280,11 @@
 .pending-dot {
   background-color: #fff8dc;
   border: 2px solid #f3d574;
+}
+
+.confirmed-dot {
+  background-color: #eaf9ed;
+  border: 2px solid #9fd8aa;
 }
 
 /* Slots section */

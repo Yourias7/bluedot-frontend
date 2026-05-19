@@ -44,11 +44,16 @@ type BackendAvailabilitySlotDto = {
 };
 
 type BackendAvailabilityDto = {
-  id: number;
-  startTime: string;
-  endTime: string;
-  status: BackendAvailabilityStatus | string;
-  doctorId: number;
+  id?: number;
+  Id?: number;
+  startTime?: string;
+  StartTime?: string;
+  endTime?: string;
+  EndTime?: string;
+  status?: BackendAvailabilityStatus | string | number;
+  Status?: BackendAvailabilityStatus | string | number;
+  doctorId?: number;
+  DoctorId?: number;
 };
 
 type UpdateAvailabilityDto = {
@@ -119,7 +124,7 @@ export class DoctorService {
     return this.http
       .get<BackendAvailabilityDto[]>(`${this.baseUrl}/doctors/${doctorId}/slots?date=${date}`)
       .pipe(
-        map(slots => slots.map(slot => this.mapBackendAvailabilitySlot(slot))),
+        map(slots => slots.map((slot, index) => this.mapBackendAvailabilitySlot(slot, index))),
         tap(slots => {
           this.slotsByDate[date] = slots;
         })
@@ -258,6 +263,10 @@ export class DoctorService {
     newDate: string,
     newSlot: AvailabilitySlot
   ): Observable<boolean> {
+    if (newSlot.id <= 0) {
+      return throwError(() => new Error('The selected slot does not have a valid backend availability id.'));
+    }
+
     return this.http
       .patch<void>(`${this.baseUrl}/appointments/${appointmentId}/slot`, {
         newAvailabilityId: newSlot.id
@@ -272,6 +281,10 @@ export class DoctorService {
             appointment.endTime = newSlot.endTime;
             appointment.status = 'booked';
           }
+
+          Object.keys(this.slotsByDate).forEach(date => {
+            this.slotsByDate[date] = [];
+          });
         }),
         map(() => true)
       );
@@ -389,23 +402,46 @@ export class DoctorService {
     return value;
   }
 
-  private mapBackendAvailabilitySlot(slot: BackendAvailabilityDto): AvailabilitySlotWithDoctor {
-    const startDate = new Date(slot.startTime);
-    const endDate = new Date(slot.endTime);
+  private mapBackendAvailabilitySlot(slot: BackendAvailabilityDto, index: number): AvailabilitySlotWithDoctor {
+    const rawId = slot.id ?? slot.Id;
+    const rawStartTime = slot.startTime ?? slot.StartTime ?? '';
+    const rawEndTime = slot.endTime ?? slot.EndTime ?? '';
+    const rawStatus = slot.status ?? slot.Status;
+    const rawDoctorId = slot.doctorId ?? slot.DoctorId ?? 0;
+
+    const startDate = new Date(rawStartTime);
+    const endDate = new Date(rawEndTime);
+
     const date = this.formatDate(startDate);
     const startTime = this.formatTime(startDate);
     const endTime = this.formatTime(endDate);
 
     const appointment = this.findAppointmentForSlot(date, startTime, endTime);
 
+    const fallbackId = -(index + 1);
+
     return {
-      id: slot.id,
+      id: rawId ?? fallbackId,
       startTime,
       endTime,
-      status: this.mapBackendAvailabilityStatus(slot.status),
+      status: appointment !== undefined
+        ? this.mapAppointmentStatusToSlotStatus(appointment.status)
+        : this.mapBackendAvailabilityStatus(rawStatus),
       appointmentId: appointment?.id ?? null,
-      doctorId: slot.doctorId
+      doctorId: rawDoctorId
     };
+  }
+
+  private mapAppointmentStatusToSlotStatus(status: AppointmentStatus): SlotStatus {
+    if (status === 'pending') {
+      return 'pending';
+    }
+
+    if (status === 'booked') {
+      return 'booked';
+    }
+
+    return 'free';
   }
 
   private findAppointmentForSlot(
@@ -433,16 +469,42 @@ export class DoctorService {
     return 'rejected';
   }
 
-  private mapBackendAvailabilityStatus(status: string): SlotStatus {
-    if (status === 'Available') {
+  private mapBackendAvailabilityStatus(status: string | number | undefined | null): SlotStatus {
+    if (status === undefined || status === null) {
       return 'free';
     }
 
-    if (status === 'Pending') {
+    if (typeof status === 'number') {
+      if (status === 0) {
+        return 'free';
+      }
+
+      if (status === 1) {
+        return 'booked';
+      }
+
+      if (status === 2) {
+        return 'disabled';
+      }
+
+      if (status === 3) {
+        return 'pending';
+      }
+
+      return 'disabled';
+    }
+
+    const normalizedStatus = status.toLowerCase();
+
+    if (normalizedStatus === 'available' || normalizedStatus === 'free') {
+      return 'free';
+    }
+
+    if (normalizedStatus === 'pending') {
       return 'pending';
     }
 
-    if (status === 'Booked') {
+    if (normalizedStatus === 'booked' || normalizedStatus === 'confirmed') {
       return 'booked';
     }
 
