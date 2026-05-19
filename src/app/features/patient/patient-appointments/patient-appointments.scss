@@ -32,53 +32,40 @@
   box-shadow: 0 8px 18px rgba(31, 42, 68, 0.12);
 }
 
-.appointment-list {
+.tabs {
   display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.empty-state {
-  padding: 36px;
-  border: 1px dashed #c8cde0;
-  border-radius: 16px;
-  color: #7c8499;
-  text-align: center;
-  font-size: 16px;
-}
-
-/* PrimeNG tabs styled like doctor tabs */
-
-:host ::ng-deep .patient-tabs .p-tablist {
+  align-items: flex-end;
+  gap: 0;
   margin-bottom: 28px;
   border-bottom: 2px solid #cfcfcf;
-  background-color: transparent;
-
-  display: flex;
-  gap: 0;
 }
 
-:host ::ng-deep .patient-tabs .p-tab {
+.tab-button {
   position: relative;
+  min-width: 0;
   padding: 0 28px 10px;
   border: none;
+  border-radius: 0;
   background-color: transparent;
   color: #7b7b7b;
   font-size: 24px;
   font-weight: 700;
+  cursor: pointer;
+  transition: color 0.15s ease;
 }
 
-:host ::ng-deep .patient-tabs .p-tab:hover {
+.tab-button:hover {
   color: #3b3b3b;
   background-color: transparent;
 }
 
-:host ::ng-deep .patient-tabs .p-tab.p-tab-active {
-  color: #2f2f2f;
+.tab-button.active-tab {
   background-color: transparent;
+  border: none;
+  color: #2f2f2f;
 }
 
-:host ::ng-deep .patient-tabs .p-tab.p-tab-active::after {
+.tab-button.active-tab::after {
   content: '';
   position: absolute;
   left: 18px;
@@ -89,9 +76,82 @@
   border-radius: 999px;
 }
 
-:host ::ng-deep .patient-tabs .p-tabpanels {
-  padding: 0;
-  background-color: transparent;
+.appointment-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.appointment-row {
+  width: 100%;
+  min-height: 92px;
+  padding: 20px 26px;
+  border: 1px solid #ececec;
+  border-radius: 16px;
+  background-color: #ffffff;
+  color: #1f2a44;
+  text-align: left;
+  cursor: pointer;
+  box-shadow: 0 5px 14px rgba(31, 42, 68, 0.08);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.appointment-row:hover {
+  transform: translateY(-1px);
+  border-color: #d8dce8;
+  box-shadow: 0 8px 18px rgba(31, 42, 68, 0.12);
+}
+
+.appointment-row h2 {
+  margin: 0 0 8px;
+  color: #1f2a44;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.appointment-row p {
+  margin: 0;
+  color: #6e7894;
+  font-size: 15px;
+}
+
+.status-pill {
+  min-width: 126px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 800;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.pending-status {
+  background-color: #ffe79a;
+  color: #1f2a44;
+}
+
+.confirmed-status {
+  background-color: #d8f5dd;
+  color: #1f2a44;
+}
+
+.rejected-status {
+  background-color: #ffb3b3;
+  color: #1f2a44;
+}
+
+.empty-state {
+  padding: 36px;
+  border: 1px dashed #c8cde0;
+  border-radius: 16px;
+  color: #7c8499;
+  text-align: center;
+  font-size: 16px;
 }
 
 @media (max-width: 768px) {
@@ -111,13 +171,23 @@
     padding: 22px;
   }
 
-  :host ::ng-deep .patient-tabs .p-tablist {
+  .tabs {
     overflow-x: auto;
+    padding-bottom: 0;
   }
 
-  :host ::ng-deep .patient-tabs .p-tab {
+  .tab-button {
     flex: 0 0 auto;
     padding: 0 18px 10px;
     font-size: 20px;
+  }
+
+  .appointment-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .status-pill {
+    min-width: 0;
   }
 }

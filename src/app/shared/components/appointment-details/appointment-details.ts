@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
-import { Appointment } from '../../domain/appointment';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Appointment } from '../../domain/appointment';
 import { DoctorSearchService } from '../../services/doctor-search-service';
-import { PatientService } from '../../services/patient-service';
+import { AppointmentService } from '../../services/appointment-service';
 import { Doctor } from '../../domain/doctor';
 import { DoctorBasicInfo } from '../doctor-basic-info/doctor-basic-info';
 
@@ -12,33 +12,68 @@ import { DoctorBasicInfo } from '../doctor-basic-info/doctor-basic-info';
   templateUrl: './appointment-details.html',
   styleUrl: './appointment-details.scss',
 })
-export class AppointmentDetails {
+export class AppointmentDetails implements OnInit {
   appointment?: Appointment;
-  doctor!:Doctor;
+  doctor?: Doctor;
 
-  constructor(private activatedRoute: ActivatedRoute, private router: Router, private patientService: PatientService, private searchService:DoctorSearchService) {
-    let userId = Number(this.activatedRoute.snapshot.paramMap.get('appointmentId'));
+  isLoading = false;
+  errorMessage = '';
 
-    if (Number.isNaN(userId)) {
+  constructor(
+    private activatedRoute: ActivatedRoute,
+    private router: Router,
+    private appointmentService: AppointmentService,
+    private searchService: DoctorSearchService,
+    private cdr: ChangeDetectorRef
+  ) {}
+
+  ngOnInit(): void {
+    const appointmentId = Number(this.activatedRoute.snapshot.paramMap.get('id'));
+
+    if (Number.isNaN(appointmentId)) {
       this.router.navigate(['404']);
+      return;
+    }
 
+    const cachedAppointment = this.appointmentService.getAppointmentById(appointmentId);
+
+    if (cachedAppointment !== undefined) {
+      this.appointment = cachedAppointment;
+      this.loadDoctor(cachedAppointment.doctorId);
     }
-    else {
-      // call the backend with the userId to get the user details
-      this.appointment = this.patientService.getAppointmentById(userId);
-     /// console.log(userId);
-     
-      /////test code to be removed when backend is ready
-      if (!this.appointment) {
-        this.router.navigate(['404']);
-      }
-      else{
-        let _doc = this.searchService.getDoctorById(1);
-        if(_doc) {
-          //console.log(this.appointment.doctorId);
-          this.doctor = _doc;
+
+    this.isLoading = true;
+
+    this.appointmentService.loadAppointmentById(appointmentId).subscribe({
+      next: appointment => {
+        this.appointment = appointment;
+        this.isLoading = false;
+        this.loadDoctor(appointment.doctorId);
+        this.cdr.detectChanges();
+      },
+      error: error => {
+        console.error('Failed to load appointment details:', error);
+        this.isLoading = false;
+        this.errorMessage = 'Δεν ήταν δυνατή η φόρτωση των στοιχείων ραντεβού.';
+
+        if (this.appointment === undefined) {
+          this.router.navigate(['404']);
         }
+
+        this.cdr.detectChanges();
       }
-    }
+    });
+  }
+
+  private loadDoctor(doctorId: number): void {
+    this.searchService.loadDoctorById(doctorId).subscribe({
+      next: doctor => {
+        this.doctor = doctor;
+        this.cdr.detectChanges();
+      },
+      error: error => {
+        console.error('Failed to load doctor for appointment details:', error);
+      }
+    });
   }
 }
