@@ -1,1 +1,1 @@
-export type AppointmentStatus = 'pending' | 'booked' | 'rejected';
+export type AppointmentStatus = 'pending' | 'booked' | 'rejected' | 'completed';

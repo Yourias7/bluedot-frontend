@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
 import { CalendarDay } from '../../../../shared/domain/calendar-day';
+import { Appointment } from '../../../../shared/domain/appointment';
 import { DoctorService } from '../../../../shared/services/doctor-service';
 import { AuthenticationServices } from '../../../../shared/services/authentication-services';
 
@@ -77,10 +78,56 @@ export class DoctorHome implements OnInit, OnDestroy {
     }
 
     if (this.currentUserName.includes('@')) {
-      return this.currentUserName.split('@')[0];
+      return this.currentUserName
+        .split('@')[0]
+        .replace(/[._-]+/g, ' ')
+        .trim();
     }
 
     return this.currentUserName;
+  }
+
+  get pendingAppointments(): Appointment[] {
+    return this.doctorService.getDoctorAppointments()
+      .filter(appointment => appointment.status === 'pending');
+  }
+
+  get pendingAppointmentCount(): number {
+    return this.pendingAppointments.length;
+  }
+
+  get hasPendingAppointments(): boolean {
+    return this.pendingAppointmentCount > 0;
+  }
+
+  get pendingRequestReminderMessage(): string {
+    const appointment = this.getMostUrgentPendingAppointment();
+
+    if (appointment === null || !appointment.createdAt) {
+      if (this.pendingAppointmentCount === 1) {
+        return 'Απαντήστε στο αίτημα μέσα σε 24 ώρες από τη δημιουργία του.';
+      }
+
+      return 'Απαντήστε στα αιτήματα μέσα σε 24 ώρες από τη δημιουργία τους.';
+    }
+
+    const createdAt = new Date(appointment.createdAt);
+
+    if (Number.isNaN(createdAt.getTime())) {
+      return 'Απαντήστε στα εκκρεμή αιτήματα μέσα σε 24 ώρες από τη δημιουργία τους.';
+    }
+
+    const deadline = new Date(createdAt);
+    deadline.setHours(deadline.getHours() + 24);
+
+    const now = new Date();
+    const timeLeftMs = deadline.getTime() - now.getTime();
+
+    if (timeLeftMs <= 0) {
+      return 'Υπάρχει αίτημα που έχει ξεπεράσει το όριο των 24 ωρών.';
+    }
+
+    return `Απομένουν ${this.formatTimeLeft(timeLeftMs)} για απάντηση σε αίτημα.`;
   }
 
   get currentMonthTitle(): string {
@@ -104,16 +151,6 @@ export class DoctorHome implements OnInit, OnDestroy {
     );
 
     return nextMonth <= maxMonth;
-  }
-
-  get pendingAppointmentCount(): number {
-    return this.doctorService.getDoctorAppointments()
-      .filter(appointment => appointment.status === 'pending')
-      .length;
-  }
-
-  get hasPendingAppointments(): boolean {
-    return this.pendingAppointmentCount > 0;
   }
 
   loadAppointmentsForCalendar() {
@@ -161,7 +198,7 @@ export class DoctorHome implements OnInit, OnDestroy {
 
   buildCalendar() {
     const pendingAppointmentDates = this.doctorService.getPendingAppointmentDates();
-    const confirmedAppointmentDates = this.doctorService.getBookedAppointmentDates();
+    const confirmedAppointmentDates = this.getActiveBookedAppointmentDates();
 
     const year = this.currentDate.getFullYear();
     const month = this.currentDate.getMonth();
@@ -263,6 +300,51 @@ export class DoctorHome implements OnInit, OnDestroy {
     this.router.navigate(['/doctor/availability'], {
       queryParams: { date: this.formatDate(new Date()) }
     });
+  }
+
+  private getMostUrgentPendingAppointment(): Appointment | null {
+    const pendingWithCreatedAt = this.pendingAppointments
+      .filter(appointment => appointment.createdAt)
+      .sort((a, b) => {
+        const firstCreatedAt = new Date(a.createdAt as string).getTime();
+        const secondCreatedAt = new Date(b.createdAt as string).getTime();
+
+        return firstCreatedAt - secondCreatedAt;
+      });
+
+    return pendingWithCreatedAt[0] ?? this.pendingAppointments[0] ?? null;
+  }
+
+  private formatTimeLeft(timeLeftMs: number): string {
+    const totalMinutes = Math.ceil(timeLeftMs / 60000);
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+
+    if (hours === 0) {
+      return `${minutes} λεπτά`;
+    }
+
+    if (minutes === 0) {
+      return `${hours} ώρες`;
+    }
+
+    return `${hours} ώρες και ${minutes} λεπτά`;
+  }
+
+  private getActiveBookedAppointmentDates(): string[] {
+    return this.doctorService.getDoctorAppointments()
+      .filter(appointment => appointment.status === 'booked')
+      .filter(appointment => !this.isAppointmentExpired(appointment))
+      .map(appointment => appointment.date);
+  }
+
+  private isAppointmentExpired(appointment: Appointment): boolean {
+    const appointmentEndDateTime = this.parseDate(appointment.date);
+    const [hours, minutes] = appointment.endTime.split(':').map(Number);
+
+    appointmentEndDateTime.setHours(hours, minutes, 0, 0);
+
+    return appointmentEndDateTime <= new Date();
   }
 
   formatDate(date: Date): string {

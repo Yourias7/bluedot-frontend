@@ -16,26 +16,20 @@
         field="name"
         optionLabel="name"
         dataKey="id"
-        placeholder="Ειδικότητα"
-        inputStyleClass="form-control"
-        panelStyleClass="borderless-white-panel">
+        placeholder="Ειδικότητα">
       </p-autoComplete>
 
-      <p-iconfield class="location-field">
-        <p-inputicon styleClass="pi pi-search"></p-inputicon>
-        <input
-          type="text"
-          pInputText
-          list="doctor-result-location-options"
-          placeholder="Τοποθεσία πχ. Αθήνα"
-          [value]="locationQuery"
-          (input)="onLocationInput($event)" />
-        <datalist id="doctor-result-location-options">
-          @for (location of locationSuggestions; track $index) {
-            <option [value]="location.displayName"></option>
-          }
-        </datalist>
-      </p-iconfield>
+      <p-autoComplete
+        [(ngModel)]="selectedLocation"
+        [suggestions]="locationSuggestions"
+        (completeMethod)="filterLocations($event)"
+        (onSelect)="applyFilters()"
+        (onClear)="applyFilters()"
+        [minLength]="3"
+        field="displayName"
+        optionLabel="displayName"
+        placeholder="Τοποθεσία πχ. Αθήνα">
+      </p-autoComplete>
 
       <button type="button" class="filter-search-button" (click)="applyFilters()">
         <i class="pi pi-search"></i>

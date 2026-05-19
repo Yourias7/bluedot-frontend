@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Appointment } from '../../../../shared/domain/appointment';
 import { DoctorService } from '../../../../shared/services/doctor-service';
 
-type AppointmentTab = 'appointments' | 'requests' | 'rejected';
+type AppointmentTab = 'appointments' | 'requests' | 'rejected' | 'history';
 
 @Component({
   selector: 'app-doctor-appointments',
@@ -33,7 +33,12 @@ export class DoctorAppointments {
 
     this.selectedDate = date ?? null;
 
-    if (tab === 'requests' || tab === 'appointments' || tab === 'rejected') {
+    if (
+      tab === 'requests' ||
+      tab === 'appointments' ||
+      tab === 'rejected' ||
+      tab === 'history'
+    ) {
       this.selectedTab = tab;
     }
 
@@ -83,6 +88,12 @@ export class DoctorAppointments {
     );
   }
 
+  get completedAppointments(): Appointment[] {
+    return this.allAppointments.filter(appointment =>
+      appointment.status === 'completed'
+    );
+  }
+
   get visibleAppointments(): Appointment[] {
     if (this.selectedTab === 'appointments') {
       return this.confirmedAppointments;
@@ -92,7 +103,11 @@ export class DoctorAppointments {
       return this.pendingRequests;
     }
 
-    return this.rejectedAppointments;
+    if (this.selectedTab === 'rejected') {
+      return this.rejectedAppointments;
+    }
+
+    return this.completedAppointments;
   }
 
   selectTab(tab: AppointmentTab) {

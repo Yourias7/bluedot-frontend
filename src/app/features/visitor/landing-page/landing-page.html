@@ -1,12 +1,10 @@
 <main>
-    <app-home-hero-section 
-        [specialties]="items" 
-        [locations]="locationSuggestions" 
-        [specialtyQuery]="specialtyQuery"
-        [locationQuery]="locationQuery"
-        (specialtyQueryChange)="onSpecialtyInput($event)"
-        (locationQueryChange)="onLocationTextChange($event)"
-        (locationSearch)="onSearchLocation($event)"
+    <app-home-hero-section
+        [specialties]="items"
+        [selectedSpecialty]="selectedSpecialty"
+        [selectedLocation]="selectedLocation"
+        (selectedSpecialtyChange)="onSpecialtyChange($event)"
+        (selectedLocationChange)="onLocationChange($event)"
         (searchClicked)="search()">
     </app-home-hero-section>
 </main>
