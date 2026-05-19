@@ -26,6 +26,21 @@ type BackendAppointmentDto = {
   endTime: string;
 };
 
+type BackendAvailabilitySlotDto = {
+  id?: number;
+  Id?: number;
+  startTime?: string;
+  StartTime?: string;
+  endTime?: string;
+  EndTime?: string;
+  status?: string | number;
+  Status?: string | number;
+  appointmentId?: number | null;
+  AppointmentId?: number | null;
+  date?: string;
+  Date?: string;
+};
+
 type PagedResultDto<T> = {
   totalCount: number;
   page: number;
@@ -259,6 +274,25 @@ export class DoctorService {
     return this.getAvailabilitySlotsByDate(date).filter(slot => slot.status === 'free');
   }
 
+  loadAvailableSlotsForDoctor(doctorId: number, date: string): Observable<AvailabilitySlot[]> {
+    return this.http
+      .get<BackendAvailabilitySlotDto[] | { items: BackendAvailabilitySlotDto[] }>(
+        `${this.baseUrl}/doctors/${doctorId}/slots?date=${date}`
+      )
+      .pipe(
+        tap(response => console.debug('[DoctorService] /doctors/{id}/slots raw response:', response)),
+        map(response => {
+          const items = Array.isArray(response) ? response : response.items ?? [];
+
+          const mapped = items.map((slot, index) => this.mapBackendSlot(slot, index));
+
+          console.debug('[DoctorService] mapped slots:', mapped);
+
+          return mapped.filter(slot => slot.status === 'free');
+        })
+      );
+  }
+
   transferAppointment(
     appointmentId: number,
     newDate: string,
@@ -323,6 +357,75 @@ export class DoctorService {
       patientMessage: appointment.appointmentNotes ?? '',
       conversation: []
     };
+  }
+
+  private mapBackendSlot(slot: BackendAvailabilitySlotDto, index: number): AvailabilitySlot {
+    const id = slot.id ?? slot.Id ?? index;
+    const startTime = slot.startTime ?? slot.StartTime ?? '';
+    const endTime = slot.endTime ?? slot.EndTime ?? '';
+    const rawStatus = slot.status ?? slot.Status;
+    const appointmentId = slot.appointmentId ?? slot.AppointmentId ?? null;
+
+    return {
+      id: id,
+      startTime: this.normalizeTime(startTime),
+      endTime: this.normalizeTime(endTime),
+      status: this.mapBackendSlotStatus(rawStatus),
+      appointmentId: appointmentId
+    };
+  }
+
+  private mapBackendSlotStatus(status: string | number | undefined | null): AvailabilitySlot['status'] {
+    if (status === undefined || status === null) {
+      return 'free';
+    }
+
+    if (typeof status === 'number') {
+      if (status === 0) return 'free';
+      if (status === 1) return 'pending';
+      if (status === 2) return 'booked';
+      return 'disabled';
+    }
+
+    const normalized = status.toLowerCase();
+
+    if (normalized === 'free' || normalized === 'available') {
+      return 'free';
+    }
+
+    if (normalized === 'pending') {
+      return 'pending';
+    }
+
+    if (normalized === 'booked' || normalized === 'confirmed') {
+      return 'booked';
+    }
+
+    if (normalized === 'disabled' || normalized === 'unavailable') {
+      return 'disabled';
+    }
+
+    return 'free';
+  }
+
+  private normalizeTime(value: string): string {
+    if (!value) {
+      return value;
+    }
+
+    if (value.includes('T')) {
+      const date = new Date(value);
+
+      if (!Number.isNaN(date.getTime())) {
+        return this.formatTime(date);
+      }
+    }
+
+    if (value.length >= 5 && value[2] === ':') {
+      return value.substring(0, 5);
+    }
+
+    return value;
   }
 
   private mapBackendStatus(status: string): AppointmentStatus {
