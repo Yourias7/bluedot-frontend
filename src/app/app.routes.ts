@@ -21,6 +21,7 @@ import { Error500 } from './shared/components/error-500/error-500';
 import { AppointmentDetails } from './shared/components/appointment-details/appointment-details';
 import { Help } from './features/visitor/help/help';
 import { About } from './features/visitor/about/about';
+import { AppointmentConfirmEnd } from './features/patient/appointment-confirm-end/appointment-confirm-end';
 
 export const routes: Routes = [
   {
@@ -56,6 +57,10 @@ export const routes: Routes = [
   {
     path: 'appointment-confirmation',
     component: AppointmentConfirm
+  },
+  {
+    path:'appointment-confirm-end',
+    component:AppointmentConfirmEnd
   },
   {
     path: 'patient-account-details',

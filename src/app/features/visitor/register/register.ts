@@ -26,8 +26,8 @@ export class Register implements OnInit {
   doctor_registerForm: FormGroup;
 
   isLoading = false;
-  successMessage = '';
-  errorMessage = '';
+  successMessage? = '';
+  errorMessage? = '';
 
   // Autocomplete state variables
   addressSuggestions: LocationSuggestion[] = [];
@@ -122,8 +122,8 @@ export class Register implements OnInit {
   }
 
   submitPatient() {
-    this.errorMessage = 'Αποτυχία εγγραφής ασθενή. Ελέγξτε τα στοιχεία και δοκιμάστε ξανά.';
-    this.successMessage = 'Η εγγραφή ολοκληρώθηκε επιτυχώς. Μπορείτε πλέον να συνδεθείτε.';
+    //this.errorMessage = 'Αποτυχία εγγραφής ασθενή. Ελέγξτε τα στοιχεία και δοκιμάστε ξανά.';
+    //this.successMessage = 'Η εγγραφή ολοκληρώθηκε επιτυχώς. Μπορείτε πλέον να συνδεθείτε.';
 
     this.patient_registerForm.markAllAsTouched();
 
@@ -153,15 +153,15 @@ export class Register implements OnInit {
       next: () => {
         this.isLoading = false;
         this.successMessage = 'Η εγγραφή ολοκληρώθηκε επιτυχώς. Μπορείτε πλέον να συνδεθείτε.';
-
+        //this.errorMessage=undefined;
         setTimeout(() => {
           this.router.navigate(['/landing-page']);
         }, 1200);
       },
       error: error => {
         console.error('Patient registration failed:', error);
-
         this.isLoading = false;
+        //this.successMessage = undefined;
         this.errorMessage = this.getErrorMessage(
           error,
           'Η εγγραφή ασθενή απέτυχε. Ελέγξτε τα στοιχεία και δοκιμάστε ξανά.'
@@ -171,8 +171,8 @@ export class Register implements OnInit {
   }
 
   submitDoctor() {
-    this.errorMessage = 'Αποτυχία εγγραφής γιατρού. Ελέγξτε τα στοιχεία και δοκιμάστε ξανά.';
-    this.successMessage = 'Η εγγραφή ολοκληρώθηκε επιτυχώς. Μπορείτε πλέον να συνδεθείτε.';
+    //this.errorMessage = 'Αποτυχία εγγραφής γιατρού. Ελέγξτε τα στοιχεία και δοκιμάστε ξανά.';
+    //this.successMessage = 'Η εγγραφή ολοκληρώθηκε επιτυχώς. Μπορείτε πλέον να συνδεθείτε.';
 
     this.doctor_registerForm.markAllAsTouched();
 
@@ -223,6 +223,7 @@ export class Register implements OnInit {
     this.authenticationServices.registerDoctor(doctorPayload).subscribe({
       next: () => {
         this.isLoading = false;
+        this.errorMessage = undefined;
         this.successMessage = 'Η εγγραφή γιατρού ολοκληρώθηκε επιτυχώς. Μπορείτε πλέον να συνδεθείτε.';
 
         setTimeout(() => {
@@ -231,7 +232,7 @@ export class Register implements OnInit {
       },
       error: error => {
         console.error('Doctor registration failed:', error);
-
+        this.successMessage = undefined;
         this.isLoading = false;
         this.errorMessage = this.getErrorMessage(
           error,
