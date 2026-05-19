@@ -22,6 +22,8 @@ type BackendAppointmentDto = {
   expiredDateTime?: string | null;
   patientId: number;
   patientFullName: string;
+  patientPhone?: string | null;
+  patientEmail?: string | null;
   doctorId: number;
   doctorFullName: string;
   availabilityId: number;
@@ -322,10 +324,8 @@ export class DoctorService {
       startTime: this.formatTime(startDate),
       endTime: this.formatTime(endDate),
       patientName: appointment.patientFullName,
-      doctorName: appointment.doctorFullName,
-      doctorId: appointment.doctorId,
-      patientPhone: '-',
-      patientEmail: '-',
+      patientPhone: appointment.patientPhone ?? '-',
+      patientEmail: appointment.patientEmail ?? '-',
       patientMessage: appointment.appointmentNotes ?? '',
       conversation: []
     };
