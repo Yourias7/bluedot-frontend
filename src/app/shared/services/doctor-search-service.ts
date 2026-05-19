@@ -15,20 +15,19 @@ type PagedResultDto<T> = {
 };
 
 
-type DoctorSearchResultDto =
-  {
-    Id: number;
-    FirstName: string;
-    LastName: string;
-    ClinicAddress: string;
-    Bio: string;
-    Latitude: number;
-    Longitude: number
-    DistanceKm: number;
-    AverageRating: number;
-    ReviewCount: number;
-    Specialties: string[];
-  }
+type DoctorSearchResultDto = {
+  Id?: number;         id?: number;
+  FirstName?: string;  firstName?: string;
+  LastName?: string;   lastName?: string;
+  ClinicAddress?: string; clinicAddress?: string;
+  Bio?: string;        bio?: string;
+  Latitude?: number;   latitude?: number;
+  Longitude?: number;  longitude?: number;
+  DistanceKm?: number; distanceKm?: number;
+  AverageRating?: number; averageRating?: number;
+  ReviewCount?: number;   reviewCount?: number;
+  Specialties?: string[]; specialties?: string[];
+}
 
 @Injectable({
   providedIn: 'root',
@@ -219,9 +218,33 @@ export class DoctorSearchService {
     params = params.set('page', String(page)).set('pageSize', String(pageSize));
 
     return this.httpClient
-      .get<PagedResultDto<Doctor> | Doctor[]>(`${this.baseUrl}/doctors`, { params })
+      .get<PagedResultDto<DoctorSearchResultDto> | DoctorSearchResultDto[]>(`${this.baseUrl}/doctors`, { params })
       .pipe(
-        map(response => Array.isArray(response) ? response : response.items ?? [])
+        map(response => Array.isArray(response) ? response : response.items ?? []),
+        map(dtos => dtos.map(dto => this.mapSearchResultToDoctor(dto)))
       );
+  }
+
+  private mapSearchResultToDoctor(dto: DoctorSearchResultDto): Doctor {
+    const rawSpecialties = dto.Specialties ?? dto.specialties ?? [];
+    const specialties = rawSpecialties.map((name, index) => ({ id: index, name }));
+    return {
+      id: dto.Id ?? dto.id ?? 0,
+      firstName: dto.FirstName ?? dto.firstName ?? '',
+      lastName: dto.LastName ?? dto.lastName ?? '',
+      email: '',
+      password: '',
+      role: UserRole.Doctor,
+      bio: dto.Bio ?? dto.bio ?? '',
+      clinicAddress: dto.ClinicAddress ?? dto.clinicAddress ?? '',
+      phoneNumber: '',
+      yearsOfExperience: 0,
+      latitude: dto.Latitude ?? dto.latitude,
+      longitude: dto.Longitude ?? dto.longitude,
+      specialty: specialties[0],
+      specialties,
+      averageRating: dto.AverageRating ?? dto.averageRating,
+      reviewCount: dto.ReviewCount ?? dto.reviewCount,
+    };
   }
 }
