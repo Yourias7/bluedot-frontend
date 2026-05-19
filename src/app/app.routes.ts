@@ -114,10 +114,6 @@ export const routes: Routes = [
     component: PrivacyPolicy
   },
   {
-    path: 'cookies',
-    component: Cookies
-  },
-  {
     path: '404',
     component: Error404
   },
