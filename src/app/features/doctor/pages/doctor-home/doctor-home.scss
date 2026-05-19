@@ -211,6 +211,7 @@
 .day-button.today-day.confirmed-day {
   border: 2px solid #69bdfd;
 }
+
 /* Smaller screens */
 
 @media (max-width: 900px) {
@@ -259,4 +260,13 @@
   .week-day {
     font-size: 12px;
   }
+}
+
+.day-button.past-day {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.day-button:disabled {
+  cursor: not-allowed;
 }
