@@ -180,3 +180,8 @@
     width: 100%;
   }
 }
+
+.book-button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}

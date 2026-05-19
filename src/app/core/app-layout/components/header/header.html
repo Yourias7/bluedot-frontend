@@ -1,4 +1,4 @@
-<header class="app-header collapse navbar-collapse">
+<header class="app-header">
   <div class="header-left">
     <a routerLink="/" class="logo-link">
       <app-logo></app-logo>
@@ -7,55 +7,97 @@
 
   <nav class="header-nav">
     @for (route of navRoutes; track route.path + route.title) {
-    <a [routerLink]="route.path" routerLinkActive="active-link" [routerLinkActiveOptions]="{
-    paths: 'exact',
-    queryParams: 'ignored',
-    fragment: 'ignored',
-    matrixParams: 'ignored'
-  }" class="nav-link">
-      {{ route.title }}
-    </a>
+      <a
+        [routerLink]="route.path"
+        routerLinkActive="active-link"
+        [routerLinkActiveOptions]="{
+          paths: 'exact',
+          queryParams: 'ignored',
+          fragment: 'ignored',
+          matrixParams: 'ignored'
+        }"
+        class="nav-link"
+      >
+        {{ route.title }}
+      </a>
     }
   </nav>
 
   <div class="header-right">
     @if (currentUserRole === 'doctor') {
-    <div class="doctor-profile">
-      <p-menu #doctorMenu [model]="doctorOptions" [popup]="true" styleClass="doctor-profile-menu"></p-menu>
+      <div class="user-profile">
+        <p-menu
+          #doctorMenu
+          [model]="doctorOptions"
+          [popup]="true"
+          styleClass="user-profile-menu"
+        ></p-menu>
 
-      <p-avatar (click)="doctorMenu.toggle($event)" icon="pi pi-user" class="mr-2 doctor-avatar-button"
-        size="large"></p-avatar>
+        <button
+          type="button"
+          class="user-menu-button"
+          (click)="doctorMenu.toggle($event)"
+        >
+          <p-avatar
+            icon="pi pi-user"
+            size="large"
+            class="user-avatar-button"
+          ></p-avatar>
 
-      {{ currentUserName }}
-    </div>
+          <span class="user-name">{{ currentUserName }}</span>
+        </button>
+      </div>
+    }
+
+    @if (currentUserRole === 'patient') {
+      <div class="user-profile">
+        <p-menu
+          #patientMenu
+          [model]="loggedInOptions"
+          [popup]="true"
+          styleClass="user-profile-menu"
+        ></p-menu>
+
+        <button
+          type="button"
+          class="user-menu-button"
+          (click)="patientMenu.toggle($event)"
+        >
+          <p-avatar
+            icon="pi pi-user"
+            size="large"
+            class="user-avatar-button"
+          ></p-avatar>
+
+          <span class="user-name">{{ currentUserName }}</span>
+        </button>
+      </div>
     }
 
     @if (currentUserRole === 'guest') {
-    <div class="patient-actions">
-      <button type="button" class="login-button" (click)="isLoginModalOpen = true"> <!--  -->
-        Σύνδεση
-      </button>
+      <div class="patient-actions">
+        <button
+          type="button"
+          class="login-button"
+          (click)="isLoginModalOpen = true"
+        >
+          Σύνδεση
+        </button>
 
-      <button type="button" class="register-button" (click)="register()"> <!--  -->
-        Εγγραφή
-      </button>
+        <button
+          type="button"
+          class="register-button"
+          (click)="register()"
+        >
+          Εγγραφή
+        </button>
 
-      <app-login 
-        [isOpen]="isLoginModalOpen" 
-        (modalClosed)="isLoginModalOpen = false"
-        (loginSucceeded)="isLoginModalOpen = false">>
-      </app-login>
-    </div>
+        <app-login
+          [isOpen]="isLoginModalOpen"
+          (modalClosed)="isLoginModalOpen = false"
+          (loginSucceeded)="isLoginModalOpen = false"
+        ></app-login>
+      </div>
     }
-
-
-    @if(currentUserRole === 'patient') {
-    <div>
-      <p-menu #menu [model]="loggedInOptions" [popup]="true" />
-      <p-avatar (click)="menu.toggle($event)" icon="pi pi-user" class="mr-2" size="large"></p-avatar>
-      {{ currentUserName }}
-    </div>
-    }
-
   </div>
 </header>

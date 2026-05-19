@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DoctorService } from '../../../shared/services/doctor-service';
-import { Doctor } from '../../../shared/domain/doctor';
-import { Specialty } from '../../../shared/domain/specialty';
+
 import { AvatarModule } from 'primeng/avatar';
 import { TabsModule } from 'primeng/tabs';
-import { DoctorAvailabilityPatientSide } from "../doctor-availability-patient-side/doctor-availability-patient-side";
+
+import { Doctor } from '../../../shared/domain/doctor';
+import { AvailabilitySlot } from '../../../shared/domain/availability-slot';
+import { DoctorAvailabilityPatientSide, PatientSlotSelection } from '../doctor-availability-patient-side/doctor-availability-patient-side';
 import { DoctorSearchService } from '../../../shared/services/doctor-search-service';
 
 @Component({
@@ -15,34 +16,57 @@ import { DoctorSearchService } from '../../../shared/services/doctor-search-serv
   styleUrl: './doctor-details-page.scss',
 })
 export class DoctorDetailsPage {
-
   userDetailedInfo?: Doctor;
-  constructor(private activatedRoute: ActivatedRoute, private router: Router, private doctorService: DoctorSearchService) {
-    let userId = Number(this.activatedRoute.snapshot.paramMap.get('id'));
+
+  selectedBookingDate: string | null = null;
+  selectedBookingSlot: AvailabilitySlot | null = null;
+
+  review = 2;
+
+  constructor(
+    private activatedRoute: ActivatedRoute,
+    private router: Router,
+    private doctorService: DoctorSearchService
+  ) {
+    const userId = Number(this.activatedRoute.snapshot.paramMap.get('id'));
 
     if (Number.isNaN(userId)) {
       this.router.navigate(['404']);
+      return;
     }
-    else {
-      // call the backend with the userId to get the user details
-      const doctorResult = this.doctorService.getDoctors();
-      this.userDetailedInfo = Array.isArray(doctorResult)
-        ? doctorResult.find(doctor => doctor.id === userId)
-        : doctorResult;
 
-      /////test code to be removed when backend is ready
-      if (!this.userDetailedInfo) {
-        this.router.navigate(['404']);
-      }
+    const doctorResult = this.doctorService.getDoctors();
+
+    this.userDetailedInfo = Array.isArray(doctorResult)
+      ? doctorResult.find(doctor => doctor.id === userId)
+      : doctorResult;
+
+    if (!this.userDetailedInfo) {
+      this.router.navigate(['404']);
     }
   }
 
-  review: number = 2;
   getfilledStars(): number {
     return Math.min(Math.max(Math.round(this.review), 1), 5);
   }
 
+  onBookingSlotChanged(selection: PatientSlotSelection) {
+    this.selectedBookingDate = selection.date;
+    this.selectedBookingSlot = selection.slot;
+  }
+
   closeAppointment(id: number) {
-    this.router.navigate(['/book-appointment', id]);
+    if (this.selectedBookingSlot === null || this.selectedBookingDate === null) {
+      return;
+    }
+
+    this.router.navigate(['/book-appointment', id], {
+      queryParams: {
+        date: this.selectedBookingDate,
+        slotId: this.selectedBookingSlot.id,
+        startTime: this.selectedBookingSlot.startTime,
+        endTime: this.selectedBookingSlot.endTime
+      }
+    });
   }
 }

@@ -10,11 +10,11 @@
 
         <div class="rating-container">
           @for (n of [1, 2, 3, 4, 5]; track $index) {
-            @if (n > getfilledStars()) {
-              <i class="pi pi-star"></i>
-            } @else {
-              <i class="pi pi-star-fill"></i>
-            }
+          @if (n > getfilledStars()) {
+          <i class="pi pi-star"></i>
+          } @else {
+          <i class="pi pi-star-fill"></i>
+          }
           }
 
           <span>{{ review }}/5</span>
@@ -57,15 +57,17 @@
       </p-tabs>
     </div>
 
-    <app-doctor-availability-patient-side></app-doctor-availability-patient-side>
+    <app-doctor-availability-patient-side
+      (selectionChanged)="onBookingSlotChanged($event)"></app-doctor-availability-patient-side>
 
     <div class="details-actions">
-      <button
-        type="button"
-        class="book-button"
-        (click)="closeAppointment(userDetailedInfo.id)"
-      >
-        Κλείστε ραντεβού
+      <button type="button" class="book-button" [disabled]="selectedBookingSlot === null"
+        (click)="closeAppointment(userDetailedInfo.id)">
+        @if (selectedBookingSlot === null) {
+        Επιλέξτε ώρα για να συνεχίσετε
+        } @else {
+        Συνέχεια κράτησης
+        }
       </button>
     </div>
   </div>
