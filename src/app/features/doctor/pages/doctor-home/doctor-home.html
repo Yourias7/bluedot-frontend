@@ -2,6 +2,12 @@
   <div class="welcome-section">
     <h1>Καλώς όρισες {{ doctorName }}</h1>
 
+    @if (homeErrorMessage) {
+      <div class="notification-card error-card">
+        {{ homeErrorMessage }}
+      </div>
+    }
+
     @if (hasPendingAppointments) {
     <div class="notification-card">
       <p>

@@ -277,3 +277,11 @@
 .day-button:disabled {
   cursor: not-allowed;
 }
+
+.error-card {
+  background-color: #ffe1e1 !important;
+  color: #8a1f1f !important;
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1.4;
+}

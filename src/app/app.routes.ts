@@ -21,6 +21,8 @@ import { AppointmentConfirmEnd } from './features/patient/appointment-confirm-en
 import { AdminDashboard } from './features/admin/admin-dashboard/admin-dashboard';
 
 import { roleRedirectGuard } from './shared/guards/role-redirect.guard';
+import { guestOnlyGuard } from './shared/guards/guest-only.guard';
+import { patientOnlyGuard } from './shared/guards/patient-only.guard';
 import { doctorOnlyGuard } from './shared/guards/doctor-only.guard';
 import { managerOnlyGuard } from './shared/guards/manager-only.guard';
 
@@ -34,6 +36,8 @@ export const routes: Routes = [
     redirectTo: 'landing-page',
     pathMatch: 'full'
   },
+
+  // Public / visitor routes
   {
     path: 'landing-page',
     component: LandingPage,
@@ -41,7 +45,8 @@ export const routes: Routes = [
   },
   {
     path: 'register',
-    component: Register
+    component: Register,
+    canActivate: [guestOnlyGuard]
   },
   {
     path: 'search-results',
@@ -56,32 +61,47 @@ export const routes: Routes = [
     component: DoctorDetailsPage
   },
   {
+    path: 'help',
+    component: Help
+  },
+  {
+    path: 'about',
+    component: About
+  },
+
+  // Patient-only routes
+  {
     path: 'book-appointment/:id',
-    component: BookAppointment
+    component: BookAppointment,
+    canActivate: [patientOnlyGuard]
   },
   {
     path: 'appointment-confirmation',
-    component: AppointmentConfirm
+    component: AppointmentConfirm,
+    canActivate: [patientOnlyGuard]
   },
   {
     path: 'appointment-confirm-end',
-    component: AppointmentConfirmEnd
-    path: 'appointment-confirm-end',
-    component: AppointmentConfirmEnd
+    component: AppointmentConfirmEnd,
+    canActivate: [patientOnlyGuard]
   },
   {
     path: 'patient-account-details',
-    component: AccountDetails
+    component: AccountDetails,
+    canActivate: [patientOnlyGuard]
   },
   {
     path: 'patient-appointments',
-    component: PatientAppointments
+    component: PatientAppointments,
+    canActivate: [patientOnlyGuard]
   },
   {
     path: 'patient-appointments/:id',
-    component: AppointmentDetails
+    component: AppointmentDetails,
+    canActivate: [patientOnlyGuard]
   },
 
+  // Admin / manager-only routes
   {
     path: 'manager',
     component: AdminDashboard,
@@ -93,6 +113,7 @@ export const routes: Routes = [
     canActivate: [managerOnlyGuard]
   },
 
+  // Doctor-only routes
   {
     path: 'doctor',
     component: DoctorHome,
@@ -118,15 +139,8 @@ export const routes: Routes = [
     component: DoctorAccountDetails,
     canActivate: [doctorOnlyGuard]
   },
-  {
-    path: 'help',
-    component: Help
-    component: Help
-  },
-  {
-    path: 'about',
-    component: About
-  },
+
+  // Error routes
   {
     path: '403',
     component: Error403
