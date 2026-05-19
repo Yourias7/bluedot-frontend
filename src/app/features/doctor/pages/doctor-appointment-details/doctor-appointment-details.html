@@ -101,21 +101,15 @@
 
     @if (isBookedAppointment) {
     <div class="actions">
-      <button type="button" class="transfer-button" (click)="openTransferModal()">
+      <button type="button" class="transfer-button" disabled
+        title="Η αλλαγή ραντεβού θα ενεργοποιηθεί όταν προστεθεί το αντίστοιχο backend endpoint.">
         Αλλαγή Ραντεβού
       </button>
     </div>
     }
 
-    @if (isRejectedAppointment) {
-    <div class="actions">
-      <button type="button" class="restore-button" (click)="restoreRejectedAppointment()">
-        Αναίρεση απόρριψης
-      </button>
-    </div>
-    }
   </div>
- } @else if (!isLoading && !errorMessage) { 
+  } @else if (!isLoading && !errorMessage) {
   <div class="not-found-card">
     <h1>Το ραντεβού δεν βρέθηκε</h1>
 

@@ -1,10 +1,17 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { DatePickerModule } from 'primeng/datepicker';
 
 import { AvailabilitySlot } from '../../../../shared/domain/availability-slot';
 import { DoctorService } from '../../../../shared/services/doctor-service';
+
+type PrimeNgCalendarDate = {
+  day: number;
+  month: number;
+  year: number;
+  otherMonth?: boolean;
+};
 
 @Component({
   selector: 'app-doctor-availability',
@@ -18,12 +25,17 @@ export class DoctorAvailability {
 
   availabilitySlots: AvailabilitySlot[] = [];
 
+  pendingAppointmentDates: string[] = [];
+
   isEditMode = false;
+  isLoading = false;
+  errorMessage = '';
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private doctorservice: DoctorService
+    private doctorservice: DoctorService,
+    private changeDetectorRef: ChangeDetectorRef
   ) {
     let selectedDate = this.route.snapshot.queryParams['date'];
 
@@ -35,6 +47,20 @@ export class DoctorAvailability {
     this.selectedDateObject = this.parseDate(selectedDate);
 
     this.loadSlotsForSelectedDate();
+  }
+
+  get isSelectedDateInPast(): boolean {
+    if (this.selectedDate === null) {
+      return false;
+    }
+
+    const selectedDate = this.parseDate(this.selectedDate);
+    const today = new Date();
+
+    selectedDate.setHours(0, 0, 0, 0);
+    today.setHours(0, 0, 0, 0);
+
+    return selectedDate < today;
   }
 
   onDateChanged(date: Date | null) {
@@ -60,10 +86,50 @@ export class DoctorAvailability {
       return;
     }
 
-    this.availabilitySlots = this.doctorservice.getAvailabilitySlotsByDate(this.selectedDate);
+    this.isLoading = true;
+    this.errorMessage = '';
+
+    this.doctorservice.loadDoctorAppointments().subscribe({
+      next: () => {
+        this.pendingAppointmentDates = this.doctorservice.getPendingAppointmentDates();
+        if (this.selectedDate === null) {
+          return;
+        }
+
+        this.doctorservice.loadDoctorAvailabilitySlotsByDate(this.selectedDate).subscribe({
+          next: slots => {
+            this.availabilitySlots = slots;
+            this.isLoading = false;
+            this.changeDetectorRef.detectChanges();
+          },
+          error: error => {
+            console.error('Failed to load availability slots:', error);
+
+            this.availabilitySlots = [];
+            this.isLoading = false;
+            this.errorMessage = 'Δεν ήταν δυνατή η φόρτωση της διαθεσιμότητας.';
+            this.changeDetectorRef.detectChanges();
+          }
+        });
+      },
+      error: error => {
+        console.error('Failed to load appointments before availability:', error);
+
+        this.availabilitySlots = [];
+        this.pendingAppointmentDates = [];
+        this.isLoading = false;
+        this.errorMessage = 'Δεν ήταν δυνατή η φόρτωση των ραντεβού.';
+        this.changeDetectorRef.detectChanges();
+      }
+    });
   }
 
   toggleEditMode() {
+    if (this.isSelectedDateInPast) {
+      this.isEditMode = false;
+      return;
+    }
+
     this.isEditMode = !this.isEditMode;
   }
 
@@ -82,29 +148,88 @@ export class DoctorAvailability {
   }
 
   disableSlot(slot: AvailabilitySlot) {
-    if (slot.status !== 'free') {
+    if (
+      this.selectedDate === null ||
+      slot.status !== 'free' ||
+      this.isSelectedDateInPast ||
+      this.isSlotInPast(slot)
+    ) {
       return;
     }
 
-    /*
-      Temporary frontend-only logic.
-      Later this should call the backend availability endpoint.
-    */
-    slot.status = 'disabled';
-    slot.appointmentId = null;
+    this.doctorservice.updateDoctorAvailabilitySlot(
+      this.selectedDate,
+      slot,
+      'Unavailable'
+    ).subscribe({
+      next: () => {
+        this.loadSlotsForSelectedDate();
+      },
+      error: error => {
+        console.error('Failed to disable slot:', error);
+        this.errorMessage = 'Δεν ήταν δυνατή η απενεργοποίηση της ώρας.';
+      }
+    });
   }
 
   enableSlot(slot: AvailabilitySlot) {
-    if (slot.status !== 'disabled') {
+    if (
+      this.selectedDate === null ||
+      slot.status !== 'disabled' ||
+      this.isSelectedDateInPast ||
+      this.isSlotInPast(slot)
+    ) {
       return;
     }
 
-    /*
-      Temporary frontend-only logic.
-      Later this should call the backend availability endpoint.
-    */
-    slot.status = 'free';
-    slot.appointmentId = null;
+    this.doctorservice.updateDoctorAvailabilitySlot(
+      this.selectedDate,
+      slot,
+      'Available'
+    ).subscribe({
+      next: () => {
+        this.loadSlotsForSelectedDate();
+      },
+      error: error => {
+        console.error('Failed to enable slot:', error);
+        this.errorMessage = 'Δεν ήταν δυνατή η ενεργοποίηση της ώρας.';
+      }
+    });
+  }
+
+  isSlotInPast(slot: AvailabilitySlot): boolean {
+    if (this.selectedDate === null) {
+      return false;
+    }
+
+    const [hours, minutes] = slot.startTime.split(':').map(Number);
+
+    const slotDateTime = this.parseDate(this.selectedDate);
+    slotDateTime.setHours(hours, minutes, 0, 0);
+
+    const now = new Date();
+
+    return slotDateTime < now;
+  }
+
+  isPendingCalendarDate(calendarDate: PrimeNgCalendarDate): boolean {
+    const formattedDate = this.formatPrimeNgCalendarDate(calendarDate);
+
+    if (formattedDate === null) {
+      return false;
+    }
+
+    return this.pendingAppointmentDates.includes(formattedDate);
+  }
+
+  getCalendarDayClass(calendarDate: PrimeNgCalendarDate): string {
+    const classes = ['calendar-day-content'];
+
+    if (this.isPendingCalendarDate(calendarDate)) {
+      classes.push('pending-calendar-day');
+    }
+
+    return classes.join(' ');
   }
 
   getFormattedDate(): string {
@@ -131,5 +256,18 @@ export class DoctorAvailability {
     const day = Number(parts[2]);
 
     return new Date(year, month, day);
+  }
+
+  private formatPrimeNgCalendarDate(calendarDate: PrimeNgCalendarDate): string | null {
+    if (calendarDate.otherMonth) {
+      return null;
+    }
+
+    const month = calendarDate.month + 1;
+
+    const monthText = month.toString().padStart(2, '0');
+    const dayText = calendarDate.day.toString().padStart(2, '0');
+
+    return `${calendarDate.year}-${monthText}-${dayText}`;
   }
 }

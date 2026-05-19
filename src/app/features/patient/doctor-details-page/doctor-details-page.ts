@@ -5,8 +5,12 @@ import { AvatarModule } from 'primeng/avatar';
 import { TabsModule } from 'primeng/tabs';
 import { Doctor } from '../../../shared/domain/doctor';
 import { Review } from '../../../shared/domain/review';
+import { AvailabilitySlot } from '../../../shared/domain/availability-slot';
 import { DoctorSearchService } from '../../../shared/services/doctor-search-service';
-import { DoctorAvailabilityPatientSide } from '../doctor-availability-patient-side/doctor-availability-patient-side';
+import {
+  DoctorAvailabilityPatientSide,
+  PatientSlotSelection
+} from '../doctor-availability-patient-side/doctor-availability-patient-side';
 
 @Component({
   selector: 'app-doctor-details-page',
@@ -25,6 +29,13 @@ export class DoctorDetailsPage implements OnInit {
   reviewsError: string | null = null;
   reviewsLoaded = false;
 
+  doctorId: number | null = null;
+
+  selectedSlot: AvailabilitySlot | null = null;
+  selectedDate: string | null = null;
+
+  slotErrorMessage: string | null = null;
+
   constructor(
     private activatedRoute: ActivatedRoute,
     private router: Router,
@@ -38,6 +49,14 @@ export class DoctorDetailsPage implements OnInit {
     if (Number.isNaN(userId)) {
       this.router.navigate(['404']);
       return;
+    }
+
+    this.doctorId = userId;
+
+    const dateFromQuery = this.activatedRoute.snapshot.queryParams['date'];
+
+    if (typeof dateFromQuery === 'string' && dateFromQuery.length > 0) {
+      this.selectedDate = dateFromQuery;
     }
 
     this.loadDoctor(userId);
@@ -60,8 +79,33 @@ export class DoctorDetailsPage implements OnInit {
     return Math.min(Math.max(Math.round(rating ?? 0), 0), 5);
   }
 
-  closeAppointment(id: number) {
-    this.router.navigate(['/book-appointment', id]);
+  closeAppointment() {
+    if (this.selectedSlot === null || this.selectedDate === null) {
+      this.slotErrorMessage = 'Δεν έχετε επιλέξει διαθέσιμο ραντεβού';
+      return;
+    }
+
+    if (this.doctorId === null) {
+      return;
+    }
+
+    this.slotErrorMessage = null;
+
+    this.router.navigate(['/appointment-confirmation'], {
+      queryParams: {
+        doctorId: this.doctorId,
+        date: this.selectedDate,
+        slotId: this.selectedSlot.id,
+        startTime: this.selectedSlot.startTime,
+        endTime: this.selectedSlot.endTime
+      }
+    });
+  }
+
+  onSlotPicked(selection: PatientSlotSelection) {
+    this.selectedSlot = selection.slot;
+    this.selectedDate = selection.date;
+    this.slotErrorMessage = null;
   }
 
   private loadDoctor(id: number) {

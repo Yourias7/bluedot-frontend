@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { CalendarDay } from '../../../../shared/domain/calendar-day';
@@ -37,7 +37,8 @@ export class DoctorHome implements OnInit {
 
   constructor(
     private router: Router,
-    private doctorService: DoctorService
+    private doctorService: DoctorService,
+    private changeDetectorRef: ChangeDetectorRef
   ) {
     this.currentDate = new Date();
     this.currentDate.setDate(1);
@@ -94,12 +95,16 @@ export class DoctorHome implements OnInit {
 
         this.isLoadingAppointments = false;
         this.buildCalendar();
+
+        this.changeDetectorRef.detectChanges();
       },
       error: error => {
         console.error('Could not load doctor appointments for homepage:', error);
 
         this.isLoadingAppointments = false;
         this.buildCalendar();
+
+        this.changeDetectorRef.detectChanges();
       }
     });
   }
@@ -132,9 +137,6 @@ export class DoctorHome implements OnInit {
     const pendingAppointmentDates = this.doctorService.getPendingAppointmentDates();
     const confirmedAppointmentDates = this.doctorService.getBookedAppointmentDates();
 
-    console.log('Pending dates for homepage calendar:', pendingAppointmentDates);
-    console.log('Confirmed dates for homepage calendar:', confirmedAppointmentDates);
-
     const year = this.currentDate.getFullYear();
     const month = this.currentDate.getMonth();
 
@@ -151,9 +153,7 @@ export class DoctorHome implements OnInit {
         date: '',
         hasActivity: false,
         isCurrentMonth: false
-
-      }
-      );
+      });
     }
 
     for (let dayNumber = 1; dayNumber <= daysInMonth; dayNumber++) {

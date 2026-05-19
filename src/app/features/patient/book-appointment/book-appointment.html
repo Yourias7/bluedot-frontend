@@ -38,6 +38,7 @@
     </div>
 
     <app-doctor-availability-patient-side
+      [doctorId]="userDetailedInfo?.id ?? null"
       [initialDate]="selectedDate"
       [initialSlotId]="selectedSlotId"
       (selectionChanged)="onSlotSelectionChanged($event)"

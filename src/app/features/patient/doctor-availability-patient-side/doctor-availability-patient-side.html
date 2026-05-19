@@ -13,6 +13,7 @@
         dateFormat="dd/mm/yy"
         [inline]="true"
         [showIcon]="false"
+        [minDate]="minSelectableDate"
         (onSelect)="onDateChanged($event)"
       ></p-datepicker>
     </div>
@@ -20,20 +21,22 @@
     <div class="slots-column">
       <h3>Διαθέσιμες ώρες</h3>
 
-      @if (availabilitySlots.length > 0) {
+      @if (loadError) {
+        <p class="no-slots-message">{{ loadError }}</p>
+      } @else if (availabilitySlots.length > 0) {
         <div class="slots-grid">
-          @for (slot of availabilitySlots; track slot.id) {
+          @for (slot of availabilitySlots; track slot.startTime) {
             <button
               type="button"
               class="slot-card"
-              [class.selected-slot]="selectedSlot?.id === slot.id"
+              [class.selected-slot]="selectedSlot?.startTime === slot.startTime"
               (click)="pickSlot(slot)"
             >
               {{ slot.startTime }} - {{ slot.endTime }}
             </button>
           }
         </div>
-      } @else {
+      } @else if (!isLoadingSlots) {
         <p class="no-slots-message">
           Δεν υπάρχουν διαθέσιμες ώρες για αυτή την ημέρα.
         </p>
