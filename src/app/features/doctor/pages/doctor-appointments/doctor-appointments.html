@@ -37,6 +37,15 @@
       >
         Απορριφθέντα
       </button>
+
+      <button
+        type="button"
+        class="tab-button"
+        [class.active-tab]="selectedTab === 'history'"
+        (click)="selectTab('history')"
+      >
+        Ιστορικό
+      </button>
     </div>
 
     <div class="appointment-list">
@@ -73,6 +82,7 @@
                 [class.pending-status]="appointment.status === 'pending'"
                 [class.confirmed-status]="appointment.status === 'booked'"
                 [class.rejected-status]="appointment.status === 'rejected'"
+                [class.completed-status]="appointment.status === 'completed'"
               >
                 @if (appointment.status === 'pending') {
                   Σε αναμονή
@@ -84,6 +94,10 @@
 
                 @if (appointment.status === 'rejected') {
                   Απορρίφθηκε
+                }
+
+                @if (appointment.status === 'completed') {
+                  Ολοκληρωμένο
                 }
               </span>
             </button>

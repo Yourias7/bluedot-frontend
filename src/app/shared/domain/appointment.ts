@@ -1,5 +1,5 @@
-import { ChatMessage } from "./chat-message";
-import { AppointmentStatus } from "./appointment-status";
+import { ChatMessage } from './chat-message';
+import { AppointmentStatus } from './appointment-status';
 
 export type Appointment = {
   id: number;
@@ -9,6 +9,9 @@ export type Appointment = {
   date: string;
   startTime: string;
   endTime: string;
+
+  createdAt?: string | null;
+  expiredDateTime?: string | null;
 
   patientName: string;
   doctorName: string;

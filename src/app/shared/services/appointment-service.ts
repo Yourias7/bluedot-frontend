@@ -20,9 +20,12 @@ type BackendAppointmentDto = {
   id: number;
   status: string;
   appointmentNotes?: string | null;
-  createdAt?: string;
+  createdAt?: string | null;
+  expiredDateTime?: string | null;
   patientId: number;
   patientFullName: string;
+  patientPhone?: string | null;
+  patientEmail?: string | null;
   doctorId: number;
   doctorFullName: string;
   availabilityId: number;
@@ -102,23 +105,33 @@ export class AppointmentService {
       date: this.formatDate(startDate),
       startTime: this.formatTime(startDate),
       endTime: this.formatTime(endDate),
+
+      createdAt: appointment.createdAt ?? null,
+      expiredDateTime: appointment.expiredDateTime ?? null,
+
       patientName: appointment.patientFullName,
       doctorName: appointment.doctorFullName,
       doctorId: appointment.doctorId,
-      patientPhone: '-',
-      patientEmail: '-',
+      patientPhone: appointment.patientPhone ?? '-',
+      patientEmail: appointment.patientEmail ?? '-',
       patientMessage: appointment.appointmentNotes ?? '',
       conversation: []
     };
   }
 
   private mapBackendStatus(status: string): AppointmentStatus {
-    if (status === 'Pending') {
+    const normalizedStatus = status.toLowerCase();
+
+    if (normalizedStatus === 'pending') {
       return 'pending';
     }
 
-    if (status === 'Confirmed' || status === 'Completed') {
+    if (normalizedStatus === 'confirmed' || normalizedStatus === 'booked') {
       return 'booked';
+    }
+
+    if (normalizedStatus === 'completed') {
+      return 'completed';
     }
 
     return 'rejected';
