@@ -115,16 +115,6 @@ export class DoctorAppointmentDetails {
     });
   }
 
-  restoreRejectedAppointment() {
-    if (this.appointment === undefined) {
-      return;
-    }
-
-    this.doctorservice.restoreRejectedAppointment(this.appointment.id).subscribe(() => {
-      this.goBack();
-    });
-  }
-
   openTransferModal() {
     if (this.appointment === undefined) {
       return;
@@ -171,7 +161,6 @@ export class DoctorAppointmentDetails {
     if (this.appointment === undefined || this.selectedTransferSlot === null) {
       return;
     }
-
     this.doctorservice.transferAppointment(
       this.appointment.id,
       this.transferDate,
