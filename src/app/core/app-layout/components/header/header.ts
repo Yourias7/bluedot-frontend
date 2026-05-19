@@ -55,8 +55,13 @@ export class Header implements OnInit, OnDestroy {
     { path: '/help', title: 'Βοήθεια' }
   ];
 
+  managerNavRoutes: NavRoute[] = [
+    { path: '/manager', title: 'Dashboard' }
+  ];
+
   loggedInOptions: MenuItem[];
   doctorOptions: MenuItem[];
+  managerOptions: MenuItem[];
 
   constructor(
     private authenticationServices: AuthenticationServices,
@@ -101,6 +106,20 @@ export class Header implements OnInit, OnDestroy {
         command: () => this.onLogout()
       }
     ];
+
+    this.managerOptions = [
+      {
+        label: 'Dashboard',
+        command: () => {
+          this.router.navigate(['/manager']);
+        }
+      },
+      { separator: true },
+      {
+        label: 'Αποσύνδεση',
+        command: () => this.onLogout()
+      }
+    ];
   }
 
   ngOnInit(): void {
@@ -126,7 +145,38 @@ export class Header implements OnInit, OnDestroy {
       return this.doctorNavRoutes;
     }
 
+    if (this.currentUserRole === 'manager') {
+      return this.managerNavRoutes;
+    }
+
     return this.patientNavRoutes;
+  }
+
+  get displayUserName(): string {
+    if (!this.currentUserName) {
+      if (this.currentUserRole === 'manager') {
+        return 'Admin';
+      }
+
+      if (this.currentUserRole === 'doctor') {
+        return 'Γιατρός';
+      }
+
+      if (this.currentUserRole === 'patient') {
+        return 'Ασθενής';
+      }
+
+      return '';
+    }
+
+    if (this.currentUserName.includes('@')) {
+      return this.currentUserName
+        .split('@')[0]
+        .replace(/[._-]+/g, ' ')
+        .trim();
+    }
+
+    return this.currentUserName;
   }
 
   onLogout(): void {

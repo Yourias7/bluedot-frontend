@@ -20,6 +20,9 @@ export class DoctorAppointmentDetails {
   isLoading = false;
   errorMessage = '';
 
+  isActionLoading = false;
+  actionErrorMessage = '';
+
   showTransferModal = false;
 
   transferDateObject: Date = new Date();
@@ -134,46 +137,67 @@ export class DoctorAppointmentDetails {
   }
 
   acceptAppointment() {
-    if (this.appointment === undefined) {
+    if (this.appointment === undefined || this.isActionLoading) {
       return;
     }
 
+    this.isActionLoading = true;
+    this.actionErrorMessage = '';
+
     this.doctorservice.acceptAppointment(this.appointment.id).subscribe({
       next: () => {
+        this.isActionLoading = false;
         this.goBack();
       },
       error: error => {
         console.error('Failed to accept appointment:', error);
+        this.isActionLoading = false;
+        this.actionErrorMessage = 'Δεν ήταν δυνατή η αποδοχή του αιτήματος. Δοκιμάστε ξανά.';
+        this.changeDetectorRef.detectChanges();
       }
     });
   }
 
   rejectAppointment() {
-    if (this.appointment === undefined) {
+    if (this.appointment === undefined || this.isActionLoading) {
       return;
     }
 
+    this.isActionLoading = true;
+    this.actionErrorMessage = '';
+
     this.doctorservice.rejectAppointment(this.appointment.id).subscribe({
       next: () => {
+        this.isActionLoading = false;
         this.goBack();
       },
       error: error => {
         console.error('Failed to reject appointment:', error);
+        this.isActionLoading = false;
+        this.actionErrorMessage = 'Δεν ήταν δυνατή η απόρριψη του αιτήματος. Δοκιμάστε ξανά.';
+        this.changeDetectorRef.detectChanges();
       }
     });
   }
 
   rejectAppointmentAndDisableSlot() {
-    if (this.appointment === undefined) {
+    if (this.appointment === undefined || this.isActionLoading) {
       return;
     }
 
+    this.isActionLoading = true;
+    this.actionErrorMessage = '';
+
     this.doctorservice.rejectAppointmentAndDisableSlot(this.appointment.id).subscribe({
       next: () => {
+        this.isActionLoading = false;
         this.goBack();
       },
       error: error => {
         console.error('Failed to reject appointment and disable slot:', error);
+        this.isActionLoading = false;
+        this.actionErrorMessage = 'Δεν ήταν δυνατή η απόρριψη και απενεργοποίηση της ώρας. Δοκιμάστε ξανά.';
+        this.changeDetectorRef.detectChanges();
       }
     });
   }

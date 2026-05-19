@@ -534,3 +534,24 @@ button.restore-button:hover,
         width: 100%;
     }
 }
+
+.action-error-message {
+  margin: 0 0 16px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background-color: #ffe1e1;
+  color: #8a1f1f;
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.accept-button:disabled,
+.reject-button:disabled,
+.reject-disable-button:disabled,
+.transfer-button:disabled,
+.confirm-transfer-button:disabled,
+.cancel-transfer-button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}

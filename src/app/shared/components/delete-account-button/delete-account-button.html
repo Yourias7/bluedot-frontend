@@ -1,35 +1,51 @@
-<!-- <div>
-    <button (click)="visible=true">Διαγραφή λογαρισμού</button>
-    <p-dialog header="Edit Profile" [modal]="true" [(visible)]="visible" [style]="{ width: '25rem' }">
-        <span class="p-text-secondary block mb-8">Προσοχή! Είστε σίγουροι ότι θέλετε να συνεχίσετε;</span>
-        <div class="flex justify-end gap-2">
-            <p-button label="Ακύρωση" severity="secondary" (click)="deleteAccount()" />
-            <p-button label="Διαγραφή λογαριασμού" (click)="visible = false" />
-        </div>
-    </p-dialog>
-</div> -->
-<div>
+<div class="delete-account-wrapper">
+  <button
+    type="button"
+    class="btn btn-danger"
+    (click)="openDialog()"
+  >
+    Διαγραφή λογαριασμού
+  </button>
 
-    <button type="button" class="btn btn-danger" (click)="visible=true">
-        Διαγραφή λογαριασμού
-    </button>
+  <p-dialog
+    header="Διαγραφή λογαριασμού"
+    [modal]="true"
+    [(visible)]="visible"
+    [style]="{ width: '25rem' }"
+    [closable]="!isDeleting"
+  >
+    <span class="text-secondary d-block mb-3">
+      Προσοχή! Η διαγραφή του λογαριασμού είναι οριστική. Είστε σίγουροι ότι θέλετε να συνεχίσετε;
+    </span>
 
+    @if (errorMessage) {
+      <div class="delete-error">
+        {{ errorMessage }}
+      </div>
+    }
 
-    <p-dialog header="Διαγραφή λογαριασμού" [modal]="true" [(visible)]="visible" [style]="{ width: '25rem' }">
-        <span class="text-secondary d-block mb-3">
-            Προσοχή! Είστε σίγουροι ότι θέλετε να συνεχίσετε;
-        </span>
-        <div class="d-flex justify-content-end gap-2">
-            <button 
-                label="" 
-                (click)="visible = false" 
-                class='btn btn-secondary'>Ακύρωση
-            </button>
-            <button 
-                label="" 
-                (click)="deleteAccount()" 
-                class= 'btn btn-danger'>Διαγραφή λογαριασμού
-            </button>
-        </div>
-    </p-dialog>
+    <div class="d-flex justify-content-end gap-2">
+      <button
+        type="button"
+        class="btn btn-secondary"
+        [disabled]="isDeleting"
+        (click)="closeDialog()"
+      >
+        Ακύρωση
+      </button>
+
+      <button
+        type="button"
+        class="btn btn-danger"
+        [disabled]="isDeleting"
+        (click)="deleteAccount()"
+      >
+        @if (isDeleting) {
+          Διαγραφή...
+        } @else {
+          Διαγραφή λογαριασμού
+        }
+      </button>
+    </div>
+  </p-dialog>
 </div>

@@ -214,3 +214,28 @@ textarea.form-control {
     width: 100%;
   }
 }
+
+.form-message {
+  margin-bottom: 18px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.info-message {
+  background-color: #f4f6ff;
+  color: #1f2a44;
+}
+
+.error-message {
+  background-color: #ffe1e1;
+  color: #8a1f1f;
+}
+
+.save-button:disabled,
+.cancel-button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}

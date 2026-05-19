@@ -38,7 +38,7 @@ export class Login {
     this.modalClosed.emit(true);
   }
 
-  redirectToRegister(){
+  redirectToRegister() {
     this.closeModal();
     this.router.navigate(['/register']);
   }
@@ -64,25 +64,24 @@ export class Login {
       email,
       password
     }).subscribe({
-      next: (response) => { // <-- Add 'response' here to read the API data directly
+      next: () => {
         this.isLoading = false;
         this.loginSucceeded.emit(true);
         this.closeModal();
 
-        // Use the response directly to decide where to route
-        const role = response.role?.toLowerCase();
+        const role = this.authenticationServices.getCurrentUserRole();
 
         if (role === 'doctor') {
           this.router.navigate(['/doctor']);
           return;
         }
 
-        if (role === 'patient') {
-          this.router.navigate(['/landing-page']);
+        if (role === 'manager') {
+          this.router.navigate(['/manager']);
           return;
         }
 
-        if (role === 'manager') {
+        if (role === 'patient') {
           this.router.navigate(['/landing-page']);
           return;
         }

@@ -1,32 +1,59 @@
 import { Component } from '@angular/core';
-import { AuthenticationServices } from '../../services/authentication-services';
-import { DialogModule } from 'primeng/dialog';
 import { Router } from '@angular/router';
+import { DialogModule } from 'primeng/dialog';
+
+import { AuthenticationServices } from '../../services/authentication-services';
 
 @Component({
   selector: 'app-delete-account-button',
-  imports: [DialogModule,],
+  imports: [DialogModule],
   templateUrl: './delete-account-button.html',
   styleUrl: './delete-account-button.scss',
 })
 export class DeleteAccountButton {
-  visible:boolean = false;
-  constructor(private authService:AuthenticationServices, private router:Router){
+  visible = false;
+  isDeleting = false;
+  errorMessage = '';
 
+  constructor(
+    private authService: AuthenticationServices,
+    private router: Router
+  ) {}
+
+  openDialog() {
+    this.errorMessage = '';
+    this.visible = true;
   }
 
-  deleteAccount(){
+  closeDialog() {
+    if (this.isDeleting) {
+      return;
+    }
+
+    this.visible = false;
+    this.errorMessage = '';
+  }
+
+  deleteAccount() {
+    if (this.isDeleting) {
+      return;
+    }
+
+    this.isDeleting = true;
+    this.errorMessage = '';
+
     this.authService.deleteMe().subscribe({
-      next:() =>{
-        console.log("acc deleted successfully");
-        setTimeout(()=>{
-          this.router.navigate(['/landing-page']);
-        }, 1000);
+      next: () => {
+        this.isDeleting = false;
+        this.visible = false;
+        localStorage.clear();
+        this.router.navigate(['/landing-page']);
       },
-      error:()=>{
-        console.log("acc deletion failure!");
+      error: error => {
+        console.error('Account deletion failed:', error);
+        this.isDeleting = false;
+        this.errorMessage = 'Δεν ήταν δυνατή η διαγραφή του λογαριασμού. Δοκιμάστε ξανά.';
       }
-    })
-  
+    });
   }
 }
