@@ -198,7 +198,7 @@ export class DoctorHome implements OnInit, OnDestroy {
 
   buildCalendar() {
     const pendingAppointmentDates = this.doctorService.getPendingAppointmentDates();
-    const confirmedAppointmentDates = this.doctorService.getBookedAppointmentDates();
+    const confirmedAppointmentDates = this.getActiveBookedAppointmentDates();
 
     const year = this.currentDate.getFullYear();
     const month = this.currentDate.getMonth();
@@ -329,6 +329,22 @@ export class DoctorHome implements OnInit, OnDestroy {
     }
 
     return `${hours} ώρες και ${minutes} λεπτά`;
+  }
+
+  private getActiveBookedAppointmentDates(): string[] {
+    return this.doctorService.getDoctorAppointments()
+      .filter(appointment => appointment.status === 'booked')
+      .filter(appointment => !this.isAppointmentExpired(appointment))
+      .map(appointment => appointment.date);
+  }
+
+  private isAppointmentExpired(appointment: Appointment): boolean {
+    const appointmentEndDateTime = this.parseDate(appointment.date);
+    const [hours, minutes] = appointment.endTime.split(':').map(Number);
+
+    appointmentEndDateTime.setHours(hours, minutes, 0, 0);
+
+    return appointmentEndDateTime <= new Date();
   }
 
   formatDate(date: Date): string {
