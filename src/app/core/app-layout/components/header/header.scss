@@ -19,10 +19,15 @@
 }
 
 .logo-link {
+  color: #000000;
   text-decoration: none;
 
   display: flex;
   align-items: center;
+
+  ::ng-deep span.fw-bold {
+    color: #000000;
+  }
 }
 
 .header-nav {

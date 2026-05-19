@@ -28,7 +28,6 @@ export class MapLayout implements AfterViewInit {
   userLocationError: string | null = null;
   doctorLoadError: string | null = null;
   sidebarOpen = false;
-  review:number = 3;
 
   // Default fallback view if user denies / geolocation fails (centered on Greece)
   private readonly defaultCenter: L.LatLngTuple = [38.0, 23.8];

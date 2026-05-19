@@ -94,12 +94,6 @@ export const routes: Routes = [
     component: PatientAppointments,
     canActivate: [patientOnlyGuard]
   },
-  {
-    path: 'patient-appointments/:id',
-    component: AppointmentDetails,
-    canActivate: [patientOnlyGuard]
-  },
-
   // Admin / manager-only routes
   {
     path: 'manager',
