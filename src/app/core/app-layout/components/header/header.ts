@@ -60,8 +60,6 @@ export class Header implements OnInit, OnDestroy {
     private authenticationServices: AuthenticationServices,
     private router: Router
   ) {
-    // You no longer need to call getCurrentUserRole() here. 
-    // The subscription in ngOnInit will handle it!
 
     this.loggedInOptions = [
       {
@@ -127,8 +125,6 @@ export class Header implements OnInit, OnDestroy {
 
   onLogout(): void {
     this.authenticationServices.logout();
-    // Note: your service's logout() already navigates to /landing-page
-    // and updates the BehaviorSubject, so you don't need refreshCurrentUser() anymore!
   }
 
   get navRoutes(): NavRoute[] {
