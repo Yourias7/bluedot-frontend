@@ -6,7 +6,8 @@ export interface Doctor extends User {
     clinicAddress: string;
     phoneNumber: string;
     yearsOfExperience: number;
-    specialty?:Specialty;
+    specialty?: Specialty;
+    specialties?: Specialty[];
     latitude?: number;
     longitude?: number;
     averageRating?: number;

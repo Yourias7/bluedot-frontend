@@ -1,70 +1,93 @@
-<div class="container py-5">
+@if (userDetailedInfo) {
+<section class="appointment-confirm-page">
+  <div class="appointment-confirm-card">
+    <h1 class="page-title">Επεξεργασία Αιτήματος</h1>
 
-    <!-- Page Title -->
-    <section class="mb-5 text-center">
-        <h1 class="display-6 fw-bold text-primary">
-            Το αίτημα σας - Επιβεβαίωση
-        </h1>
-        <p class="text-muted">
-            Ελέγξτε τα στοιχεία πριν την επιβεβαίωση.
-        </p>
-    </section>
+    <div class="doctor-profile-header">
+      <p-avatar icon="pi pi-user" size="xlarge"></p-avatar>
 
-    <!-- Main Card -->
-    <div class="card shadow-sm border-0 rounded-4">
-
-        <div class="card-body p-4 p-md-5">
-
-            <!-- Doctor Info -->
-            @if (userDetailedInfo) {
-            <section class="mb-5">
-                <div class="border rounded-4 p-4 bg-light">
-                    <h2 class="h4 fw-semibold mb-4 text-secondary">
-                        Στοιχεία Γιατρού
-                    </h2>
-
-                    <app-doctor-basic-info [userDetailedInfo]="userDetailedInfo">
-                    </app-doctor-basic-info>
-                </div>
-            </section>
+      <div>
+        <h2>{{ userDetailedInfo.firstName }} {{ userDetailedInfo.lastName }}</h2>
+        @if (userDetailedInfo.specialties?.length) {
+          <p class="specialty-text">
+            @for (specialty of userDetailedInfo.specialties; track specialty.id; let last = $last) {
+              {{ specialty.name }}@if (!last) {, }
             }
+          </p>
+        }
 
-            <!-- Message Section -->
-            <section class="mb-5">
-                <div class="border rounded-4 p-4">
-                    <h2 class="h4 fw-semibold mb-3 text-secondary">
-                        Το μήνυμα σας
-                    </h2>
+        <div class="rating-container">
+          @for (n of starPositions; track $index) {
+            @if (n > getFilledStars()) {
+              <i class="pi pi-star"></i>
+            } @else {
+              <i class="pi pi-star-fill"></i>
+            }
+          }
 
-                    <p class="mb-0 text-muted">
-                        insert message here
-                    </p>
-                </div>
-            </section>
-
-            <!-- Availability -->
-            <section class="mb-5">
-                <div class="border rounded-4 p-4 bg-light">
-                    <h2 class="h4 fw-semibold mb-4 text-secondary">
-                        Διαθεσιμότητα Γιατρού
-                    </h2>
-                    <p class="mb-0 text-muted">
-                        insert message here
-                    </p>
-                </div>
-            </section>
-
-            <!-- Buttons -->
-            <section class="d-flex justify-content-between gap-3">
-                <button class="btn btn-outline-secondary px-4 py-2">
-                    Πίσω
-                </button>
-
-                <button class="btn btn-primary px-4 py-2">
-                    Επιβεβαίωση
-                </button>
-            </section>
-
+          <span>{{ rating | number:'1.1-1' }}/5</span>
+          <span>({{ reviewCount }})</span>
         </div>
+      </div>
     </div>
-</div>
+
+    <div class="doctor-info-grid">
+      <p>
+        <strong>Διεύθυνση:</strong>
+        {{ userDetailedInfo.clinicAddress }}
+      </p>
+
+      <p>
+        <strong>Τηλέφωνο:</strong>
+        {{ userDetailedInfo.phoneNumber }}
+      </p>
+
+      <p>
+        <strong>Email:</strong>
+        {{ userDetailedInfo.email }}
+      </p>
+    </div>
+
+    <div class="reason-section">
+      <label for="visit-reason">Λόγος Επίσκεψης*</label>
+
+      <textarea
+        id="visit-reason"
+        rows="4"
+        [formControl]="visitReason"
+        placeholder="Περιγράψτε τον λόγο της επίσκεψής σας"
+      ></textarea>
+
+      @if (visitReason.touched && visitReason.invalid) {
+        <p class="form-error">
+          Ο λόγος επίσκεψης πρέπει να έχει τουλάχιστον 10 χαρακτήρες.
+        </p>
+      }
+    </div>
+
+    @if (submitError) {
+      <p class="submit-error">{{ submitError }}</p>
+    }
+
+    <div class="confirm-actions">
+      <button
+        type="button"
+        class="back-button"
+        [disabled]="isSubmitting"
+        (click)="goBack()"
+      >
+        Πίσω
+      </button>
+
+      <button
+        type="button"
+        class="confirm-button"
+        [disabled]="isSubmitting"
+        (click)="confirmAppointment()"
+      >
+        {{ isSubmitting ? 'Αποστολή…' : 'Επικύρωση' }}
+      </button>
+    </div>
+  </div>
+</section>
+}
