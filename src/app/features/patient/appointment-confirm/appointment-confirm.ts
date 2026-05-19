@@ -7,12 +7,9 @@ import { AvatarModule } from 'primeng/avatar';
 import { Doctor } from '../../../shared/domain/doctor';
 import { AppointmentService } from '../../../shared/services/appointment-service';
 import { DoctorSearchService } from '../../../shared/services/doctor-search-service';
-import { DoctorBasicInfo } from '../../../shared/components/doctor-basic-info/doctor-basic-info';
-
-
 @Component({
   selector: 'app-appointment-confirm',
-  imports: [AvatarModule, DoctorBasicInfo, CommonModule, AvatarModule, ReactiveFormsModule],
+  imports: [CommonModule, AvatarModule, ReactiveFormsModule],
   templateUrl: './appointment-confirm.html',
   styleUrl: './appointment-confirm.scss',
 })
@@ -112,6 +109,7 @@ export class AppointmentConfirm implements OnInit {
       })
       .subscribe({
         next: () => {
+          const appointmentNotes = this.visitReason.value?.trim() ?? '';
           this.isSubmitting = false;
           this.router.navigate(['/appointment-confirm-end'], {
             queryParams: {
@@ -120,7 +118,8 @@ export class AppointmentConfirm implements OnInit {
               slotId: this.selectedSlotId,
               startTime: this.startTime,
               endTime: this.endTime
-            }
+            },
+            state: { appointmentNotes }
           });
         },
         error: (error: HttpErrorResponse) => {

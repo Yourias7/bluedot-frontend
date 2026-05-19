@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, map, tap, throwError } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
+import { AppointmentService } from './appointment-service';
 import { CalendarDay } from '../domain/calendar-day';
 import { AvailabilitySlot } from '../domain/availability-slot';
 import { Appointment } from '../domain/appointment';
@@ -21,6 +22,8 @@ type BackendAppointmentDto = {
   expiredDateTime?: string | null;
   patientId: number;
   patientFullName: string;
+  patientPhone?: string | null;
+  patientEmail?: string | null;
   doctorId: number;
   doctorFullName: string;
   availabilityId: number;
@@ -79,6 +82,7 @@ type AvailabilitySlotWithDoctor = AvailabilitySlot & {
 })
 export class DoctorService {
   private http = inject(HttpClient);
+  private appointmentService = inject(AppointmentService);
   private baseUrl = environment.apiUrl;
 
   appointments: Appointment[] = [];
@@ -86,32 +90,26 @@ export class DoctorService {
   private slotsByDate: Record<string, AvailabilitySlotWithDoctor[]> = {};
 
   loadDoctorAppointments(): Observable<Appointment[]> {
-    return this.http
-      .get<PagedResultDto<BackendAppointmentDto>>(`${this.baseUrl}/appointments?page=1&pageSize=200`)
-      .pipe(
-        map(response => response.items.map(appointment => this.mapBackendAppointment(appointment))),
-        tap(appointments => {
-          this.appointments = appointments;
-        })
-      );
+    return this.appointmentService.loadAppointments().pipe(
+      tap(appointments => {
+        this.appointments = appointments;
+      })
+    );
   }
 
   loadAppointmentById(appointmentId: number): Observable<Appointment> {
-    return this.http
-      .get<BackendAppointmentDto>(`${this.baseUrl}/appointments/${appointmentId}`)
-      .pipe(
-        map(appointment => this.mapBackendAppointment(appointment)),
-        tap(appointment => {
-          const index = this.appointments.findIndex(currentAppointment => currentAppointment.id === appointment.id);
+    return this.appointmentService.loadAppointmentById(appointmentId).pipe(
+      tap(appointment => {
+        const index = this.appointments.findIndex(currentAppointment => currentAppointment.id === appointment.id);
 
-          if (index === -1) {
-            this.appointments.push(appointment);
-            return;
-          }
+        if (index === -1) {
+          this.appointments.push(appointment);
+          return;
+        }
 
-          this.appointments[index] = appointment;
-        })
-      );
+        this.appointments[index] = appointment;
+      })
+    );
   }
 
   loadDoctorAvailabilitySlotsByDate(date: string): Observable<AvailabilitySlot[]> {
@@ -326,8 +324,8 @@ export class DoctorService {
       startTime: this.formatTime(startDate),
       endTime: this.formatTime(endDate),
       patientName: appointment.patientFullName,
-      patientPhone: '-',
-      patientEmail: '-',
+      patientPhone: appointment.patientPhone ?? '-',
+      patientEmail: appointment.patientEmail ?? '-',
       patientMessage: appointment.appointmentNotes ?? '',
       conversation: []
     };
