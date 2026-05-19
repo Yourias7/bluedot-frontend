@@ -1,1 +1,156 @@
-<p>admin-dashboard works!</p>
+<section class="admin-dashboard-page">
+  <div class="dashboard-header">
+    <div>
+      <p class="eyebrow">Admin Dashboard</p>
+      <h1>Πίνακας διαχείρισης</h1>
+      <p>{{ dashboardSubtitle }}</p>
+    </div>
+
+    <button
+      type="button"
+      class="refresh-button"
+      (click)="loadDashboardData()"
+    >
+      Ανανέωση
+    </button>
+  </div>
+
+  @if (isLoading) {
+    <div class="dashboard-card empty-state">
+      Φόρτωση στοιχείων dashboard...
+    </div>
+  }
+
+  @if (errorMessage) {
+    <div class="dashboard-card empty-state">
+      {{ errorMessage }}
+    </div>
+  }
+
+  @if (!isLoading && !errorMessage) {
+    <div class="metrics-grid">
+      @for (metric of dashboardMetrics; track metric.label) {
+        <article class="metric-card">
+          <div class="metric-icon">
+            {{ metric.icon }}
+          </div>
+
+          <div>
+            <p>{{ metric.label }}</p>
+            <h2>{{ metric.value }}</h2>
+            <span>{{ metric.helper }}</span>
+          </div>
+        </article>
+      }
+    </div>
+
+    <div class="dashboard-grid">
+      <article class="dashboard-card status-card">
+        <div class="card-header">
+          <div>
+            <h2>Ραντεβού ανά κατάσταση</h2>
+            <p>Κατανομή όλων των ραντεβού της πλατφόρμας.</p>
+          </div>
+        </div>
+
+        <div class="status-list">
+          @for (stat of statusStats; track stat.label) {
+            <div class="status-row">
+              <div class="status-row-header">
+                <span>{{ stat.label }}</span>
+                <strong>{{ stat.value }}</strong>
+              </div>
+
+              <div class="progress-track">
+                <div
+                  class="progress-fill"
+                  [style.width.%]="stat.percent"
+                ></div>
+              </div>
+
+              <small>{{ stat.percent }}%</small>
+            </div>
+          }
+        </div>
+      </article>
+
+      <article class="dashboard-card health-card">
+        <div class="card-header">
+          <div>
+            <h2>Εικόνα πλατφόρμας</h2>
+            <p>Γρήγορη ματιά στην τρέχουσα λειτουργία.</p>
+          </div>
+        </div>
+
+        <div class="health-stat">
+          <span>Completion rate</span>
+          <strong>{{ completionRate }}%</strong>
+        </div>
+
+        <div class="health-stat">
+          <span>Pending rate</span>
+          <strong>{{ pendingRate }}%</strong>
+        </div>
+
+        <div class="summary-box">
+          @if (pendingAppointments.length > 0) {
+            Υπάρχουν {{ pendingAppointments.length }} αιτήματα που χρειάζονται απάντηση.
+          } @else {
+            Δεν υπάρχουν εκκρεμή αιτήματα αυτή τη στιγμή.
+          }
+        </div>
+      </article>
+    </div>
+
+    <article class="dashboard-card recent-card">
+      <div class="card-header">
+        <div>
+          <h2>Πρόσφατα ραντεβού</h2>
+          <p>Τα πιο πρόσφατα στοιχεία που επέστρεψε το backend.</p>
+        </div>
+      </div>
+
+      @if (recentAppointments.length > 0) {
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Ασθενής</th>
+                <th>Γιατρός</th>
+                <th>Ημερομηνία</th>
+                <th>Ώρα</th>
+                <th>Κατάσταση</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              @for (appointment of recentAppointments; track appointment.id) {
+                <tr>
+                  <td>{{ appointment.patientName }}</td>
+                  <td>{{ appointment.doctorName }}</td>
+                  <td>{{ appointment.date }}</td>
+                  <td>{{ appointment.startTime }} - {{ appointment.endTime }}</td>
+                  <td>
+                    <span
+                      class="status-pill"
+                      [class.pending-status]="appointment.status === 'pending'"
+                      [class.confirmed-status]="appointment.status === 'booked'"
+                      [class.completed-status]="appointment.status === 'completed'"
+                      [class.rejected-status]="appointment.status === 'rejected'"
+                    >
+                      {{ getStatusLabel(appointment) }}
+                    </span>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      } @else {
+        <div class="empty-state compact-empty">
+          Δεν υπάρχουν ακόμη ραντεβού για προβολή.
+        </div>
+      }
+    </article>
+  }
+</section>
