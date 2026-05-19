@@ -22,6 +22,8 @@ import { AppointmentDetails } from './shared/components/appointment-details/appo
 import { Help } from './features/visitor/help/help';
 import { About } from './features/visitor/about/about';
 import { AppointmentConfirmEnd } from './features/patient/appointment-confirm-end/appointment-confirm-end';
+import { PrivacyPolicy } from './core/app-layout/components/common/privacy-policy/privacy-policy';
+import { Cookies } from './core/app-layout/components/common/cookies/cookies';
 
 export const routes: Routes = [
   {
@@ -59,8 +61,8 @@ export const routes: Routes = [
     component: AppointmentConfirm
   },
   {
-    path:'appointment-confirm-end',
-    component:AppointmentConfirmEnd
+    path: 'appointment-confirm-end',
+    component: AppointmentConfirmEnd
   },
   {
     path: 'patient-account-details',
@@ -101,11 +103,19 @@ export const routes: Routes = [
   },
   {
     path: 'help',
-    component:Help
+    component: Help
   },
   {
     path: 'about',
-    component:About
+    component: About
+  },
+  {
+    path: 'privacy-policy',
+    component: PrivacyPolicy
+  },
+  {
+    path: 'cookies',
+    component: Cookies
   },
   {
     path: '404',
