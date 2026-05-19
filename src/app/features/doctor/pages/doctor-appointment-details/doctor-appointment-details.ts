@@ -306,13 +306,9 @@ export class DoctorAppointmentDetails {
   }
 
   goBack() {
-    this.router.navigate(['/doctor/appointments'], {
-      queryParams: this.returnDate !== null
-        ? { date: this.returnDate }
-        : {}
-    });
+    this.router.navigate(['/doctor/appointments']);
   }
-
+  
   formatDate(date: Date): string {
     const year = date.getFullYear();
     const month = date.getMonth() + 1;

@@ -44,7 +44,7 @@ export const cities: CityCoordinates[] = [
 
 @Component({
   selector: 'app-footer',
-  imports: [Logo, RouterLink, NgClass],
+  imports: [Logo, RouterLink,],
   templateUrl: './footer.html',
   styleUrl: './footer.scss',
 })
