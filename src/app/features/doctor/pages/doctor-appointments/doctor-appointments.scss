@@ -178,7 +178,7 @@
 
   .tab-button {
     flex: 0 0 auto;
-    padding: 0 18px 10px;
+    padding: 0 22px 10px;
     font-size: 20px;
   }
 
@@ -189,5 +189,10 @@
 
   .status-pill {
     min-width: 0;
+  }
+
+  .completed-status {
+    background-color: #dfe4ee;
+    color: #1f2a44;
   }
 }
