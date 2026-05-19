@@ -3,18 +3,14 @@ import { Router } from '@angular/router';
 
 import { AuthenticationServices } from '../services/authentication-services';
 
-export const roleRedirectGuard = () => {
+export const managerOnlyGuard = () => {
   const authService = inject(AuthenticationServices);
   const router = inject(Router);
 
   const currentUserRole = authService.getCurrentUserRole();
 
-  if (currentUserRole === 'doctor') {
-    return router.createUrlTree(['/doctor']);
-  }
-
-  if (currentUserRole === 'manager') {
-    return router.createUrlTree(['/manager']);
+  if (currentUserRole !== 'manager') {
+    return router.createUrlTree(['/403']);
   }
 
   return true;

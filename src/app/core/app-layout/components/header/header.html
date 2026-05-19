@@ -24,6 +24,31 @@
   </nav>
 
   <div class="header-right">
+    @if (currentUserRole === 'manager') {
+      <div class="user-profile">
+        <p-menu
+          #managerMenu
+          [model]="managerOptions"
+          [popup]="true"
+          styleClass="user-profile-menu"
+        ></p-menu>
+
+        <button
+          type="button"
+          class="user-menu-button"
+          (click)="managerMenu.toggle($event)"
+        >
+          <p-avatar
+            icon="pi pi-shield"
+            size="large"
+            class="user-avatar-button"
+          ></p-avatar>
+
+          <span class="user-name">{{ displayUserName }}</span>
+        </button>
+      </div>
+    }
+
     @if (currentUserRole === 'doctor') {
       <div class="user-profile">
         <p-menu
@@ -44,7 +69,7 @@
             class="user-avatar-button"
           ></p-avatar>
 
-          <span class="user-name">{{ currentUserName }}</span>
+          <span class="user-name">{{ displayUserName }}</span>
         </button>
       </div>
     }
@@ -69,7 +94,7 @@
             class="user-avatar-button"
           ></p-avatar>
 
-          <span class="user-name">{{ currentUserName }}</span>
+          <span class="user-name">{{ displayUserName }}</span>
         </button>
       </div>
     }
