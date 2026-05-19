@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { Router } from '@angular/router';
 
-import { environment } from '../../../environments/environment.development';
+import { environment } from '../../../environments/environment';
 import { UserRole } from '../domain/user-role';
 import { User } from '../domain/user';
 
