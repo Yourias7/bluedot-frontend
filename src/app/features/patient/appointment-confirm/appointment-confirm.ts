@@ -7,7 +7,7 @@ import { DoctorAvailabilityPatientSide } from "../doctor-availability-patient-si
 
 @Component({
   selector: 'app-appointment-confirm',
-  imports: [AvatarModule, DoctorBasicInfo, DoctorAvailabilityPatientSide],
+  imports: [AvatarModule, DoctorBasicInfo,],
   templateUrl: './appointment-confirm.html',
   styleUrl: './appointment-confirm.scss',
 })

@@ -29,6 +29,9 @@ export class DoctorAppointmentDetails {
 
   todayDate: Date = new Date();
 
+  isTransferLoading = false;
+  transferErrorMessage = '';
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -64,7 +67,17 @@ export class DoctorAppointmentDetails {
 
   get availableTransferSlots(): AvailabilitySlot[] {
     return this.transferSlots.filter(slot =>
-      slot.status === 'free' && !this.isTransferSlotInPast(slot)
+      slot.status === 'free' &&
+      !this.isTransferSlotInPast(slot) &&
+      this.hasValidAvailabilityId(slot)
+    );
+  }
+
+  get canConfirmTransfer(): boolean {
+    return (
+      this.selectedTransferSlot !== null &&
+      this.hasValidAvailabilityId(this.selectedTransferSlot) &&
+      !this.isTransferLoading
     );
   }
 
@@ -154,6 +167,8 @@ export class DoctorAppointmentDetails {
 
     this.selectedTransferSlot = null;
     this.transferSlots = [];
+    this.transferErrorMessage = '';
+    this.isTransferLoading = false;
     this.showTransferModal = true;
 
     this.loadTransferSlots();
@@ -163,6 +178,8 @@ export class DoctorAppointmentDetails {
     this.showTransferModal = false;
     this.selectedTransferSlot = null;
     this.transferSlots = [];
+    this.transferErrorMessage = '';
+    this.isTransferLoading = false;
   }
 
   onTransferDateChanged(date: Date | null) {
@@ -171,6 +188,8 @@ export class DoctorAppointmentDetails {
     }
 
     if (this.isDateInPast(date)) {
+      this.transferDateObject = this.parseDate(this.transferDate || this.formatDate(new Date()));
+      this.changeDetectorRef.detectChanges();
       return;
     }
 
@@ -178,6 +197,7 @@ export class DoctorAppointmentDetails {
     this.transferDate = this.formatDate(date);
     this.selectedTransferSlot = null;
     this.transferSlots = [];
+    this.transferErrorMessage = '';
 
     this.loadTransferSlots();
   }
@@ -187,11 +207,22 @@ export class DoctorAppointmentDetails {
       return;
     }
 
+    this.transferErrorMessage = '';
+
     this.doctorservice.loadDoctorAvailabilitySlotsByDate(this.transferDate).subscribe({
       next: slots => {
-        this.transferSlots = slots.filter(slot =>
+        const freeFutureSlots = slots.filter(slot =>
           slot.status === 'free' && !this.isTransferSlotInPast(slot)
         );
+
+        const invalidIdSlots = freeFutureSlots.filter(slot => !this.hasValidAvailabilityId(slot));
+
+        this.transferSlots = freeFutureSlots.filter(slot => this.hasValidAvailabilityId(slot));
+
+        if (invalidIdSlots.length > 0) {
+          this.transferErrorMessage =
+            'Οι διαθέσιμες ώρες φορτώθηκαν χωρίς πραγματικό Availability ID από το backend. Δεν μπορεί να γίνει αλλαγή ραντεβού μέχρι να επιστρέφεται το id του slot.';
+        }
 
         this.changeDetectorRef.detectChanges();
       },
@@ -199,17 +230,23 @@ export class DoctorAppointmentDetails {
         console.error('Failed to load transfer slots:', error);
 
         this.transferSlots = [];
+        this.transferErrorMessage = 'Δεν ήταν δυνατή η φόρτωση διαθέσιμων ωρών.';
         this.changeDetectorRef.detectChanges();
       }
     });
   }
 
   selectTransferSlot(slot: AvailabilitySlot) {
-    if (slot.status !== 'free' || this.isTransferSlotInPast(slot)) {
+    if (
+      slot.status !== 'free' ||
+      this.isTransferSlotInPast(slot) ||
+      !this.hasValidAvailabilityId(slot)
+    ) {
       return;
     }
 
     this.selectedTransferSlot = slot;
+    this.transferErrorMessage = '';
   }
 
   confirmTransfer() {
@@ -217,13 +254,26 @@ export class DoctorAppointmentDetails {
       return;
     }
 
+    if (!this.hasValidAvailabilityId(this.selectedTransferSlot)) {
+      this.transferErrorMessage =
+        'Δεν υπάρχει έγκυρο Availability ID για την επιλεγμένη ώρα.';
+      return;
+    }
+
+    this.isTransferLoading = true;
+    this.transferErrorMessage = '';
+
     this.doctorservice.transferAppointment(
       this.appointment.id,
       this.transferDate,
       this.selectedTransferSlot
     ).subscribe({
       next: success => {
+        this.isTransferLoading = false;
+
         if (!success || this.appointment === undefined) {
+          this.transferErrorMessage = 'Η αλλαγή ραντεβού δεν ολοκληρώθηκε.';
+          this.changeDetectorRef.detectChanges();
           return;
         }
 
@@ -232,6 +282,10 @@ export class DoctorAppointmentDetails {
       },
       error: error => {
         console.error('Failed to transfer appointment:', error);
+
+        this.isTransferLoading = false;
+        this.transferErrorMessage = this.getTransferErrorMessage(error);
+        this.changeDetectorRef.detectChanges();
       }
     });
   }
@@ -287,5 +341,25 @@ export class DoctorAppointmentDetails {
     today.setHours(0, 0, 0, 0);
 
     return selectedDate < today;
+  }
+
+  private hasValidAvailabilityId(slot: AvailabilitySlot | null): boolean {
+    return slot !== null && Number.isFinite(slot.id) && slot.id > 0;
+  }
+
+  private getTransferErrorMessage(error: any): string {
+    if (error?.error?.error) {
+      return error.error.error;
+    }
+
+    if (error?.error?.message) {
+      return error.error.message;
+    }
+
+    if (typeof error?.error === 'string') {
+      return error.error;
+    }
+
+    return 'Η αλλαγή ραντεβού απέτυχε. Δοκιμάστε ξανά.';
   }
 }

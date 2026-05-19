@@ -28,6 +28,7 @@ export class DoctorAvailability {
   availabilitySlots: AvailabilitySlot[] = [];
 
   pendingAppointmentDates: string[] = [];
+  confirmedAppointmentDates: string[] = [];
 
   isEditMode = false;
   isLoading = false;
@@ -98,6 +99,7 @@ export class DoctorAvailability {
     this.doctorservice.loadDoctorAppointments().subscribe({
       next: () => {
         this.pendingAppointmentDates = this.doctorservice.getPendingAppointmentDates();
+        this.confirmedAppointmentDates = this.doctorservice.getBookedAppointmentDates();
 
         if (this.selectedDate === null) {
           return;
@@ -124,6 +126,7 @@ export class DoctorAvailability {
 
         this.availabilitySlots = [];
         this.pendingAppointmentDates = [];
+        this.confirmedAppointmentDates = [];
         this.isLoading = false;
         this.errorMessage = 'Δεν ήταν δυνατή η φόρτωση των ραντεβού.';
         this.changeDetectorRef.detectChanges();
@@ -229,11 +232,26 @@ export class DoctorAvailability {
     return this.pendingAppointmentDates.includes(formattedDate);
   }
 
+  isConfirmedCalendarDate(calendarDate: PrimeNgCalendarDate): boolean {
+    const formattedDate = this.formatPrimeNgCalendarDate(calendarDate);
+
+    if (formattedDate === null) {
+      return false;
+    }
+
+    return this.confirmedAppointmentDates.includes(formattedDate);
+  }
+
   getCalendarDayClass(calendarDate: PrimeNgCalendarDate): string {
     const classes = ['calendar-day-content'];
 
     if (this.isPendingCalendarDate(calendarDate)) {
       classes.push('pending-calendar-day');
+      return classes.join(' ');
+    }
+
+    if (this.isConfirmedCalendarDate(calendarDate)) {
+      classes.push('confirmed-calendar-day');
     }
 
     return classes.join(' ');
