@@ -38,6 +38,11 @@ export class Login {
     this.modalClosed.emit(true);
   }
 
+  redirectToRegister(){
+    this.closeModal();
+    this.router.navigate(['/register']);
+  }
+
   submitLogin() {
     this.loginForm.markAllAsTouched();
 
