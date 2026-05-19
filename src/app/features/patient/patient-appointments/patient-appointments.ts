@@ -84,36 +84,36 @@ export class PatientAppointments {
     });
   }
 
-  get confirmedAppointments(): Appointment[] {
+  getConfirmedAppointments(): Appointment[] {
     return this.allAppointments.filter(appointment => appointment.status === 'booked');
   }
 
-  get pendingRequests(): Appointment[] {
+  getPendingRequests(): Appointment[] {
     return this.allAppointments.filter(appointment => appointment.status === 'pending');
   }
 
-  get rejectedAppointments(): Appointment[] {
+  getRejectedAppointments(): Appointment[] {
     return this.allAppointments.filter(appointment => appointment.status === 'rejected');
   }
 
-  get completedAppointments(): Appointment[] {
+  getCompletedAppointments(): Appointment[] {
     return this.allAppointments.filter(appointment => appointment.status === 'completed');
   }
 
-  get visibleAppointments(): Appointment[] {
+  getVisibleAppointments(): Appointment[] {
     if (this.selectedTab === 'appointments') {
-      return this.confirmedAppointments;
+      return this.getConfirmedAppointments();
     }
 
     if (this.selectedTab === 'requests') {
-      return this.pendingRequests;
+      return this.getPendingRequests();
     }
 
     if (this.selectedTab === 'rejected') {
-      return this.rejectedAppointments;
+      return this.getRejectedAppointments();
     }
 
-    return this.completedAppointments;
+    return this.getCompletedAppointments();
   }
 
   selectTab(tab: AppointmentTab): void {

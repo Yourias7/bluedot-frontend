@@ -107,7 +107,15 @@ export class DoctorAppointments {
       return this.rejectedAppointments;
     }
 
-    return this.completedAppointments;
+    if (this.selectedTab === 'history') {
+      return this.completedAppointments;
+    }
+
+    return [];
+  }
+
+  isTabActive(tab: AppointmentTab): boolean {
+    return this.selectedTab === tab;
   }
 
   selectTab(tab: AppointmentTab) {

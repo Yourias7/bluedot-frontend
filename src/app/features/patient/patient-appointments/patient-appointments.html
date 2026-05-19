@@ -62,6 +62,7 @@
       }
 
       @if (!isLoading && !errorMessage) {
+        @let visibleAppointments = getVisibleAppointments();
         @if (visibleAppointments.length > 0) {
           @for (appointment of visibleAppointments; track appointment.id) {
             <div class="appointment-row">
@@ -94,7 +95,6 @@
                   [class.pending-status]="appointment.status === 'pending'"
                   [class.confirmed-status]="appointment.status === 'booked'"
                   [class.rejected-status]="appointment.status === 'rejected'"
-                  [class.completed-status]="appointment.status === 'completed'"
                 >
                   @if (appointment.status === 'pending') {
                     Σε αναμονή
@@ -106,10 +106,6 @@
 
                   @if (appointment.status === 'rejected') {
                     Απορρίφθηκε
-                  }
-
-                  @if (appointment.status === 'completed') {
-                    Ολοκληρωμένο
                   }
                 </span>
               }
