@@ -60,24 +60,8 @@ export class DoctorDetailsPage implements OnInit {
     return Math.min(Math.max(Math.round(rating ?? 0), 0), 5);
   }
 
-  onBookingSlotChanged(selection: PatientSlotSelection) {
-    this.selectedBookingDate = selection.date;
-    this.selectedBookingSlot = selection.slot;
-  }
-
   closeAppointment(id: number) {
-    if (this.selectedBookingSlot === null || this.selectedBookingDate === null) {
-      return;
-    }
-
-    this.router.navigate(['/book-appointment', id], {
-      queryParams: {
-        date: this.selectedBookingDate,
-        slotId: this.selectedBookingSlot.id,
-        startTime: this.selectedBookingSlot.startTime,
-        endTime: this.selectedBookingSlot.endTime
-      }
-    });
+    this.router.navigate(['/book-appointment', id]);
   }
 
   private loadDoctor(id: number) {

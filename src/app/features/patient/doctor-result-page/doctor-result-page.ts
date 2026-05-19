@@ -129,7 +129,8 @@ export class DoctorResultPage implements OnInit {
     const specialtyId = this.resolveSelectedSpecialtyId();
     const lat = this.selectedLocationSuggestion?.lat ?? null;
     const lng = this.selectedLocationSuggestion?.lon ?? null;
-    const radiusKm = this.selectedLocationSuggestion ? DoctorResultPage.DEFAULT_RADIUS_KM : null;
+    // const radiusKm = this.selectedLocationSuggestion ? DoctorResultPage.DEFAULT_RADIUS_KM : null;
+    var radiusKm = 3.5;
 
     this.loadDoctors(specialtyId, lat, lng, radiusKm);
   }
@@ -182,7 +183,7 @@ export class DoctorResultPage implements OnInit {
     specialtyId?: number | null,
     lat?: number | null,
     lng?: number | null,
-    radiusKm?: number | null
+    radiusKm: number = 3.5
   ) {
     this.doctorLoadError = null;
 

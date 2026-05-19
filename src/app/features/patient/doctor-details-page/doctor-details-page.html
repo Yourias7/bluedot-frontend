@@ -89,17 +89,15 @@
       </p-tabs>
     </div>
 
-    <app-doctor-availability-patient-side
-      (selectionChanged)="onBookingSlotChanged($event)"></app-doctor-availability-patient-side>
+    <app-doctor-availability-patient-side></app-doctor-availability-patient-side>
 
     <div class="details-actions">
-      <button type="button" class="book-button" [disabled]="selectedBookingSlot === null"
-        (click)="closeAppointment(userDetailedInfo.id)">
-        @if (selectedBookingSlot === null) {
-        Επιλέξτε ώρα για να συνεχίσετε
-        } @else {
-        Συνέχεια κράτησης
-        }
+      <button
+        type="button"
+        class="book-button"
+        (click)="closeAppointment(userDetailedInfo.id)"
+      >
+        Κλείστε ραντεβού
       </button>
     </div>
   </div>
