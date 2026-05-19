@@ -14,7 +14,7 @@
       <button
         type="button"
         class="tab-button"
-        [class.active-tab]="selectedTab === 'appointments'"
+        [class.active-tab]="isTabActive('appointments')"
         (click)="selectTab('appointments')"
       >
         Ραντεβού
@@ -23,7 +23,7 @@
       <button
         type="button"
         class="tab-button"
-        [class.active-tab]="selectedTab === 'requests'"
+        [class.active-tab]="isTabActive('requests')"
         (click)="selectTab('requests')"
       >
         Αιτήματα
@@ -32,7 +32,7 @@
       <button
         type="button"
         class="tab-button"
-        [class.active-tab]="selectedTab === 'rejected'"
+        [class.active-tab]="isTabActive('rejected')"
         (click)="selectTab('rejected')"
       >
         Απορριφθέντα
@@ -41,7 +41,7 @@
       <button
         type="button"
         class="tab-button"
-        [class.active-tab]="selectedTab === 'history'"
+        [class.active-tab]="isTabActive('history')"
         (click)="selectTab('history')"
       >
         Ιστορικό
@@ -82,21 +82,15 @@
                 [class.pending-status]="appointment.status === 'pending'"
                 [class.confirmed-status]="appointment.status === 'booked'"
                 [class.rejected-status]="appointment.status === 'rejected'"
-                [class.completed-status]="appointment.status === 'completed'"
+                [class.completed-status]="selectedTab === 'history'"
               >
                 @if (appointment.status === 'pending') {
                   Σε αναμονή
-                }
-
-                @if (appointment.status === 'booked') {
+                } @else if (appointment.status === 'booked') {
                   Επιβεβαιωμένο
-                }
-
-                @if (appointment.status === 'rejected') {
+                } @else if (appointment.status === 'rejected') {
                   Απορρίφθηκε
-                }
-
-                @if (appointment.status === 'completed') {
+                } @else {
                   Ολοκληρωμένο
                 }
               </span>
