@@ -63,8 +63,8 @@
               <p>{{ selectedDoctor?.specialty?.name }}</p>
 
               <div class="rating-row">
-                <p-rating [(ngModel)]="review" [readonly]="true" cancel="false"></p-rating>
-                <span>(45)</span>
+                <p-rating [ngModel]="selectedDoctor?.averageRating" [readonly]="true" cancel="false"></p-rating>
+                <span>({{ selectedDoctor?.reviewCount ?? 0 }})</span>
               </div>
             </div>
           </div>
