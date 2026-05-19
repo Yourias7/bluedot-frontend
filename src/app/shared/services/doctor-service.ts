@@ -44,6 +44,7 @@ type BackendAvailabilitySlotDto = {
 };
 
 type BackendAvailabilityDto = {
+  id: number;
   startTime: string;
   endTime: string;
   status: BackendAvailabilityStatus | string;
@@ -257,13 +258,23 @@ export class DoctorService {
     newDate: string,
     newSlot: AvailabilitySlot
   ): Observable<boolean> {
-    console.warn('Appointment transfer is not supported by the backend yet.', {
-      appointmentId,
-      newDate,
-      newSlot
-    });
+    return this.http
+      .patch<void>(`${this.baseUrl}/appointments/${appointmentId}/slot`, {
+        newAvailabilityId: newSlot.id
+      })
+      .pipe(
+        tap(() => {
+          const appointment = this.getAppointmentById(appointmentId);
 
-    return throwError(() => new Error('Appointment transfer is not supported by the backend yet.'));
+          if (appointment !== undefined) {
+            appointment.date = newDate;
+            appointment.startTime = newSlot.startTime;
+            appointment.endTime = newSlot.endTime;
+            appointment.status = 'booked';
+          }
+        }),
+        map(() => true)
+      );
   }
 
   getDoctorProfile(): Doctor | null {
@@ -388,7 +399,7 @@ export class DoctorService {
     const appointment = this.findAppointmentForSlot(date, startTime, endTime);
 
     return {
-      id: startDate.getTime(),
+      id: slot.id,
       startTime,
       endTime,
       status: this.mapBackendAvailabilityStatus(slot.status),

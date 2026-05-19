@@ -1,8 +1,10 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 import { CalendarDay } from '../../../../shared/domain/calendar-day';
 import { DoctorService } from '../../../../shared/services/doctor-service';
+import { AuthenticationServices } from '../../../../shared/services/authentication-services';
 
 @Component({
   selector: 'app-doctor-home',
@@ -10,7 +12,7 @@ import { DoctorService } from '../../../../shared/services/doctor-service';
   templateUrl: './doctor-home.html',
   styleUrl: './doctor-home.scss'
 })
-export class DoctorHome implements OnInit {
+export class DoctorHome implements OnInit, OnDestroy {
   weekDays = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
 
   calendarDays: CalendarDay[] = [];
@@ -18,7 +20,11 @@ export class DoctorHome implements OnInit {
   currentDate = new Date();
   maxCalendarDate = new Date();
 
+  currentUserName = '';
+
   isLoadingAppointments = false;
+
+  private subscriptions = new Subscription();
 
   monthNames = [
     'January',
@@ -38,6 +44,7 @@ export class DoctorHome implements OnInit {
   constructor(
     private router: Router,
     private doctorService: DoctorService,
+    private authenticationServices: AuthenticationServices,
     private changeDetectorRef: ChangeDetectorRef
   ) {
     this.currentDate = new Date();
@@ -50,7 +57,30 @@ export class DoctorHome implements OnInit {
   }
 
   ngOnInit() {
+    this.subscriptions.add(
+      this.authenticationServices.currentUserName$.subscribe(name => {
+        this.currentUserName = name;
+        this.changeDetectorRef.detectChanges();
+      })
+    );
+
     this.loadAppointmentsForCalendar();
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe();
+  }
+
+  get doctorName(): string {
+    if (!this.currentUserName) {
+      return 'γιατρέ';
+    }
+
+    if (this.currentUserName.includes('@')) {
+      return this.currentUserName.split('@')[0];
+    }
+
+    return this.currentUserName;
   }
 
   get currentMonthTitle(): string {
@@ -90,12 +120,9 @@ export class DoctorHome implements OnInit {
     this.isLoadingAppointments = true;
 
     this.doctorService.loadDoctorAppointments().subscribe({
-      next: appointments => {
-        console.log('Homepage appointments loaded:', appointments);
-
+      next: () => {
         this.isLoadingAppointments = false;
         this.buildCalendar();
-
         this.changeDetectorRef.detectChanges();
       },
       error: error => {
@@ -103,7 +130,6 @@ export class DoctorHome implements OnInit {
 
         this.isLoadingAppointments = false;
         this.buildCalendar();
-
         this.changeDetectorRef.detectChanges();
       }
     });
@@ -178,7 +204,7 @@ export class DoctorHome implements OnInit {
   }
 
   openDay(day: CalendarDay) {
-    if (!day.isCurrentMonth) {
+    if (!day.isCurrentMonth || this.isPastCalendarDay(day)) {
       return;
     }
 
@@ -194,6 +220,10 @@ export class DoctorHome implements OnInit {
       classes.push('empty-day');
     }
 
+    if (this.isPastCalendarDay(day)) {
+      classes.push('past-day');
+    }
+
     if (day.hasConfirmedAppointment) {
       classes.push('confirmed-day');
     }
@@ -207,6 +237,20 @@ export class DoctorHome implements OnInit {
     }
 
     return classes.join(' ');
+  }
+
+  isPastCalendarDay(day: CalendarDay): boolean {
+    if (!day.isCurrentMonth || !day.date) {
+      return false;
+    }
+
+    const calendarDate = this.parseDate(day.date);
+    const today = new Date();
+
+    calendarDate.setHours(0, 0, 0, 0);
+    today.setHours(0, 0, 0, 0);
+
+    return calendarDate < today;
   }
 
   goToRequests() {
@@ -230,6 +274,16 @@ export class DoctorHome implements OnInit {
     const dayText = day.toString().padStart(2, '0');
 
     return `${year}-${monthText}-${dayText}`;
+  }
+
+  parseDate(dateText: string): Date {
+    const parts = dateText.split('-');
+
+    const year = Number(parts[0]);
+    const month = Number(parts[1]) - 1;
+    const day = Number(parts[2]);
+
+    return new Date(year, month, day);
   }
 
   isToday(date: Date): boolean {
