@@ -55,7 +55,7 @@
 }
 
 .header-right {
-  min-width: 150px;
+  min-width: 180px;
   flex: 0 0 auto;
 
   display: flex;
@@ -63,9 +63,56 @@
   justify-content: flex-end;
 }
 
-/* Doctor profile menu trigger */
+/* Shared patient/doctor profile trigger */
 
-.doctor-profile {
+.user-profile {
+  display: flex;
+  align-items: center;
+}
+
+.user-menu-button {
+  padding: 6px 8px;
+  border: none;
+  border-radius: 14px;
+  background-color: transparent;
+  color: #1f2a44;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.user-menu-button:hover {
+  background-color: #f4f6ff;
+  transform: translateY(-1px);
+}
+
+.user-menu-button:focus-visible {
+  outline: 3px solid rgba(127, 140, 255, 0.25);
+  outline-offset: 3px;
+}
+
+.user-avatar-button {
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.user-name {
+  color: #1f2a44;
+  font-size: 16px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* Backwards compatibility if older classes still appear somewhere */
+
+.doctor-profile,
+.patient-profile {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -74,36 +121,19 @@
   font-weight: 700;
 }
 
-.doctor-profile p-avatar,
-.doctor-avatar-button {
+.doctor-avatar-button,
+.patient-avatar-button {
   cursor: pointer;
 }
 
-.doctor-profile p-avatar:hover,
-.doctor-avatar-button:hover {
-  opacity: 0.85;
-}
-
-.doctor-name {
+.doctor-name,
+.patient-name {
   color: #1f2a44;
   font-size: 16px;
   font-weight: 700;
 }
 
-/* Keep old fallback avatar style safe if it still exists somewhere */
-
-.doctor-avatar {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: #eef1ff;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Patient / guest actions */
+/* Guest actions */
 
 .patient-actions {
   display: flex;
@@ -113,38 +143,38 @@
 
 .login-button {
   padding: 9px 16px;
-  border: 1px solid #252525;
-  border-radius: 8px;
+  border: 1px solid #1f2a44;
+  border-radius: 10px;
   background-color: #ffffff;
-  color: #252525;
+  color: #1f2a44;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
 }
 
 .login-button:hover {
-  opacity: 0.9;
+  background-color: #f4f6ff;
 }
 
 .register-button {
   padding: 10px 18px;
-  border: none;
-  border-radius: 8px;
-  background-color: #252525;
+  border: 1px solid #1f2a44;
+  border-radius: 10px;
+  background-color: #1f2a44;
   color: #ffffff;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
 }
 
 .register-button:hover {
-  opacity: 0.9;
+  background-color: #2b3858;
 }
 
-/* Doctor dropdown menu - force clean light menu */
+/* Shared dropdown menu for patient and doctor */
 
-:host ::ng-deep .doctor-profile-menu,
-:host ::ng-deep .doctor-profile-menu.p-menu {
+:host ::ng-deep .user-profile-menu,
+:host ::ng-deep .user-profile-menu.p-menu {
   min-width: 230px !important;
   padding: 8px !important;
   background-color: #ffffff !important;
@@ -153,25 +183,25 @@
   box-shadow: 0 10px 24px rgba(31, 42, 68, 0.14) !important;
 }
 
-:host ::ng-deep .doctor-profile-menu .p-menu-list {
+:host ::ng-deep .user-profile-menu .p-menu-list {
   padding: 0 !important;
   margin: 0 !important;
   background-color: #ffffff !important;
 }
 
-:host ::ng-deep .doctor-profile-menu .p-menuitem,
-:host ::ng-deep .doctor-profile-menu .p-menu-item {
+:host ::ng-deep .user-profile-menu .p-menuitem,
+:host ::ng-deep .user-profile-menu .p-menu-item {
   background-color: #ffffff !important;
 }
 
-:host ::ng-deep .doctor-profile-menu .p-menuitem-content,
-:host ::ng-deep .doctor-profile-menu .p-menu-item-content {
+:host ::ng-deep .user-profile-menu .p-menuitem-content,
+:host ::ng-deep .user-profile-menu .p-menu-item-content {
   background-color: #ffffff !important;
   border-radius: 10px !important;
 }
 
-:host ::ng-deep .doctor-profile-menu .p-menuitem-link,
-:host ::ng-deep .doctor-profile-menu .p-menu-item-link {
+:host ::ng-deep .user-profile-menu .p-menuitem-link,
+:host ::ng-deep .user-profile-menu .p-menu-item-link {
   padding: 11px 12px !important;
   border-radius: 10px !important;
   background-color: #ffffff !important;
@@ -179,32 +209,45 @@
   text-decoration: none !important;
 }
 
-:host ::ng-deep .doctor-profile-menu .p-menuitem-text,
-:host ::ng-deep .doctor-profile-menu .p-menu-item-label {
+:host ::ng-deep .user-profile-menu .p-menuitem-text,
+:host ::ng-deep .user-profile-menu .p-menu-item-label {
   color: #1f2a44 !important;
   font-size: 15px !important;
   font-weight: 600 !important;
 }
 
-:host ::ng-deep .doctor-profile-menu .p-menuitem-link:hover,
-:host ::ng-deep .doctor-profile-menu .p-menu-item-link:hover,
-:host ::ng-deep .doctor-profile-menu .p-menuitem-content:hover,
-:host ::ng-deep .doctor-profile-menu .p-menu-item-content:hover {
+:host ::ng-deep .user-profile-menu .p-menuitem-link:hover,
+:host ::ng-deep .user-profile-menu .p-menu-item-link:hover,
+:host ::ng-deep .user-profile-menu .p-menuitem-content:hover,
+:host ::ng-deep .user-profile-menu .p-menu-item-content:hover {
   background-color: #f4f6ff !important;
   color: #1f2a44 !important;
 }
 
-:host ::ng-deep .doctor-profile-menu .p-menuitem-link:hover .p-menuitem-text,
-:host ::ng-deep .doctor-profile-menu .p-menu-item-link:hover .p-menu-item-label {
+:host ::ng-deep .user-profile-menu .p-menuitem-link:hover .p-menuitem-text,
+:host ::ng-deep .user-profile-menu .p-menu-item-link:hover .p-menu-item-label {
   color: #1f2a44 !important;
 }
 
-:host ::ng-deep .doctor-profile-menu .p-menu-separator {
+:host ::ng-deep .user-profile-menu .p-menu-separator {
   margin: 8px 0 !important;
   border-top: 1px solid #e0e3ee !important;
 }
 
-/* Mobile */
+/* Keep PrimeNG avatar visually consistent */
+
+:host ::ng-deep .user-avatar-button .p-avatar {
+  width: 42px !important;
+  height: 42px !important;
+  background-color: #343440 !important;
+  color: #ffffff !important;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 10px rgba(31, 42, 68, 0.12) !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
 
 @media (max-width: 900px) {
   .app-header {
@@ -223,5 +266,11 @@
 
   .header-right {
     margin-left: auto;
+  }
+
+  .user-name {
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }

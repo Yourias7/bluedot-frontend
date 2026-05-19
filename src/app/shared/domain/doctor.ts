@@ -9,4 +9,6 @@ export interface Doctor extends User {
     specialty?:Specialty;
     latitude?: number;
     longitude?: number;
+    averageRating?: number;
+    reviewCount?: number;
 }

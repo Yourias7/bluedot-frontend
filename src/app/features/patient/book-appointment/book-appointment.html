@@ -13,6 +13,13 @@
       <app-doctor-basic-info [userDetailedInfo]="userDetailedInfo"></app-doctor-basic-info>
     }
 
+    @if (closedSlot !== null && selectedDate !== null) {
+      <div class="selected-appointment-summary">
+        <strong>Επιλεγμένο ραντεβού:</strong>
+        <span>{{ selectedDate }} | {{ closedSlot.startTime }} - {{ closedSlot.endTime }}</span>
+      </div>
+    }
+
     <div class="reason-section">
       <label for="reason">Λόγος επίσκεψης*</label>
 
@@ -22,11 +29,25 @@
         rows="4"
         formControlName="reason"
       ></textarea>
+
+      @if (appointmentForm.get('reason')?.touched && appointmentForm.get('reason')?.invalid) {
+        <div class="form-error">
+          Ο λόγος επίσκεψης πρέπει να έχει τουλάχιστον 10 χαρακτήρες.
+        </div>
+      }
     </div>
 
     <app-doctor-availability-patient-side
-      (slotSelected)="closedSlot = $event"
+      [initialDate]="selectedDate"
+      [initialSlotId]="selectedSlotId"
+      (selectionChanged)="onSlotSelectionChanged($event)"
     ></app-doctor-availability-patient-side>
+
+    @if (errorMessage) {
+      <div class="form-error page-error">
+        {{ errorMessage }}
+      </div>
+    }
 
     <div class="form-actions">
       <button

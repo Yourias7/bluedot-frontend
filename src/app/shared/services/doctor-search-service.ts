@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Doctor } from '../domain/doctor';
 import { UserRole } from '../domain/user';
 import { Specialty } from '../domain/specialty';
+import { Review } from '../domain/review';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../../environments/environment.development';
 import { Observable, map } from 'rxjs';
@@ -139,6 +140,18 @@ export class DoctorSearchService {
     return this.doctors.find(doctor => doctor.id === id);
   }
 
+  loadDoctorById(id: number): Observable<Doctor> {
+    return this.httpClient.get<Doctor>(`${this.baseUrl}/doctors/${id}`);
+  }
+
+  loadReviewsByDoctorId(id: number): Observable<Review[]> {
+    return this.httpClient
+      .get<Review[] | { items: Review[] }>(`${this.baseUrl}/doctors/${id}/reviews`)
+      .pipe(
+        map(response => Array.isArray(response) ? response : response.items ?? [])
+      );
+  }
+
   //TODO: Test meee
   getSpecialties(): Observable<Specialty[]> {
     //return this.specialties;
@@ -149,47 +162,33 @@ export class DoctorSearchService {
     return this.httpClient.get<DoctorSearchResultDto[]>(`${this.baseUrl}/doctor`);
   }
 
-  // searchDoctors(
-  //   specialtyId?: number,
-  //   lat?: number,
-  //   lng?: number,
-  //   radiusKm?: number
-  // ): Observable<any> {
-
-  //   let params = new HttpParams();
-
-  //   if (specialtyId !== undefined) {
-  //     params = params.set('specialtyId', specialtyId);
-  //   }
-
-  //   if (lat !== undefined) {
-  //     params = params.set('lat', lat);
-  //   }
-
-  //   if (lng !== undefined) {
-  //     params = params.set('lng', lng);
-  //   }
-
-  //   if (radiusKm !== undefined) {
-  //     params = params.set('radiusKm', radiusKm);
-  //   }
-
-  //   return this.httpClient.get(`${this.baseUrl}/doctors/SearchDoctors`, { params });
-  // }
-
-
   searchDoctors(
     specialtyId?: number | null,
+    lat?: number | null,
+    lng?: number | null,
+    radiusKm: number = 3.5,
     page: number = 1,
-    pageSize: number = 200
+    pageSize: number = 6
   ): Observable<Doctor[]> {
-    let params = new HttpParams()
-      .set('page', String(page))
-      .set('pageSize', String(pageSize));
+    let params = new HttpParams();
 
     if (specialtyId !== undefined && specialtyId !== null) {
       params = params.set('specialtyId', String(specialtyId));
     }
+
+      if (lat !== undefined && lat !== null) {
+      params = params.set('lat', String(lat));
+    }
+
+    if (lng !== undefined && lng !== null) {
+      params = params.set('lng', String(lng));
+    }
+
+    if (radiusKm !== undefined && radiusKm !== null) {
+      params = params.set('radiusKm', String(radiusKm));
+    }
+
+    params = params.set('page', String(page)).set('pageSize', String(pageSize));
 
     return this.httpClient
       .get<PagedResultDto<Doctor> | Doctor[]>(`${this.baseUrl}/doctors`, { params })

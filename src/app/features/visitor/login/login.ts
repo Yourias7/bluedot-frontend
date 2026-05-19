@@ -14,10 +14,10 @@ import { AuthenticationServices } from '../../../shared/services/authentication-
   styleUrl: './login.scss',
 })
 export class Login {
-  @Input() isOpen = false;
+  @Input() isOpen: boolean = false;
 
-  @Output() loginSucceeded = new EventEmitter<void>();
-  @Output() modalClosed = new EventEmitter<void>();
+  @Output() loginSucceeded = new EventEmitter<boolean>();
+  @Output() modalClosed = new EventEmitter<boolean>();
 
   isLoading = false;
   errorMessage = '';
@@ -35,7 +35,7 @@ export class Login {
   closeModal() {
     this.isOpen = false;
     this.errorMessage = '';
-    this.modalClosed.emit();
+    this.modalClosed.emit(true);
   }
 
   submitLogin() {
@@ -61,7 +61,7 @@ export class Login {
     }).subscribe({
       next: (response) => { // <-- Add 'response' here to read the API data directly
         this.isLoading = false;
-        this.loginSucceeded.emit();
+        this.loginSucceeded.emit(true);
         this.closeModal();
 
         // Use the response directly to decide where to route

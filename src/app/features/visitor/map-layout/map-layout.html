@@ -1,63 +1,88 @@
-<div class="position-relative map-wrapper">
-  <div class="map-search-overlay d-flex align-items-center p-2">
-    <div class="flex-grow-1">
-      <div class="input-group">
-        <p-autoComplete
-          [(ngModel)]="selectedSpecialty"
-          [suggestions]="filteredSpecialties"
-          (completeMethod)="filterSpecialties($event)"
-          (onSelect)="applySpecialtyFilter()"
-          (onClear)="applySpecialtyFilter()"
-          [minLength]="1"
-          field="name"
-          dataKey="id"
-          placeholder="Ειδικότητα"
-          inputStyleClass="form-control border-end-0">
-        </p-autoComplete>
-        <button pButton type="button" class="btn btn-outline-primary" (click)="applySpecialtyFilter()">
-          <i class="pi pi-search"></i>
-        </button>
-      </div>
-    </div>
+<section class="map-page">
+  <div class="page-header">
+    <h1>Ιατροί κοντά μου</h1>
+    <p>Βρείτε διαθέσιμους γιατρούς στον χάρτη και δείτε γρήγορα το προφίλ τους.</p>
   </div>
-  @if (userLocationError) {
-    <div class="map-location-warning alert alert-warning py-2 px-3 m-0 small">
-      {{ userLocationError }}
-    </div>
-  }
-  @if (doctorLoadError) {
-    <div class="map-doctor-error alert alert-danger py-2 px-3 m-0 small">
-      {{ doctorLoadError }}
-    </div>
-  }
-  <div id="map"></div>
-  @if (sidebarOpen) {
-  <section class="map-drawer card shadow p-3">
-    <div class="d-flex justify-content-end align-items-start gap-2 p-2">
-      <button type="button" class="btn btn-sm btn-outline-secondary" (click)="closeSidebar()">
-        Close
-      </button>
-    </div>
-    <div class="card-body card-shadow d-flex justify-content-start align-items-start gap-2">
-      <div>
-        <p-avatar icon="pi pi-user" class="mr-2" size="xlarge" />
-      </div>
-      <div>
-        <h5 class="mb-1">{{ selectedDoctor?.firstName }} {{selectedDoctor?.lastName}}</h5>
-        <p class="text-muted mb-0 small">{{selectedDoctor?.specialty?.name}}</p>
-        <div>
-          <p-rating [(ngModel)]="review" [readonly]="true" cancel="false"></p-rating>
-          <span class="p-2">(45)</span>
+
+  <div class="map-card">
+    <div class="map-toolbar">
+      <div class="search-group">
+        <label>Φιλτράρισμα ειδικότητας</label>
+
+        <div class="search-control">
+          <p-autoComplete
+            [(ngModel)]="selectedSpecialty"
+            [suggestions]="filteredSpecialties"
+            (completeMethod)="filterSpecialties($event)"
+            (onSelect)="applySpecialtyFilter()"
+            (onClear)="applySpecialtyFilter()"
+            [minLength]="1"
+            field="name"
+            optionLabel="name"
+            dataKey="id"
+            placeholder="π.χ. Καρδιολόγος"
+          ></p-autoComplete>
+
+          <button type="button" class="search-button" (click)="applySpecialtyFilter()">
+            <i class="pi pi-search"></i>
+          </button>
         </div>
       </div>
+
+      @if (userLocationError) {
+        <div class="map-alert warning-alert">
+          {{ userLocationError }}
+        </div>
+      }
+
+      @if (doctorLoadError) {
+        <div class="map-alert error-alert">
+          {{ doctorLoadError }}
+        </div>
+      }
     </div>
-    <div class="card card-body text-bg-light mt-4 card-shadow">
-      <h6 class="fw-semibold">Γενικές πληροφορίες</h6>
-      <p class="card-text mb-0">{{ selectedDoctor?.bio }}</p>
+
+    <div class="map-shell">
+      <div id="map"></div>
+
+      @if (sidebarOpen) {
+        <section class="map-drawer">
+          <div class="drawer-header">
+            <h2>Στοιχεία γιατρού</h2>
+
+            <button type="button" class="drawer-close-button" (click)="closeSidebar()">
+              ×
+            </button>
+          </div>
+
+          <div class="doctor-summary">
+            <p-avatar icon="pi pi-user" size="xlarge"></p-avatar>
+
+            <div>
+              <h3>{{ selectedDoctor?.firstName }} {{ selectedDoctor?.lastName }}</h3>
+              <p>{{ selectedDoctor?.specialty?.name }}</p>
+
+              <div class="rating-row">
+                <p-rating [(ngModel)]="review" [readonly]="true" cancel="false"></p-rating>
+                <span>(45)</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="doctor-info-box">
+            <h4>Γενικές πληροφορίες</h4>
+            <p>{{ selectedDoctor?.bio }}</p>
+          </div>
+
+          <button
+            type="button"
+            class="details-button"
+            (click)="showDoctorInfo(selectedDoctor?.id)"
+          >
+            Περισσότερα
+          </button>
+        </section>
+      }
     </div>
-    <div class="container mt-4 d-flex justify-content-center p-4">
-      <button class="btn btn-primary" (click)="showDoctorInfo(selectedDoctor?.id)">Περισσότερα</button>
-    </div>
-  </section>
-  }
-</div>
+  </div>
+</section>
