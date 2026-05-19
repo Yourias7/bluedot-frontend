@@ -1,97 +1,90 @@
-<div class="container py-5">
+@if (userDetailedInfo) {
+<section class="appointment-confirm-end-page">
+  <div class="appointment-confirm-end-card">
+    <header class="success-header">
+      <i class="pi pi-check-circle success-icon" aria-hidden="true"></i>
 
-    <!-- Success Header -->
-    <section class="text-center mb-5">
+      <h1>Το αίτημα σας</h1>
 
-        <div class="mb-3">
-            <i class="bi bi-check-circle-fill text-success display-3"></i>
+      <h2>Το αίτημα σας για ραντεβού εστάλη επιτυχώς</h2>
+
+      <p>Ευχαριστούμε που χρησιμοποιείτε την υπηρεσία μας!</p>
+    </header>
+
+    <div class="doctor-profile-header">
+      <p-avatar icon="pi pi-user" size="xlarge"></p-avatar>
+
+      <div>
+        <h3>{{ userDetailedInfo.firstName }} {{ userDetailedInfo.lastName }}</h3>
+        @if (userDetailedInfo.specialties?.length) {
+          <p class="specialty-text">
+            @for (specialty of userDetailedInfo.specialties; track specialty.id; let last = $last) {
+              {{ specialty.name }}@if (!last) {, }
+            }
+          </p>
+        }
+
+        <div class="rating-container">
+          @for (n of starPositions; track $index) {
+            @if (n > getFilledStars()) {
+              <i class="pi pi-star"></i>
+            } @else {
+              <i class="pi pi-star-fill"></i>
+            }
+          }
+
+          <span>{{ rating | number:'1.1-1' }}/5</span>
+          <span>({{ reviewCount }})</span>
         </div>
-
-        <h1 class="display-6 fw-bold text-primary mb-3">
-            Το αίτημα σας
-        </h1>
-
-        <h2 class="h4 text-success fw-semibold">
-            Το αίτημα σας για ραντεβού εστάλη επιτυχώς
-        </h2>
-
-        <p class="text-muted mt-3 mb-0">
-            Ευχαριστούμε που χρησιμοποιείτε την υπηρεσία μας!
-        </p>
-
-    </section>
-
-    <!-- Information Card -->
-    <div class="card border-0 shadow-sm rounded-4">
-
-        <div class="card-body p-4 p-md-5">
-
-            <!-- Doctor -->
-            <section class="mb-4">
-
-                <div class="border rounded-4 p-4 bg-light">
-
-                    <h3 class="h5 fw-bold text-secondary mb-3">
-                        Ιατρός
-                    </h3>
-
-                    <p class="mb-0 text-muted">
-                        Ευχαριστούμε που χρησιμοποιείτε την υπηρεσία μας!
-                    </p>
-
-                </div>
-
-            </section>
-
-            <!-- Date & Time -->
-            <section class="mb-4">
-
-                <div class="border rounded-4 p-4">
-
-                    <h3 class="h5 fw-bold text-secondary mb-3">
-                        Ημερομηνία και ώρα
-                    </h3>
-
-                    <p class="mb-0 text-muted">
-                        Ευχαριστούμε που χρησιμοποιείτε την υπηρεσία μας!
-                    </p>
-
-                </div>
-
-            </section>
-
-            <!-- Message -->
-            <section class="mb-5">
-
-                <div class="border rounded-4 p-4 bg-light">
-
-                    <h3 class="h5 fw-bold text-secondary mb-3">
-                        Το μήνυμα σας
-                    </h3>
-
-                    <p class="mb-0 text-muted">
-                        Ευχαριστούμε που χρησιμοποιείτε την υπηρεσία μας!
-                    </p>
-
-                </div>
-
-            </section>
-
-            <!-- Button -->
-            <section class="text-center">
-
-                <button
-                    class="btn btn-primary btn-lg px-5"
-                    (click)="goBack()">
-
-                    Επιστροφή στην αρχική σελίδα
-
-                </button>
-
-            </section>
-
-        </div>
-
+      </div>
     </div>
 
-</div>
+    <div class="doctor-info-grid">
+      <p>
+        <strong>Διεύθυνση:</strong>
+        {{ userDetailedInfo.clinicAddress }}
+      </p>
+
+      <p>
+        <strong>Τηλέφωνο:</strong>
+        {{ userDetailedInfo.phoneNumber }}
+      </p>
+
+      <p>
+        <strong>Email:</strong>
+        {{ userDetailedInfo.email }}
+      </p>
+    </div>
+
+    <div class="notes-section">
+      <p class="notes-label">Λόγος Επίσκεψης</p>
+
+      <div class="notes-display">
+        @if (patientNotes) {
+          {{ patientNotes }}
+        } @else {
+          <span class="notes-empty">—</span>
+        }
+      </div>
+    </div>
+
+    <div class="end-actions">
+      <button
+        type="button"
+        class="primary-button"
+        (click)="viewAppointments()"
+      >
+        Προβολή ραντεβού
+      </button>
+
+      <button
+        type="button"
+        class="secondary-button"
+        (click)="goToLandingPage()"
+      >
+        Επιστροφή στην αρχική
+      </button>
+    </div>
+  </div>
+</section>
+}

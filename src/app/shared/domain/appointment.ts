@@ -11,6 +11,8 @@ export type Appointment = {
   endTime: string;
 
   patientName: string;
+  doctorName: string;
+  doctorId: number;
   patientPhone: string;
   patientEmail: string;
 

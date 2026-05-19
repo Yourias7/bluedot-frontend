@@ -1,67 +1,99 @@
 <section class="patient-appointments-page">
   <div class="page-header">
     <h1>Τα ραντεβού μου</h1>
-    <p>Παρακολουθήστε τα επιβεβαιωμένα ραντεβού, τα αιτήματα και το ιστορικό σας.</p>
+
+    @if (selectedDate !== null) {
+      <p>Προβολή για την ημερομηνία: {{ selectedDate }}</p>
+    } @else {
+      <p>Προβολή όλων των ραντεβού και αιτημάτων.</p>
+    }
   </div>
 
   <div class="appointments-card">
-    <p-tabs value="0" class="patient-tabs">
-      <p-tablist>
-        <p-tab value="0">Ραντεβού</p-tab>
-        <p-tab value="1">Αιτήματα</p-tab>
-        <p-tab value="2">Ιστορικό</p-tab>
-      </p-tablist>
+    <div class="tabs">
+      <button
+        type="button"
+        class="tab-button"
+        [class.active-tab]="selectedTab === 'appointments'"
+        (click)="selectTab('appointments')"
+      >
+        Ραντεβού
+      </button>
 
-      <p-tabpanel value="0">
-        @if(getCurrentAppointment() && getCurrentAppointmentCount() > 0) {
-          <section class="appointment-list">
-            @for(appointment of getCurrentAppointment(); track $index) {
-              <app-appointment-card
-                [appointment]="appointment"
-                (messageEvent)="showAppointmentDetails($event)"
-              ></app-appointment-card>
-            }
-          </section>
+      <button
+        type="button"
+        class="tab-button"
+        [class.active-tab]="selectedTab === 'requests'"
+        (click)="selectTab('requests')"
+      >
+        Αιτήματα
+      </button>
+
+      <button
+        type="button"
+        class="tab-button"
+        [class.active-tab]="selectedTab === 'rejected'"
+        (click)="selectTab('rejected')"
+      >
+        Απορριφθέντα
+      </button>
+    </div>
+
+    <div class="appointment-list">
+      @if (isLoading) {
+        <div class="empty-state">
+          Φόρτωση ραντεβού...
+        </div>
+      }
+
+      @if (errorMessage) {
+        <div class="empty-state">
+          {{ errorMessage }}
+        </div>
+      }
+
+      @if (!isLoading && !errorMessage) {
+        @if (visibleAppointments.length > 0) {
+          @for (appointment of visibleAppointments; track appointment.id) {
+            <button
+              type="button"
+              class="appointment-row"
+              (click)="openAppointment(appointment)"
+            >
+              <div>
+                <h2>{{ appointment.doctorName }}</h2>
+                <p>
+                  {{ appointment.date }}
+                  Ώρα {{ appointment.startTime }} - {{ appointment.endTime }}
+                </p>
+              </div>
+
+              <span
+                class="status-pill"
+                [class.pending-status]="appointment.status === 'pending'"
+                [class.confirmed-status]="appointment.status === 'booked'"
+                [class.rejected-status]="appointment.status === 'rejected'"
+              >
+                @if (appointment.status === 'pending') {
+                  Σε αναμονή
+                }
+
+                @if (appointment.status === 'booked') {
+                  Επιβεβαιωμένο
+                }
+
+                @if (appointment.status === 'rejected') {
+                  Απορρίφθηκε
+                }
+              </span>
+            </button>
+          }
         } @else {
           <div class="empty-state">
-            Δεν υπάρχουν τρέχοντα ραντεβού.
+            Δεν υπάρχουν διαθέσιμα στοιχεία για αυτή την καρτέλα.
           </div>
         }
-      </p-tabpanel>
-
-      <p-tabpanel value="1">
-        @if(getPendingAppointment() && getPendingAppointmentCount() > 0) {
-          <section class="appointment-list">
-            @for(appointment of getPendingAppointment(); track $index) {
-              <app-appointment-card
-                [appointment]="appointment"
-                (messageEvent)="showAppointmentDetails($event)"
-              ></app-appointment-card>
-            }
-          </section>
-        } @else {
-          <div class="empty-state">
-            Δεν υπάρχουν τρέχοντα αιτήματα.
-          </div>
-        }
-      </p-tabpanel>
-
-      <p-tabpanel value="2">
-        @if(getCompletedAppointment() && getCompletedAppointmentCount() > 0) {
-          <section class="appointment-list">
-            @for(appointment of getCompletedAppointment(); track $index) {
-              <app-appointment-card
-                [appointment]="appointment"
-                (messageEvent)="showAppointmentDetails($event)"
-              ></app-appointment-card>
-            }
-          </section>
-        } @else {
-          <div class="empty-state">
-            Δεν υπάρχει ιστορικό.
-          </div>
-        }
-      </p-tabpanel>
-    </p-tabs>
+      }
+    </div>
   </div>
 </section>
