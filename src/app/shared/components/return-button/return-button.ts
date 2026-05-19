@@ -3,7 +3,7 @@ import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-return-button',
-  imports: [RouterLink],
+  imports: [],
   templateUrl: './return-button.html',
   styleUrl: './return-button.scss',
 })

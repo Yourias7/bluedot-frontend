@@ -2,11 +2,11 @@ import { Component, Output, EventEmitter} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DoctorService } from '../../../shared/services/doctor-service';
 import { AvailabilitySlot } from '../../../shared/domain/availability-slot';
-import { NgClass } from '@angular/common';
+
 
 @Component({
   selector: 'app-doctor-availability-patient-side',
-  imports: [NgClass],
+  imports: [],
   templateUrl: './doctor-availability-patient-side.html',
   styleUrl: './doctor-availability-patient-side.scss',
 })

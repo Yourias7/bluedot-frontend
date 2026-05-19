@@ -8,7 +8,7 @@ import { RouterOutlet } from "@angular/router";
 
 @Component({
   selector: 'app-layout',
-  imports: [Header, Footer, HomeHeroSection, LandingPage, RouterOutlet],
+  imports: [Header, Footer, RouterOutlet],
   templateUrl: './app-layout.html',
   styleUrl: './app-layout.scss',
 })
