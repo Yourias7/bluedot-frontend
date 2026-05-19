@@ -6,7 +6,13 @@
 
       <div>
         <h1>{{ userDetailedInfo.firstName }} {{ userDetailedInfo.lastName }}</h1>
-        <p class="specialty-text">{{ userDetailedInfo.specialty?.name }}</p>
+        @if (userDetailedInfo.specialties?.length) {
+          <p class="specialty-text">
+            @for (specialty of userDetailedInfo.specialties; track specialty.id; let last = $last) {
+              {{ specialty.name }}@if (!last) {, }
+            }
+          </p>
+        }
 
         <div class="rating-container">
           @for (n of starPositions; track $index) {
@@ -107,7 +113,7 @@
         class="book-button"
         (click)="closeAppointment()"
       >
-        Κλείστε ραντεβού
+        Κλείσε ραντεβού
       </button>
     </div>
   </div>

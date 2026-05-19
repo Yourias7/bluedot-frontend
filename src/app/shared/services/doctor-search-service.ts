@@ -141,7 +141,35 @@ export class DoctorSearchService {
   }
 
   loadDoctorById(id: number): Observable<Doctor> {
-    return this.httpClient.get<Doctor>(`${this.baseUrl}/doctors/${id}`);
+    return this.httpClient.get<Doctor>(`${this.baseUrl}/doctors/${id}`).pipe(
+      map(doctor => ({
+        ...doctor,
+        specialties: this.normalizeSpecialties(doctor)
+      }))
+    );
+  }
+
+  private normalizeSpecialties(doctor: Doctor & { Specialties?: unknown[] }): Specialty[] {
+    const list = doctor.specialties ?? doctor.Specialties;
+
+    if (!Array.isArray(list)) {
+      return [];
+    }
+
+    return list
+      .map((item, index) => {
+        if (typeof item === 'string') {
+          return { id: index, name: item };
+        }
+
+        const specialty = item as Specialty & { Name?: string; Id?: number };
+
+        return {
+          id: specialty.id ?? specialty.Id ?? index,
+          name: specialty.name ?? specialty.Name ?? ''
+        };
+      })
+      .filter(specialty => specialty.name.length > 0);
   }
 
   loadReviewsByDoctorId(id: number): Observable<Review[]> {

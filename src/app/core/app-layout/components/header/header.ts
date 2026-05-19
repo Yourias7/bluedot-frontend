@@ -1,11 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
-import { Subscription } from 'rxjs'; // <-- Add Subscription
+import { Subscription } from 'rxjs';
+
 import { DialogModule } from 'primeng/dialog';
-import { Button } from 'primeng/button';
 import { Avatar } from 'primeng/avatar';
 import { MenuModule } from 'primeng/menu';
 import { MenuItem } from 'primeng/api';
+
 import { UserRole } from '../../../../shared/domain/user-role';
 import { AuthenticationServices } from '../../../../shared/services/authentication-services';
 import { Logo } from '../common/logo/logo';
@@ -26,13 +27,13 @@ type NavRoute = {
     Login,
     Avatar,
     MenuModule
-],
+  ],
   templateUrl: './header.html',
   styleUrl: './header.scss'
 })
 export class Header implements OnInit, OnDestroy {
   currentUserRole: UserRole = 'guest';
-  currentUserName: string = '';
+  currentUserName = '';
 
   isLoginModalOpen = false;
 
@@ -47,9 +48,11 @@ export class Header implements OnInit, OnDestroy {
   ];
 
   doctorNavRoutes: NavRoute[] = [
-    { path: '/doctor', title: 'Αρχική σελίδα' },
+    { path: '/doctor', title: 'Αρχική' },
     { path: '/doctor/availability', title: 'Διαθεσιμότητα' },
-    { path: '/doctor/appointments', title: 'Τα ραντεβού μου' }
+    { path: '/doctor/appointments', title: 'Ραντεβού' },
+    { path: '/about', title: 'Σχετικά' },
+    { path: '/help', title: 'Βοήθεια' }
   ];
 
   loggedInOptions: MenuItem[];
@@ -59,15 +62,18 @@ export class Header implements OnInit, OnDestroy {
     private authenticationServices: AuthenticationServices,
     private router: Router
   ) {
-
     this.loggedInOptions = [
       {
         label: 'Ο λογαριασμός μου',
-        command: () => { this.router.navigate(['/patient-account-details']); }
+        command: () => {
+          this.router.navigate(['/patient-account-details']);
+        }
       },
       {
         label: 'Τα ραντεβού μου',
-        command: () => { this.router.navigate(['/patient-appointments']); }
+        command: () => {
+          this.router.navigate(['/patient-appointments']);
+        }
       },
       { separator: true },
       {
@@ -79,19 +85,15 @@ export class Header implements OnInit, OnDestroy {
     this.doctorOptions = [
       {
         label: 'Ο λογαριασμός μου',
-        command: () => { this.router.navigate(['/doctor/account-details']); }
+        command: () => {
+          this.router.navigate(['/doctor/account-details']);
+        }
       },
       {
-        label: 'Αρχική σελίδα',
-        command: () => { this.router.navigate(['/doctor']); }
-      },
-      {
-        label: 'Διαθεσιμότητα',
-        command: () => { this.router.navigate(['/doctor/availability']); }
-      },
-      {
-        label: 'Τα ραντεβού μου',
-        command: () => { this.router.navigate(['/doctor/appointments']); }
+        label: 'Ραντεβού',
+        command: () => {
+          this.router.navigate(['/doctor/appointments']);
+        }
       },
       { separator: true },
       {
@@ -102,14 +104,12 @@ export class Header implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // Listen to changes in the role
     this.authSubscription.add(
       this.authenticationServices.currentUserRole$.subscribe(role => {
         this.currentUserRole = role;
       })
     );
 
-    // Listen to changes in the name
     this.authSubscription.add(
       this.authenticationServices.currentUserName$.subscribe(name => {
         this.currentUserName = name;
@@ -118,19 +118,19 @@ export class Header implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    // Clean up to prevent memory leaks
     this.authSubscription.unsubscribe();
-  }
-
-  onLogout(): void {
-    this.authenticationServices.logout();
   }
 
   get navRoutes(): NavRoute[] {
     if (this.currentUserRole === 'doctor') {
       return this.doctorNavRoutes;
     }
+
     return this.patientNavRoutes;
+  }
+
+  onLogout(): void {
+    this.authenticationServices.logout();
   }
 
   register() {

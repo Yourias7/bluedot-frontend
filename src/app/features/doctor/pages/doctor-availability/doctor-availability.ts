@@ -23,9 +23,12 @@ export class DoctorAvailability {
   selectedDate: string | null = null;
   selectedDateObject: Date = new Date();
 
+  todayDate: Date = new Date();
+
   availabilitySlots: AvailabilitySlot[] = [];
 
   pendingAppointmentDates: string[] = [];
+  confirmedAppointmentDates: string[] = [];
 
   isEditMode = false;
   isLoading = false;
@@ -37,9 +40,11 @@ export class DoctorAvailability {
     private doctorservice: DoctorService,
     private changeDetectorRef: ChangeDetectorRef
   ) {
+    this.todayDate.setHours(0, 0, 0, 0);
+
     let selectedDate = this.route.snapshot.queryParams['date'];
 
-    if (!selectedDate) {
+    if (!selectedDate || this.isDateTextInPast(selectedDate)) {
       selectedDate = this.getFormattedDate();
     }
 
@@ -54,17 +59,19 @@ export class DoctorAvailability {
       return false;
     }
 
-    const selectedDate = this.parseDate(this.selectedDate);
-    const today = new Date();
+    return this.isDateTextInPast(this.selectedDate);
+  }
 
-    selectedDate.setHours(0, 0, 0, 0);
-    today.setHours(0, 0, 0, 0);
-
-    return selectedDate < today;
+  get visibleAvailabilitySlots(): AvailabilitySlot[] {
+    return this.availabilitySlots.filter(slot => !this.isSlotInPast(slot));
   }
 
   onDateChanged(date: Date | null) {
     if (date === null) {
+      return;
+    }
+
+    if (this.isDateInPast(date)) {
       return;
     }
 
@@ -92,6 +99,8 @@ export class DoctorAvailability {
     this.doctorservice.loadDoctorAppointments().subscribe({
       next: () => {
         this.pendingAppointmentDates = this.doctorservice.getPendingAppointmentDates();
+        this.confirmedAppointmentDates = this.doctorservice.getBookedAppointmentDates();
+
         if (this.selectedDate === null) {
           return;
         }
@@ -117,6 +126,7 @@ export class DoctorAvailability {
 
         this.availabilitySlots = [];
         this.pendingAppointmentDates = [];
+        this.confirmedAppointmentDates = [];
         this.isLoading = false;
         this.errorMessage = 'Δεν ήταν δυνατή η φόρτωση των ραντεβού.';
         this.changeDetectorRef.detectChanges();
@@ -134,7 +144,7 @@ export class DoctorAvailability {
   }
 
   openSlot(slot: AvailabilitySlot) {
-    if (this.isEditMode) {
+    if (this.isEditMode || this.isSlotInPast(slot)) {
       return;
     }
 
@@ -202,14 +212,14 @@ export class DoctorAvailability {
       return false;
     }
 
-    const [hours, minutes] = slot.startTime.split(':').map(Number);
+    const [hours, minutes] = slot.endTime.split(':').map(Number);
 
-    const slotDateTime = this.parseDate(this.selectedDate);
-    slotDateTime.setHours(hours, minutes, 0, 0);
+    const slotEndDateTime = this.parseDate(this.selectedDate);
+    slotEndDateTime.setHours(hours, minutes, 0, 0);
 
     const now = new Date();
 
-    return slotDateTime < now;
+    return slotEndDateTime <= now;
   }
 
   isPendingCalendarDate(calendarDate: PrimeNgCalendarDate): boolean {
@@ -222,11 +232,26 @@ export class DoctorAvailability {
     return this.pendingAppointmentDates.includes(formattedDate);
   }
 
+  isConfirmedCalendarDate(calendarDate: PrimeNgCalendarDate): boolean {
+    const formattedDate = this.formatPrimeNgCalendarDate(calendarDate);
+
+    if (formattedDate === null) {
+      return false;
+    }
+
+    return this.confirmedAppointmentDates.includes(formattedDate);
+  }
+
   getCalendarDayClass(calendarDate: PrimeNgCalendarDate): string {
     const classes = ['calendar-day-content'];
 
     if (this.isPendingCalendarDate(calendarDate)) {
       classes.push('pending-calendar-day');
+      return classes.join(' ');
+    }
+
+    if (this.isConfirmedCalendarDate(calendarDate)) {
+      classes.push('confirmed-calendar-day');
     }
 
     return classes.join(' ');
@@ -256,6 +281,20 @@ export class DoctorAvailability {
     const day = Number(parts[2]);
 
     return new Date(year, month, day);
+  }
+
+  private isDateTextInPast(dateText: string): boolean {
+    return this.isDateInPast(this.parseDate(dateText));
+  }
+
+  private isDateInPast(date: Date): boolean {
+    const selectedDate = new Date(date);
+    const today = new Date();
+
+    selectedDate.setHours(0, 0, 0, 0);
+    today.setHours(0, 0, 0, 0);
+
+    return selectedDate < today;
   }
 
   private formatPrimeNgCalendarDate(calendarDate: PrimeNgCalendarDate): string | null {

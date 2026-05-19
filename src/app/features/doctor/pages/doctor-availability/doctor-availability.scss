@@ -241,11 +241,15 @@
   font-weight: 800;
 }
 
-:host ::ng-deep .p-datepicker-day-selected .calendar-day-content {
-  color: #ffffff;
+:host ::ng-deep .confirmed-calendar-day {
+  border: 2px solid #9fd8aa;
+  background-color: #eaf9ed;
+  color: #1f2a44;
+  font-weight: 800;
 }
 
-:host ::ng-deep .p-datepicker-day-selected .pending-calendar-day {
+:host ::ng-deep .p-datepicker-day-selected .pending-calendar-day,
+:host ::ng-deep .p-datepicker-day-selected .confirmed-calendar-day {
   background-color: #7658b8;
   border-color: #ffffff;
   color: #ffffff;
@@ -276,6 +280,11 @@
 .pending-dot {
   background-color: #fff8dc;
   border: 2px solid #f3d574;
+}
+
+.confirmed-dot {
+  background-color: #eaf9ed;
+  border: 2px solid #9fd8aa;
 }
 
 /* Slots section */
@@ -369,7 +378,7 @@
   font-size: 16px;
   font-weight: 600;
   box-shadow: 0 5px 12px rgba(0, 0, 0, 0.13);
-  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
 
   display: flex;
   flex-direction: column;
@@ -423,12 +432,7 @@
   color: #1f2a44;
 }
 
-.slot-card.past-slot {
-  opacity: 0.72;
-}
-
-.slot-edit-button,
-.past-slot-label {
+.slot-edit-button {
   width: fit-content;
   max-width: 100%;
   min-height: 26px;
@@ -438,9 +442,6 @@
   font-weight: 800;
   line-height: 1.2;
   white-space: nowrap;
-}
-
-.slot-edit-button {
   cursor: pointer;
   box-shadow: 0 2px 6px rgba(31, 42, 68, 0.12);
 }
@@ -464,15 +465,6 @@
 
 .enable-button:hover {
   background-color: #f4f6ff;
-}
-
-.past-slot-label {
-  background-color: rgba(255, 255, 255, 0.75);
-  color: #7c8499;
-
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
 }
 
 /* Legend */

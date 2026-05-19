@@ -1,6 +1,6 @@
 <section class="doctor-appointments-page">
   <div class="page-header">
-    <h1>Τα ραντεβού μου</h1>
+    <h1>Ραντεβού</h1>
 
     @if (selectedDate !== null) {
       <p>Προβολή για την ημερομηνία: {{ selectedDate }}</p>
@@ -17,7 +17,7 @@
         [class.active-tab]="selectedTab === 'appointments'"
         (click)="selectTab('appointments')"
       >
-        Τα ραντεβού μου
+        Ραντεβού
       </button>
 
       <button
@@ -26,7 +26,7 @@
         [class.active-tab]="selectedTab === 'requests'"
         (click)="selectTab('requests')"
       >
-        Τα αιτήματά μου
+        Αιτήματα
       </button>
 
       <button

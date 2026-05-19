@@ -75,21 +75,20 @@ export class Footer implements OnInit, OnDestroy {
 
   searchDoctorsBySpecialty(spec: string) {
     this.searchService.getSpecialties().subscribe((specs) => {
-      this.specialty = specs.find((val) => {val.name.includes(spec);});
-      this.searchService.searchDoctors(this.specialty?.id).subscribe((response) => {
-          console.log(response);
-          this.router.navigate(['/search-results']);
-        });
+      const match = specs.find(s => s.name === spec);
+      this.router.navigate(['/search-results'], {
+        queryParams: match
+          ? { specialtyId: match.id, specialtyName: match.name }
+          : { specialtyName: spec }
+      });
     });
-
-
   }
 
   searchCityDoctors(city: string) {
-    let cityCoords = cities.find((_city) => _city.name == city);
-    this.searchService.searchDoctors(undefined).subscribe((response) => {
-        console.log(response);
-        this.router.navigate(['/search-results']);
-      });
+    const cityCoords = cities.find(c => c.name === city);
+    if (!cityCoords) return;
+    this.router.navigate(['/search-results'], {
+      queryParams: { lat: cityCoords.lat, lon: cityCoords.lng, locationName: cityCoords.name }
+    });
   }
 }
