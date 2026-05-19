@@ -65,6 +65,34 @@ export class DoctorAppointmentDetails {
     return this.appointment?.status === 'rejected';
   }
 
+  get pendingTimeLeftMessage(): string {
+    if (this.appointment === undefined || this.appointment.status !== 'pending') {
+      return '';
+    }
+
+    if (!this.appointment.createdAt) {
+      return 'Απαντήστε μέσα σε 24 ώρες από τη δημιουργία του αιτήματος.';
+    }
+
+    const createdAt = new Date(this.appointment.createdAt);
+
+    if (Number.isNaN(createdAt.getTime())) {
+      return 'Απαντήστε μέσα σε 24 ώρες από τη δημιουργία του αιτήματος.';
+    }
+
+    const deadline = new Date(createdAt);
+    deadline.setHours(deadline.getHours() + 24);
+
+    const now = new Date();
+    const timeLeftMs = deadline.getTime() - now.getTime();
+
+    if (timeLeftMs <= 0) {
+      return 'Το αίτημα έχει ξεπεράσει το όριο των 24 ωρών.';
+    }
+
+    return `Απομένουν ${this.formatTimeLeft(timeLeftMs)} για απάντηση.`;
+  }
+
   get availableTransferSlots(): AvailabilitySlot[] {
     return this.transferSlots.filter(slot =>
       slot.status === 'free' &&
@@ -308,7 +336,7 @@ export class DoctorAppointmentDetails {
   goBack() {
     this.router.navigate(['/doctor/appointments']);
   }
-  
+
   formatDate(date: Date): string {
     const year = date.getFullYear();
     const month = date.getMonth() + 1;
@@ -327,6 +355,22 @@ export class DoctorAppointmentDetails {
     const day = Number(parts[2]);
 
     return new Date(year, month, day);
+  }
+
+  private formatTimeLeft(timeLeftMs: number): string {
+    const totalMinutes = Math.ceil(timeLeftMs / 60000);
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+
+    if (hours === 0) {
+      return `${minutes} λεπτά`;
+    }
+
+    if (minutes === 0) {
+      return `${hours} ώρες`;
+    }
+
+    return `${hours} ώρες και ${minutes} λεπτά`;
   }
 
   private isDateInPast(date: Date): boolean {
