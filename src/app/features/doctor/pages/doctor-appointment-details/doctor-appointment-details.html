@@ -104,16 +104,22 @@
       </div>
 
       @if (isPendingAppointment) {
+        @if (actionErrorMessage) {
+          <p class="action-error-message">
+            {{ actionErrorMessage }}
+          </p>
+        }
+
         <div class="actions">
-          <button type="button" class="accept-button" (click)="acceptAppointment()">
+          <button type="button" class="accept-button" [disabled]="isActionLoading" (click)="acceptAppointment()">
             Αποδοχή
           </button>
 
-          <button type="button" class="reject-button" (click)="rejectAppointment()">
+          <button type="button" class="reject-button" [disabled]="isActionLoading" (click)="rejectAppointment()">
             Απόρριψη
           </button>
 
-          <button type="button" class="reject-disable-button" (click)="rejectAppointmentAndDisableSlot()">
+          <button type="button" class="reject-disable-button" [disabled]="isActionLoading" (click)="rejectAppointmentAndDisableSlot()">
             Απόρριψη & Απενεργοποίηση
           </button>
         </div>

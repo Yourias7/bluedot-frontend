@@ -23,7 +23,7 @@ export class DoctorAvailability {
   selectedDate: string | null = null;
   selectedDateObject: Date = new Date();
 
-  todayDate: Date = new Date();
+  readonly minSelectableDate: Date = new Date();
 
   availabilitySlots: AvailabilitySlot[] = [];
 
@@ -40,7 +40,7 @@ export class DoctorAvailability {
     private doctorservice: DoctorService,
     private changeDetectorRef: ChangeDetectorRef
   ) {
-    this.todayDate.setHours(0, 0, 0, 0);
+    this.minSelectableDate.setHours(0, 0, 0, 0);
 
     let selectedDate = this.route.snapshot.queryParams['date'];
 

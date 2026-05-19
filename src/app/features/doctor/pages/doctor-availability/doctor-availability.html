@@ -14,7 +14,7 @@
           dateFormat="dd/mm/yy"
           [inline]="true"
           [showIcon]="false"
-          [minDate]="todayDate"
+          [minDate]="minSelectableDate"
           (onSelect)="onDateChanged($event)"
         >
           <ng-template pTemplate="date" let-date>

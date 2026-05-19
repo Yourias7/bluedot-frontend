@@ -1,10 +1,22 @@
 <section class="doctor-account-page">
   <div class="page-header">
-    <h1>Ο λογαριασμός μου</h1>
+    <h1>Λογαριασμός</h1>
     <p>Διαχειριστείτε τα στοιχεία του επαγγελματικού σας προφίλ.</p>
   </div>
 
   <div class="account-card">
+    @if (isLoading) {
+      <div class="form-message info-message">
+        Φόρτωση στοιχείων λογαριασμού...
+      </div>
+    }
+
+    @if (errorMessage) {
+      <div class="form-message error-message">
+        {{ errorMessage }}
+      </div>
+    }
+
     <form [formGroup]="form">
       <div class="profile-summary">
         <div class="profile-avatar">
@@ -231,8 +243,12 @@
 
       @if (isAnyEditing()) {
       <div class="form-actions">
-        <button type="button" class="save-button" (click)="saveChanges()" [disabled]="form.invalid">
-          Αποθήκευση αλλαγών
+        <button type="button" class="save-button" (click)="saveChanges()" [disabled]="form.invalid || isSaving">
+          @if (isSaving) {
+            Αποθήκευση...
+          } @else {
+            Αποθήκευση αλλαγών
+          }
         </button>
 
         <button type="button" class="cancel-button" (click)="cancelChanges()">

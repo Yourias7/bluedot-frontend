@@ -16,6 +16,11 @@ export type CreateAppointmentResponseDto = {
   message: string;
 };
 
+type BackendSpecialtyDto = {
+  name?: string;
+  Name?: string;
+};
+
 type BackendAppointmentDto = {
   id: number;
   status: string;
@@ -31,6 +36,10 @@ type BackendAppointmentDto = {
   availabilityId: number;
   startTime: string;
   endTime: string;
+  specialties?: (string | BackendSpecialtyDto)[];
+  Specialties?: (string | BackendSpecialtyDto)[];
+  doctorSpecialties?: (string | BackendSpecialtyDto)[];
+  DoctorSpecialties?: (string | BackendSpecialtyDto)[];
 };
 
 type PagedResultDto<T> = {
@@ -97,11 +106,13 @@ export class AppointmentService {
   private mapBackendAppointment(appointment: BackendAppointmentDto): Appointment {
     const startDate = new Date(appointment.startTime);
     const endDate = new Date(appointment.endTime);
+    const specialties = this.mapSpecialties(appointment);
 
     return {
       id: appointment.id,
       status: this.mapBackendStatus(appointment.status),
-      specialty: 'Ιατρός',
+      specialties,
+      specialty: specialties.length > 0 ? specialties.join(', ') : 'Ιατρός',
       date: this.formatDate(startDate),
       startTime: this.formatTime(startDate),
       endTime: this.formatTime(endDate),
@@ -117,6 +128,28 @@ export class AppointmentService {
       patientMessage: appointment.appointmentNotes ?? '',
       conversation: []
     };
+  }
+
+  private mapSpecialties(appointment: BackendAppointmentDto): string[] {
+    const raw =
+      appointment.specialties ??
+      appointment.Specialties ??
+      appointment.doctorSpecialties ??
+      appointment.DoctorSpecialties;
+
+    if (!Array.isArray(raw)) {
+      return [];
+    }
+
+    return raw
+      .map(item => {
+        if (typeof item === 'string') {
+          return item.trim();
+        }
+
+        return (item.name ?? item.Name ?? '').trim();
+      })
+      .filter(name => name.length > 0);
   }
 
   private mapBackendStatus(status: string): AppointmentStatus {

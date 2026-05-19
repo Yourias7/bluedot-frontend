@@ -22,6 +22,7 @@ export class PatientService {
     {
       id: 201,
       status: 'pending',
+      specialties: ['General Practitioner'],
       specialty: 'General Practitioner',
       date: '2026-06-01',
       startTime: '09:00',
@@ -37,6 +38,7 @@ export class PatientService {
     {
       id: 202,
       status: 'booked',
+      specialties: ['Dentist'],
       specialty: 'Dentist',
       date: '2026-06-10',
       startTime: '11:00',
@@ -52,6 +54,7 @@ export class PatientService {
     {
       id: 203,
       status: 'rejected',
+      specialties: ['Dermatologist'],
       specialty: 'Dermatologist',
       date: '2026-06-15',
       startTime: '14:00',

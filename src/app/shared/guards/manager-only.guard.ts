@@ -9,9 +9,13 @@ export const managerOnlyGuard = () => {
 
   const currentUserRole = authService.getCurrentUserRole();
 
-  if (currentUserRole !== 'manager') {
-    return router.createUrlTree(['/403']);
+  if (currentUserRole === 'manager') {
+    return true;
   }
 
-  return true;
+  if (currentUserRole === 'guest') {
+    return router.createUrlTree(['/landing-page']);
+  }
+
+  return router.createUrlTree(['/403']);
 };
