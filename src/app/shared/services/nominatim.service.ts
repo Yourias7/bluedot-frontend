@@ -13,7 +13,7 @@ export interface LocationSuggestion {
 })
 export class NominatimService {
   // Point to your local C# API
-  private apiUrl = 'http://localhost:5228/api/locations'; 
+  private apiUrl = 'https://localhost:7092/api/locations'; 
 
   constructor(private http: HttpClient) {}
 
