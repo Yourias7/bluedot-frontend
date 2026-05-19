@@ -23,11 +23,10 @@ type NavRoute = {
     RouterLinkActive,
     Logo,
     DialogModule,
-    Button,
     Login,
     Avatar,
     MenuModule
-  ],
+],
   templateUrl: './header.html',
   styleUrl: './header.scss'
 })

@@ -11,7 +11,7 @@ import { Tag, TagModule } from 'primeng/tag';
 
 @Component({
   selector: 'app-doctor-result-page',
-  imports: [CommonModule, AvatarModule, PaginatorModule, DoctorResultCard, PaginatorBasicDemo, Tag, TagModule],
+  imports: [CommonModule, AvatarModule, PaginatorModule, DoctorResultCard, TagModule],
   templateUrl: './doctor-result-page.html',
   styleUrl: './doctor-result-page.scss',
 })

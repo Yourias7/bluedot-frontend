@@ -5,7 +5,7 @@ import { PrimeNG } from 'primeng/config';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, AppLayout],
+  imports: [AppLayout],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
