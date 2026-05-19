@@ -3,34 +3,26 @@
     <h1>Welcome back Doctor1</h1>
 
     @if (hasPendingAppointments) {
-      <div class="notification-card">
-        <p>
-          Έχετε {{ pendingAppointmentCount }}
-          @if (pendingAppointmentCount === 1) {
-            εκκρεμές αίτημα ραντεβού.
-          } @else {
-            εκκρεμή αιτήματα ραντεβού.
-          }
-        </p>
+    <div class="notification-card">
+      <p>
+        Έχετε {{ pendingAppointmentCount }}
+        @if (pendingAppointmentCount === 1) {
+        εκκρεμές αίτημα ραντεβού.
+        } @else {
+        εκκρεμή αιτήματα ραντεβού.
+        }
+      </p>
 
-        <div class="quick-actions">
-          <button
-            type="button"
-            class="quick-action-button primary-action"
-            (click)="goToRequests()"
-          >
-            Προβολή αιτημάτων
-          </button>
+      <div class="quick-actions">
+        <button type="button" class="quick-action-button primary-action" (click)="goToRequests()">
+          Προβολή αιτημάτων
+        </button>
 
-          <button
-            type="button"
-            class="quick-action-button"
-            (click)="goToAvailability()"
-          >
-            Διαχείριση διαθεσιμότητας
-          </button>
-        </div>
+        <button type="button" class="quick-action-button" (click)="goToAvailability()">
+          Διαχείριση διαθεσιμότητας
+        </button>
       </div>
+    </div>
     }
   </div>
 
@@ -41,33 +33,26 @@
 
     <h2>{{ currentMonthTitle }}</h2>
 
-    <button
-      class="month-button"
-      [disabled]="!canGoToNextMonth"
-      (click)="goToNextMonth()"
-    >
+    <button class="month-button" [disabled]="!canGoToNextMonth" (click)="goToNextMonth()">
       &gt;
     </button>
   </div>
 
   <div class="week-row">
     @for (weekDay of weekDays; track weekDay) {
-      <div class="week-day">
-        {{ weekDay }}
-      </div>
+    <div class="week-day">
+      {{ weekDay }}
+    </div>
     }
   </div>
 
   <div class="days-grid">
     @for (day of calendarDays; track $index) {
-      <button
-        [class]="getDayButtonClass(day)"
-        (click)="openDay(day)"
-      >
-        @if (day.isCurrentMonth) {
-          {{ day.number }}
-        }
-      </button>
+    <button [class]="getDayButtonClass(day)" (click)="openDay(day)">
+      @if (day.isCurrentMonth) {
+      {{ day.number }}
+      }
+    </button>
     }
   </div>
 </section>

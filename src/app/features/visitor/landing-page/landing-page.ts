@@ -63,9 +63,9 @@ export class LandingPage {
   
     this.searchService.searchDoctors(this.selectedSpecialty?.id,
       this.selectedLocationSuggestion?.lat,
-      this.selectedLocationSuggestion?.lon,
-      radiusKm).subscribe((response) => {
-          this.router.navigate(['/search-results', response]);
+      this.selectedLocationSuggestion?.lon).subscribe((response) => {
+           console.log(response);
+          this.router.navigate(['/search-results']);
       });
   }
 }
