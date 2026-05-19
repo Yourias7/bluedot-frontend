@@ -151,12 +151,21 @@ export class Register implements OnInit {
       phoneNumber: formData.phone
     }).subscribe({
       next: () => {
-        this.isLoading = false;
-        this.successMessage = 'Η εγγραφή ολοκληρώθηκε επιτυχώς. Μπορείτε πλέον να συνδεθείτε.';
-        //this.errorMessage=undefined;
+        /*  this.isLoading = false;
+         this.successMessage = 'Η εγγραφή ολοκληρώθηκε επιτυχώς. Μπορείτε πλέον να συνδεθείτε.';
+         //this.errorMessage=undefined;
+         setTimeout(() => {
+           this.router.navigate(['/landing-page']);
+         }, 1200); */
         setTimeout(() => {
-          this.router.navigate(['/landing-page']);
-        }, 1200);
+          this.isLoading = false;
+          this.errorMessage = '';
+          this.successMessage = 'Η εγγραφή γιατρού ολοκληρώθηκε επιτυχώς. Μπορείτε πλέον να συνδεθείτε.';
+          setTimeout(() => {
+            console.log("success");
+            this.router.navigate(['/doctor']);
+          }, 2400);
+        }, 100);
       },
       error: error => {
         console.error('Patient registration failed:', error);
@@ -233,7 +242,7 @@ export class Register implements OnInit {
             console.log("success");
             this.router.navigate(['/doctor']);
           }, 2400);
-        }, 400);
+        }, 100);
 
       },
       error: error => {
