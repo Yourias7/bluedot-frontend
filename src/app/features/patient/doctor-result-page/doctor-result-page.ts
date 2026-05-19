@@ -14,7 +14,7 @@ import { DoctorSearchService } from '../../../shared/services/doctor-search-serv
 import { NominatimService, LocationSuggestion } from '../../../shared/services/nominatim.service';
 import { DoctorResultCard } from './components/doctor-result-card/doctor-result-card';
 
-export type DoctorSortBy = 'relevance' | 'reviews' | 'name';
+export type DoctorSortBy = 'reviews' | 'name';
 
 @Component({
   selector: 'app-doctor-result-page',
@@ -42,7 +42,7 @@ export class DoctorResultPage implements OnInit {
 
   doctorLoadError: string | null = null;
 
-  sortBy: DoctorSortBy = 'relevance';
+  sortBy: DoctorSortBy = 'reviews';
 
   specialties: Specialty[] = [];
   filteredSpecialties: Specialty[] = [];
@@ -157,7 +157,6 @@ export class DoctorResultPage implements OnInit {
         return sorted.sort((a, b) =>
           this.fullName(a).localeCompare(this.fullName(b), 'el')
         );
-      case 'relevance':
       default:
         return sorted;
     }
