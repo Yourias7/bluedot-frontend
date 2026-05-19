@@ -7,6 +7,8 @@ import { AvatarModule } from 'primeng/avatar';
 import { Doctor } from '../../../shared/domain/doctor';
 import { AppointmentService } from '../../../shared/services/appointment-service';
 import { DoctorSearchService } from '../../../shared/services/doctor-search-service';
+import { DoctorBasicInfo } from '../../../shared/components/doctor-basic-info/doctor-basic-info';
+
 
 @Component({
   selector: 'app-appointment-confirm',
