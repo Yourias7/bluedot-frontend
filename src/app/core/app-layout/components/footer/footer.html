@@ -3,8 +3,8 @@
         <section class="footer-brand">
             <app-logo></app-logo>
         </section>
-
         <section class="footer-links">
+            @if(isDoctor()==false){
             <article class="footer-column">
                 <h3>Ειδικότητες</h3>
 
@@ -28,8 +28,8 @@
                     <li><a (click)="searchCityDoctors('Syros')">Syros</a></li>
                     <li><a (click)="searchCityDoctors('Drama')">Drama</a></li>
                 </ul>
-            </article>
-
+            </article>}
+        
             <article class="footer-column">
                 <h3>Σχετικά</h3>
 
