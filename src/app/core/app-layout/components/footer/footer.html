@@ -30,15 +30,14 @@
                 </ul>
             </article>}
 
-            <article>
-                <h3 class="mb-3 mb-md-0 me-md-4 d-md-inline-block">Σχετικά</h3>
-
-                <ul [ngClass]="isDoctor() ? 'd-flex flex-row gap-3 list-unstyled m-0': ''">
-                    <li><a class="row-link" [routerLink]="['/help']">Βοήθεια</a></li>
-                    <li><a class="row-link" [routerLink]="['/about']">Σχετικά</a></li>
-                    <li><a class="row-link">Όροι χρήσης</a></li>
-                    <li><a class="row-link">Cookies</a></li>
-                    <li><a class="row-link">Πολιτική απορρήτου</a></li>
+            <article class="footer-column">
+                <h3>Σχετικά</h3>
+                <ul>
+                    <li><a [routerLink]="['/help']">Βοήθεια</a></li>
+                    <li><a [routerLink]="['/about']">Σχετικά</a></li>
+                    <li><a>Όροι χρήσης</a></li>
+                    <li><a>Cookies</a></li>
+                    <li><a>Πολιτική απορρήτου</a></li>
                 </ul>
             </article>
         </section>
