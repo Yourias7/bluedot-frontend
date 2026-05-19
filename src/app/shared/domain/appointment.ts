@@ -6,6 +6,7 @@ export type Appointment = {
   status: AppointmentStatus;
 
   specialty: string;
+  specialties: string[];
   date: string;
   startTime: string;
   endTime: string;

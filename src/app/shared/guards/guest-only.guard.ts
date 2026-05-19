@@ -3,11 +3,15 @@ import { Router } from '@angular/router';
 
 import { AuthenticationServices } from '../services/authentication-services';
 
-export const roleRedirectGuard = () => {
+export const guestOnlyGuard = () => {
   const authService = inject(AuthenticationServices);
   const router = inject(Router);
 
   const currentUserRole = authService.getCurrentUserRole();
+
+  if (currentUserRole === 'guest') {
+    return true;
+  }
 
   if (currentUserRole === 'doctor') {
     return router.createUrlTree(['/doctor']);
@@ -17,5 +21,9 @@ export const roleRedirectGuard = () => {
     return router.createUrlTree(['/manager']);
   }
 
-  return true;
+  if (currentUserRole === 'patient') {
+    return router.createUrlTree(['/landing-page']);
+  }
+
+  return router.createUrlTree(['/landing-page']);
 };

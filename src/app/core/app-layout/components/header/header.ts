@@ -41,8 +41,8 @@ export class Header implements OnInit, OnDestroy {
 
   patientNavRoutes: NavRoute[] = [
     { path: '/landing-page', title: 'Αρχική' },
-    { path: '/map-results', title: 'Ιατροί κοντά μου' },
-    { path: '/search-results', title: 'Συνεργαζόμενοι ιατροί' },
+    { path: '/map-results', title: 'Ιατροί Κοντά' },
+    { path: '/search-results', title: 'Συνεργαζόμενοι Ιατροί' },
     { path: '/about', title: 'Σχετικά' },
     { path: '/help', title: 'Βοήθεια' }
   ];
@@ -55,8 +55,13 @@ export class Header implements OnInit, OnDestroy {
     { path: '/help', title: 'Βοήθεια' }
   ];
 
+  managerNavRoutes: NavRoute[] = [
+    { path: '/manager', title: 'Dashboard' }
+  ];
+
   loggedInOptions: MenuItem[];
   doctorOptions: MenuItem[];
+  managerOptions: MenuItem[];
 
   constructor(
     private authenticationServices: AuthenticationServices,
@@ -64,13 +69,13 @@ export class Header implements OnInit, OnDestroy {
   ) {
     this.loggedInOptions = [
       {
-        label: 'Ο λογαριασμός μου',
+        label: 'Λογαριασμος',
         command: () => {
           this.router.navigate(['/patient-account-details']);
         }
       },
       {
-        label: 'Τα ραντεβού μου',
+        label: 'Ραντεβού',
         command: () => {
           this.router.navigate(['/patient-appointments']);
         }
@@ -84,7 +89,7 @@ export class Header implements OnInit, OnDestroy {
 
     this.doctorOptions = [
       {
-        label: 'Ο λογαριασμός μου',
+        label: 'Λογαριασμός',
         command: () => {
           this.router.navigate(['/doctor/account-details']);
         }
@@ -93,6 +98,20 @@ export class Header implements OnInit, OnDestroy {
         label: 'Ραντεβού',
         command: () => {
           this.router.navigate(['/doctor/appointments']);
+        }
+      },
+      { separator: true },
+      {
+        label: 'Αποσύνδεση',
+        command: () => this.onLogout()
+      }
+    ];
+
+    this.managerOptions = [
+      {
+        label: 'Dashboard',
+        command: () => {
+          this.router.navigate(['/manager']);
         }
       },
       { separator: true },
@@ -126,7 +145,38 @@ export class Header implements OnInit, OnDestroy {
       return this.doctorNavRoutes;
     }
 
+    if (this.currentUserRole === 'manager') {
+      return this.managerNavRoutes;
+    }
+
     return this.patientNavRoutes;
+  }
+
+  get displayUserName(): string {
+    if (!this.currentUserName) {
+      if (this.currentUserRole === 'manager') {
+        return 'Admin';
+      }
+
+      if (this.currentUserRole === 'doctor') {
+        return 'Γιατρός';
+      }
+
+      if (this.currentUserRole === 'patient') {
+        return 'Ασθενής';
+      }
+
+      return '';
+    }
+
+    if (this.currentUserName.includes('@')) {
+      return this.currentUserName
+        .split('@')[0]
+        .replace(/[._-]+/g, ' ')
+        .trim();
+    }
+
+    return this.currentUserName;
   }
 
   onLogout(): void {

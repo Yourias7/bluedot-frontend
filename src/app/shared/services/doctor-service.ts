@@ -14,6 +14,11 @@ import { SlotStatus } from '../domain/slot-status';
 type BackendAppointmentStatus = 'Pending' | 'Confirmed' | 'Cancelled' | 'Completed';
 type BackendAvailabilityStatus = 'Available' | 'Pending' | 'Booked' | 'Unavailable';
 
+type BackendSpecialtyDto = {
+  name?: string;
+  Name?: string;
+};
+
 type BackendAppointmentDto = {
   id: number;
   status: BackendAppointmentStatus | string;
@@ -29,6 +34,10 @@ type BackendAppointmentDto = {
   availabilityId: number;
   startTime: string;
   endTime: string;
+  specialties?: (string | BackendSpecialtyDto)[];
+  Specialties?: (string | BackendSpecialtyDto)[];
+  doctorSpecialties?: (string | BackendSpecialtyDto)[];
+  DoctorSpecialties?: (string | BackendSpecialtyDto)[];
 };
 
 type BackendAvailabilitySlotDto = {
@@ -315,11 +324,13 @@ export class DoctorService {
   private mapBackendAppointment(appointment: BackendAppointmentDto): Appointment {
     const startDate = new Date(appointment.startTime);
     const endDate = new Date(appointment.endTime);
+    const specialties = this.mapSpecialties(appointment);
 
     return {
       id: appointment.id,
       status: this.mapBackendStatus(appointment.status),
-      specialty: 'Ιατρός',
+      specialties,
+      specialty: specialties.length > 0 ? specialties.join(', ') : 'Ιατρός',
       date: this.formatDate(startDate),
       startTime: this.formatTime(startDate),
       endTime: this.formatTime(endDate),
@@ -333,6 +344,28 @@ export class DoctorService {
       patientMessage: appointment.appointmentNotes ?? '',
       conversation: []
     };
+  }
+
+  private mapSpecialties(appointment: BackendAppointmentDto): string[] {
+    const raw =
+      appointment.specialties ??
+      appointment.Specialties ??
+      appointment.doctorSpecialties ??
+      appointment.DoctorSpecialties;
+
+    if (!Array.isArray(raw)) {
+      return [];
+    }
+
+    return raw
+      .map(item => {
+        if (typeof item === 'string') {
+          return item.trim();
+        }
+
+        return (item.name ?? item.Name ?? '').trim();
+      })
+      .filter(name => name.length > 0);
   }
 
   private mapBackendSlot(slot: BackendAvailabilitySlotDto, index: number): AvailabilitySlot {
