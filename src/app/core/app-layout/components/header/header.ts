@@ -50,7 +50,9 @@ export class Header implements OnInit, OnDestroy {
   doctorNavRoutes: NavRoute[] = [
     { path: '/doctor', title: 'Αρχική' },
     { path: '/doctor/availability', title: 'Διαθεσιμότητα' },
-    { path: '/doctor/appointments', title: 'Ραντεβού' }
+    { path: '/doctor/appointments', title: 'Ραντεβού' },
+    { path: '/about', title: 'Σχετικά' },
+    { path: '/help', title: 'Βοήθεια' }
   ];
 
   loggedInOptions: MenuItem[];
