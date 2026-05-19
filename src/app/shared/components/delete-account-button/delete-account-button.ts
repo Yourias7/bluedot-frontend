@@ -1,12 +1,11 @@
 import { Component } from '@angular/core';
 import { AuthenticationServices } from '../../services/authentication-services';
 import { DialogModule } from 'primeng/dialog';
-import { Button } from 'primeng/button';
 import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-delete-account-button',
-  imports: [DialogModule, Button],
+  imports: [DialogModule,],
   templateUrl: './delete-account-button.html',
   styleUrl: './delete-account-button.scss',
 })
