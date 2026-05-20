@@ -2,57 +2,97 @@
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.9.
 
-## Development server
+This repository contains the frontend application for the Bluedot (ReGen) Project. It is a modern Single Page Application (SPA) built with Angular that provides dedicated interfaces for Patients, Doctors, and Administrators.
 
-To start a local development server, run:
+The application integrates interactive maps for location-based doctor discovery, comprehensive appointment management, and a responsive, component-driven UI.
+
+---
+
+## 🛠 Technology Stack
+
+| Component | Technology |
+| :--- | :--- |
+| **Framework** | Angular 21 |
+| **Styling & UI Components** | PrimeNG 21, Bootstrap 5.3, AdminLTE 4 |
+| **Icons & Theming** | PrimeIcons, PrimeUI Themes |
+| **Mapping & Geolocation** | Leaflet 1.9 |
+| **State Management** | RxJS |
+| **Testing** | Vitest & JSDOM |
+| **Formatting** | Prettier |
+
+---
+
+## ✨ Key Features
+
+* **Role-Based Workspaces:** Dedicated route modules, layouts, and route guards (`admin-only`, `doctor-only`, `patient-only`) ensure users only see and access what they are authorized to.
+* **Interactive Map Discovery:** Utilizes **Leaflet** alongside the Nominatim OpenStreetMap service to allow patients to visually search for nearby doctors and clinics.
+* **Rich UI Components:** Leverages **PrimeNG** and **Bootstrap 5** for accessible, data-rich components like data tables, calendars for booking, and interactive forms.
+* **Admin Dashboard:** Integrates **AdminLTE** for a clean, professional administrative interface to manage the platform.
+* **Secure Communications:** Employs HTTP Interceptors to attach JWT tokens to outbound requests and handle 401/403/404/500 error routing seamlessly.
+
+---
+
+## 📂 Project Structure
+
+The codebase is organized using a feature-based architecture to maintain scalability and clean separation of concerns:
+
+* **`src/app/core/`**: Singleton services, application-wide layouts (Header, Footer, Logo, Cookies), and configuration.
+* **`src/app/shared/`**: Reusable UI components (Paginators, Error Pages, Appointment Cards), domain models/interfaces, and utility guards/interceptors.
+* **`src/app/features/`**: The core application modules divided by user personas:
+  * **`/visitor`**: Landing pages, Login, Registration, and About pages.
+  * **`/patient`**: Doctor search results, appointment booking, and patient account management.
+  * **`/doctor`**: Availability management, appointment dashboards, and profile settings.
+  * **`/admin`**: System administration dashboards.
+* **`src/environments/`**: Environment-specific configuration variables (e.g., API base URLs).
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+* [Node.js](https://nodejs.org/) (LTS recommended)
+* [npm](https://www.npmjs.com/) (v11+ as defined in packageManager)
+* The Bluedot Backend API running locally.
+
+### 1. Installation
+Clone the repository and install the dependencies:
 
 ```bash
-ng serve
+git clone <your-repo-url>
+cd bluedot-frontend
+npm install
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
+### 2. Configuration
+Ensure your environment files are pointing to your local backend API. Check src/environments/environment.development.ts and update the API URL if necessary:
+```json
+export const environment = {
+  production: false,
+  apiUrl: 'http://localhost:5228/api' // Replace with your backend URL
+};
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+### 3. Running the Development Server
+Start the Angular CLI development server:
+```json
+npm start
+```
+Navigate to http://localhost:4200/ in your browser. The application will automatically reload if you change any of the source files.
 
-```bash
-ng generate --help
+### 4. Running Tests
+This project uses Vitest for unit testing. To execute the test suite, run:
+
+```json
+npm run test
 ```
 
-## Building
+### 5. Building for Production
+To build the project for production environments:
 
-To build the project run:
-
-```bash
-ng build
 ```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
+npm run build
 ```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+The build artifacts will be stored in the dist/ directory, optimized and ready to be served by a web server.
 
 ## Additional Resources
 
