@@ -11,6 +11,7 @@ import { Doctor } from '../domain/doctor';
 import { AppointmentStatus } from '../domain/appointment-status';
 import { SlotStatus } from '../domain/slot-status';
 
+// Backend uses PascalCase strings for statuses; these types document the expected values
 type BackendAppointmentStatus = 'Pending' | 'Confirmed' | 'Cancelled' | 'Completed';
 type BackendAvailabilityStatus = 'Available' | 'Pending' | 'Booked' | 'Unavailable';
 
@@ -89,14 +90,15 @@ type AvailabilitySlotWithDoctor = AvailabilitySlot & {
 @Injectable({
   providedIn: 'root',
 })
+// Doctor-facing service: manages appointments, availability slots, and slot transfers
 export class DoctorService {
   private http = inject(HttpClient);
   private appointmentService = inject(AppointmentService);
   private baseUrl = environment.apiUrl;
 
-  appointments: Appointment[] = [];
+  appointments: Appointment[] = []; // in-memory cache populated by loadDoctorAppointments()
 
-  private slotsByDate: Record<string, AvailabilitySlotWithDoctor[]> = {};
+  private slotsByDate: Record<string, AvailabilitySlotWithDoctor[]> = {}; // keyed by YYYY-MM-DD
 
   loadDoctorAppointments(): Observable<Appointment[]> {
     return this.appointmentService.loadAppointments().pipe(
@@ -271,6 +273,7 @@ export class DoctorService {
     newSlot: AvailabilitySlot
   ): Observable<boolean> {
     if (newSlot.id <= 0) {
+      // negative ids are local fallbacks assigned during mapping — they can't be sent to the backend
       return throwError(() => new Error('The selected slot does not have a valid backend availability id.'));
     }
 
@@ -289,6 +292,7 @@ export class DoctorService {
             appointment.status = 'booked';
           }
 
+          // invalidate all cached slots so stale data isn't shown after the transfer
           Object.keys(this.slotsByDate).forEach(date => {
             this.slotsByDate[date] = [];
           });
@@ -298,7 +302,7 @@ export class DoctorService {
   }
 
   getDoctorProfile(): Doctor | null {
-    return null;
+    return null; // TODO: implement — fetch from /account/me and map to Doctor
   }
 
   private updateAppointmentStatus(
@@ -390,6 +394,7 @@ export class DoctorService {
     }
 
     if (typeof status === 'number') {
+      // numeric enum from backend: 0=free, 1=pending, 2=booked, else=disabled
       if (status === 0) return 'free';
       if (status === 1) return 'pending';
       if (status === 2) return 'booked';
@@ -510,6 +515,8 @@ export class DoctorService {
     }
 
     if (typeof status === 'number') {
+      // numeric enum from /doctors/{id}/slots: 0=free, 1=booked, 2=disabled, 3=pending
+      // note: ordering differs from mapBackendSlotStatus — two separate backend enums
       if (status === 0) {
         return 'free';
       }

@@ -1,3 +1,4 @@
+// Reusable PrimeNG paginator wrapper; totalRecords is hardcoded — replace with a dynamic value
 import { Component } from '@angular/core';
 import { Paginator, PaginatorModule, PaginatorState } from 'primeng/paginator';
 
@@ -11,8 +12,8 @@ import { Paginator, PaginatorModule, PaginatorState } from 'primeng/paginator';
     imports: [PaginatorModule]
 })
 export class PaginatorBasicDemo {
-    first: number = 0;
-    rows: number = 10;
+    first: number = 0; // byte offset of the first record on the current page
+    rows: number = 10; // number of records per page
 
     onPageChange(event: PaginatorState) {
         this.first = event.first ?? 0;

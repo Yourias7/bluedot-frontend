@@ -13,20 +13,21 @@ import { AuthenticationServices } from '../../../../shared/services/authenticati
   templateUrl: './doctor-home.html',
   styleUrl: './doctor-home.scss'
 })
+// Doctor home page: custom monthly calendar with appointment highlights and a pending-request reminder
 export class DoctorHome implements OnInit, OnDestroy {
   weekDays = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
 
   calendarDays: CalendarDay[] = [];
 
-  currentDate = new Date();
-  maxCalendarDate = new Date();
+  currentDate = new Date();         // always set to the 1st of the displayed month
+  maxCalendarDate = new Date();     // navigation ceiling: current month + 1
 
   currentUserName = '';
 
   isLoadingAppointments = false;
   homeErrorMessage = '';
 
-  private subscriptions = new Subscription();
+  private subscriptions = new Subscription(); // collected so they can all be unsubscribed on destroy
 
   monthNames = [
     'January',
@@ -75,10 +76,11 @@ export class DoctorHome implements OnInit, OnDestroy {
 
   get doctorName(): string {
     if (!this.currentUserName) {
-      return 'γιατρέ';
+      return 'γιατρέ'; // generic greeting fallback before the name loads
     }
 
     if (this.currentUserName.includes('@')) {
+      // email address stored as username — extract and humanise the local part
       return this.currentUserName
         .split('@')[0]
         .replace(/[._-]+/g, ' ')
@@ -213,6 +215,7 @@ export class DoctorHome implements OnInit, OnDestroy {
 
     const days: CalendarDay[] = [];
 
+    // pad the grid with empty cells so the first day lands on the correct weekday column
     for (let i = 0; i < firstWeekDay; i++) {
       days.push({
         number: 0,
@@ -306,6 +309,7 @@ export class DoctorHome implements OnInit, OnDestroy {
   }
 
   private getMostUrgentPendingAppointment(): Appointment | null {
+    // sort ascending by createdAt so the oldest (closest to its 24h deadline) comes first
     const pendingWithCreatedAt = this.pendingAppointments
       .filter(appointment => appointment.createdAt)
       .sort((a, b) => {

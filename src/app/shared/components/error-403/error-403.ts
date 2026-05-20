@@ -1,3 +1,4 @@
+// Shown when a user navigates to a route they don't have permission to access (403 Forbidden)
 import { Component } from '@angular/core';
 import { ReturnButton } from '../return-button/return-button';
 

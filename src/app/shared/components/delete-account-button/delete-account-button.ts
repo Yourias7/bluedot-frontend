@@ -1,3 +1,4 @@
+// Button + confirmation dialog for permanent account deletion
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { DialogModule } from 'primeng/dialog';
@@ -12,7 +13,7 @@ import { AuthenticationServices } from '../../services/authentication-services';
 })
 export class DeleteAccountButton {
   visible = false;
-  isDeleting = false;
+  isDeleting = false; // guards against double-submit while the request is in flight
   errorMessage = '';
 
   constructor(
@@ -27,7 +28,7 @@ export class DeleteAccountButton {
 
   closeDialog() {
     if (this.isDeleting) {
-      return;
+      return; // prevent closing while deletion is in progress
     }
 
     this.visible = false;
@@ -46,7 +47,7 @@ export class DeleteAccountButton {
       next: () => {
         this.isDeleting = false;
         this.visible = false;
-        localStorage.clear();
+        localStorage.clear(); // wipe session data before redirecting
         this.router.navigate(['/landing-page']);
       },
       error: error => {

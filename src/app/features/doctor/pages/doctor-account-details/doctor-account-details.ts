@@ -17,6 +17,7 @@ import { debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operato
 import { of } from 'rxjs';
 import { DeleteAccountButton } from '../../../../shared/components/delete-account-button/delete-account-button';
 
+// Doctor account details page: loads profile from /account/me, supports per-field inline editing
 @Component({
   imports: [CommonModule, ReactiveFormsModule, DeleteAccountButton],
   templateUrl: './doctor-account-details.html',
@@ -36,7 +37,7 @@ export class DoctorAccountDetails implements OnInit {
     bio: new FormControl('', [Validators.required]),
   });
 
-  editing: { [key: string]: boolean } = {};
+  editing: { [key: string]: boolean } = {}; // tracks which fields are currently in edit mode
 
   specialties: Specialty[] = [];
 
@@ -56,6 +57,7 @@ export class DoctorAccountDetails implements OnInit {
     private doctorSearchService: DoctorSearchService,
     private nomatimService:NominatimService
   ) {
+    // getDoctorProfile() currently returns null — empty object is the guaranteed fallback
     this.doctorInfo = this.doctorService.getDoctorProfile() ?? {
       id: 0,
       firstName: '',
@@ -141,10 +143,9 @@ export class DoctorAccountDetails implements OnInit {
   }
 
   saveChanges() {
- 
     let hasInvalidFields = false;
 
-    //safeguard for non edited fields
+    // only validate fields that are actively being edited to avoid blocking untouched required fields
     for (const key of Object.keys(this.editing)) {
 
       if (!this.editing[key]) continue;
@@ -194,12 +195,13 @@ export class DoctorAccountDetails implements OnInit {
 
     for (const key of Object.keys(this.editing)) {
       if (!this.editing[key]) {
-        continue;
+        continue; // skip fields not in edit mode
       }
 
       const value = this.form.get(key)?.value;
 
       if (key === 'specialty') {
+        // specialty needs to be sent as an object, not a raw id string
         const selected = this.findSpecialtyById(value);
         if (selected) {
           patch.specialty = { id: selected.id, name: selected.name };
@@ -207,7 +209,7 @@ export class DoctorAccountDetails implements OnInit {
         continue;
       }
 
-      (patch as any)[key] = value;
+      (patch as any)[key] = value; // all other fields map directly by name
     }
 
     return patch;

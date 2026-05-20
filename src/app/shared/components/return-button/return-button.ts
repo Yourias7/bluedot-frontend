@@ -1,3 +1,4 @@
+// Generic "return" button used by error pages to send the user back to the landing page
 import { Component } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 

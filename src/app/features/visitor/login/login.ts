@@ -13,6 +13,7 @@ import { AuthenticationServices } from '../../../shared/services/authentication-
   templateUrl: './login.html',
   styleUrl: './login.scss',
 })
+// Login modal: authenticates the user and redirects to the appropriate role-based home route
 export class Login {
   @Input() isOpen: boolean = false;
 
@@ -44,7 +45,7 @@ export class Login {
   }
 
   submitLogin() {
-    this.loginForm.markAllAsTouched();
+    this.loginForm.markAllAsTouched(); // triggers validation UI on all fields before checking validity
 
     if (this.loginForm.invalid) {
       return;
@@ -54,7 +55,7 @@ export class Login {
     const password = this.loginForm.controls.password.value;
 
     if (email === null || password === null) {
-      return;
+      return; // type narrowing — FormControl values can be null when reset
     }
 
     this.isLoading = true;
@@ -69,6 +70,7 @@ export class Login {
         this.loginSucceeded.emit(true);
         this.closeModal();
 
+        // role is read after login() so it reflects the freshly stored value
         const role = this.authenticationServices.getCurrentUserRole();
 
         if (role === 'doctor') {
@@ -86,7 +88,7 @@ export class Login {
           return;
         }
 
-        this.router.navigate(['/landing-page']);
+        this.router.navigate(['/landing-page']); // fallback for unknown roles
       },
       error: () => {
         this.isLoading = false;

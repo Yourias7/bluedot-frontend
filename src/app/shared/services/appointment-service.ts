@@ -6,21 +6,22 @@ import { environment } from '../../../environments/environment';
 import { Appointment } from '../domain/appointment';
 import { AppointmentStatus } from '../domain/appointment-status';
 
+// requested appointment DTOs and backend response models (used in POSTs)
 export type CreateAppointmentRequestDto = {
   doctorId: number;
   availabilityId: number;
   appointmentNotes?: string | null;
 };
-
+// response from backend after requesting an appointment
 export type CreateAppointmentResponseDto = {
   message: string;
 };
-
+// backend model for specialty as returned by the API
 type BackendSpecialtyDto = {
   name?: string;
   Name?: string;
 };
-
+// backend model for appointment as returned by the API (used in GETs)
 type BackendAppointmentDto = {
   id: number;
   status: string;
@@ -41,7 +42,7 @@ type BackendAppointmentDto = {
   doctorSpecialties?: (string | BackendSpecialtyDto)[];
   DoctorSpecialties?: (string | BackendSpecialtyDto)[];
 };
-
+// generic type for paged results returned by the backend API
 type PagedResultDto<T> = {
   totalCount: number;
   page: number;
@@ -49,6 +50,7 @@ type PagedResultDto<T> = {
   items: T[];
 };
 
+// Service for fetching and caching appointments; maps backend DTOs to the domain Appointment type
 @Injectable({
   providedIn: 'root',
 })
@@ -56,13 +58,14 @@ export class AppointmentService {
   private http = inject(HttpClient);
   private baseUrl = environment.apiUrl;
 
-  appointments: Appointment[] = [];
+  appointments: Appointment[] = []; // in-memory cache populated by load* methods
 
   requestAppointment(dto: CreateAppointmentRequestDto): Observable<CreateAppointmentResponseDto> {
     return this.http.post<CreateAppointmentResponseDto>(`${this.baseUrl}/appointments/request`, dto);
   }
 
   loadAppointments(): Observable<Appointment[]> {
+    // pageSize=200 acts as a soft "fetch all" — replace with real pagination if volume grows
     return this.http
       .get<PagedResultDto<BackendAppointmentDto>>(`${this.baseUrl}/appointments?page=1&pageSize=200`)
       .pipe(
@@ -82,11 +85,11 @@ export class AppointmentService {
           const index = this.appointments.findIndex(current => current.id === appointment.id);
 
           if (index === -1) {
-            this.appointments.push(appointment);
+            this.appointments.push(appointment); // not cached yet — add it
             return;
           }
 
-          this.appointments[index] = appointment;
+          this.appointments[index] = appointment; // refresh the existing cache entry
         })
       );
   }
@@ -112,7 +115,7 @@ export class AppointmentService {
       id: appointment.id,
       status: this.mapBackendStatus(appointment.status),
       specialties,
-      specialty: specialties.length > 0 ? specialties.join(', ') : 'Ιατρός',
+      specialty: specialties.length > 0 ? specialties.join(', ') : 'Ιατρός', // fallback label when no specialties are returned
       date: this.formatDate(startDate),
       startTime: this.formatTime(startDate),
       endTime: this.formatTime(endDate),
@@ -131,6 +134,7 @@ export class AppointmentService {
   }
 
   private mapSpecialties(appointment: BackendAppointmentDto): string[] {
+    // backend uses inconsistent casing across endpoints — check all four variants
     const raw =
       appointment.specialties ??
       appointment.Specialties ??
@@ -160,14 +164,14 @@ export class AppointmentService {
     }
 
     if (normalizedStatus === 'confirmed' || normalizedStatus === 'booked') {
-      return 'booked';
+      return 'booked'; // backend uses both strings for the same state
     }
 
     if (normalizedStatus === 'completed') {
       return 'completed';
     }
 
-    return 'rejected';
+    return 'rejected'; // default for any unrecognised status
   }
 
   private formatDate(date: Date): string {
@@ -175,13 +179,13 @@ export class AppointmentService {
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
 
-    return `${year}-${month}-${day}`;
+    return `${year}-${month}-${day}`; // YYYY-MM-DD
   }
 
   private formatTime(date: Date): string {
     const hours = String(date.getHours()).padStart(2, '0');
     const minutes = String(date.getMinutes()).padStart(2, '0');
 
-    return `${hours}:${minutes}`;
+    return `${hours}:${minutes}`; // HH:MM
   }
 }

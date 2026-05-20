@@ -1,3 +1,4 @@
+// TODO: stub service — replace _patient and _appointments with real API calls
 import { Injectable } from '@angular/core';
 import { Appointment } from '../domain/appointment';
 import { Patient } from '../domain/patient';
@@ -7,6 +8,7 @@ import { UserRole } from '../domain/user';
   providedIn: 'root',
 })
 export class PatientService {
+  // TODO: remove — hardcoded patient used before /account/me was wired up
   private _patient: Patient | null = {
     id: 1,
     firstName: 'Jane',
@@ -18,6 +20,7 @@ export class PatientService {
     phoneNumber: '+1234567890',
   };
 
+  // TODO: remove — stub appointments used before the /appointments endpoint was wired up
   private _appointments: Appointment[] = [
     {
       id: 201,

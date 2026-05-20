@@ -1,3 +1,4 @@
+// Manager dashboard: aggregates appointment stats (totals, rates, recent list) from the shared AppointmentService
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 
 import { Appointment } from '../../../shared/domain/appointment';
@@ -13,7 +14,7 @@ type DashboardMetric = {
 type StatusStat = {
   label: string;
   value: number;
-  percent: number;
+  percent: number; // percentage of totalAppointments
 };
 
 @Component({
@@ -58,6 +59,7 @@ export class AdminDashboard implements OnInit {
   }
 
   get totalDoctors(): number {
+    // counts unique doctorIds across all appointments — not a direct /doctors count
     const doctorIds = this.appointments
       .map(appointment => appointment.doctorId)
       .filter(id => id !== null && id !== undefined);
@@ -66,6 +68,7 @@ export class AdminDashboard implements OnInit {
   }
 
   get totalPatients(): number {
+    // counts unique patient names — approximate until a patientId field is available
     const patientNames = this.appointments
       .map(appointment => appointment.patientName)
       .filter(name => name && name !== '-');
@@ -128,6 +131,7 @@ export class AdminDashboard implements OnInit {
   }
 
   get recentAppointments(): Appointment[] {
+    // spreads to avoid mutating the cached array, then takes the 6 most recent
     return [...this.appointments]
       .sort((a, b) => {
         const firstDate = this.getAppointmentSortDate(a).getTime();

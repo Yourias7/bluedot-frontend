@@ -1,3 +1,4 @@
+// calendar day model used across the app calendar components
 export type CalendarDay = {
   number: number;
   date: string;

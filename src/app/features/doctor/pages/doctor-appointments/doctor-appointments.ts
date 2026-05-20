@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Appointment } from '../../../../shared/domain/appointment';
 import { DoctorService } from '../../../../shared/services/doctor-service';
 
+// Doctor appointments list page: tabbed view of confirmed, pending, rejected, and completed appointments
 type AppointmentTab = 'appointments' | 'requests' | 'rejected' | 'history';
 
 @Component({
@@ -15,9 +16,9 @@ type AppointmentTab = 'appointments' | 'requests' | 'rejected' | 'history';
 export class DoctorAppointments {
   selectedTab: AppointmentTab = 'appointments';
 
-  selectedDate: string | null = null;
+  selectedDate: string | null = null; // YYYY-MM-DD filter passed as a query param from the calendar
 
-  allAppointments: Appointment[] = [];
+  allAppointments: Appointment[] = []; // full set for the selected date (or all dates if null)
 
   isLoading = false;
   errorMessage = '';
@@ -124,6 +125,7 @@ export class DoctorAppointments {
   }
 
   openAppointment(appointment: Appointment) {
+    // passes the active date as a query param so the detail page can restore it on back-nav
     this.router.navigate(['/doctor/appointments', appointment.id], {
       queryParams: this.selectedDate !== null
         ? { date: this.selectedDate }

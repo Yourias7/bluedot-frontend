@@ -13,24 +13,25 @@ import { DoctorService } from '../../../../shared/services/doctor-service';
   templateUrl: './doctor-appointment-details.html',
   styleUrl: './doctor-appointment-details.scss'
 })
+// Doctor appointment details page: view appointment info, accept/reject, or transfer to a new slot
 export class DoctorAppointmentDetails {
   appointment: Appointment | undefined;
-  returnDate: string | null = null;
+  returnDate: string | null = null; // passed as a query param to restore the calendar date on back-nav
 
   isLoading = false;
   errorMessage = '';
 
-  isActionLoading = false;
+  isActionLoading = false;   // guards accept/reject buttons against double-submit
   actionErrorMessage = '';
 
   showTransferModal = false;
 
-  transferDateObject: Date = new Date();
-  transferDate = '';
+  transferDateObject: Date = new Date(); // Date object bound to the PrimeNG date picker
+  transferDate = '';                     // YYYY-MM-DD string derived from transferDateObject
   transferSlots: AvailabilitySlot[] = [];
   selectedTransferSlot: AvailabilitySlot | null = null;
 
-  todayDate: Date = new Date();
+  todayDate: Date = new Date(); // used as the min-date constraint on the transfer date picker
 
   isTransferLoading = false;
   transferErrorMessage = '';
@@ -41,7 +42,7 @@ export class DoctorAppointmentDetails {
     private doctorservice: DoctorService,
     private changeDetectorRef: ChangeDetectorRef
   ) {
-    this.todayDate.setHours(0, 0, 0, 0);
+    this.todayDate.setHours(0, 0, 0, 0); // strip time so date comparisons work correctly
 
     const appointmentIdParam = this.route.snapshot.paramMap.get('appointmentId');
     const appointmentId = Number(appointmentIdParam);
@@ -49,7 +50,7 @@ export class DoctorAppointmentDetails {
     this.returnDate = this.route.snapshot.queryParams['date'] ?? null;
 
     if (appointmentIdParam === null || Number.isNaN(appointmentId)) {
-      this.router.navigate(['/doctor/appointments']);
+      this.router.navigate(['/doctor/appointments']); // invalid route param — bail out early
       return;
     }
 
@@ -408,6 +409,7 @@ export class DoctorAppointmentDetails {
   }
 
   private hasValidAvailabilityId(slot: AvailabilitySlot | null): boolean {
+    // negative ids are local fallbacks assigned during mapping and cannot be sent to the backend
     return slot !== null && Number.isFinite(slot.id) && slot.id > 0;
   }
 

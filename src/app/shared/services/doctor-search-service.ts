@@ -1,3 +1,4 @@
+// Service for searching doctors by specialty and location, and loading individual doctor details
 import { Injectable } from '@angular/core';
 import { Doctor } from '../domain/doctor';
 import { UserRole } from '../domain/user';
@@ -14,7 +15,8 @@ type PagedResultDto<T> = {
   items: T[];
 };
 
-
+// Both PascalCase and camelCase variants are declared because the backend
+// returns inconsistent casing across different endpoints
 type DoctorSearchResultDto = {
   Id?: number;         id?: number;
   FirstName?: string;  firstName?: string;
@@ -39,6 +41,7 @@ export class DoctorSearchService {
 
   }
 
+  // TODO: remove — placeholder specialties used before the /specialty endpoint was wired up
   private specialties: Specialty[] = [
     {
       id: 0,
@@ -50,6 +53,7 @@ export class DoctorSearchService {
     }
   ]
 
+  // TODO: remove — stub data used before the /doctors endpoint was wired up
   private doctors: Doctor[] = [
     {
       id: 0,
@@ -172,6 +176,7 @@ export class DoctorSearchService {
   }
 
   loadReviewsByDoctorId(id: number): Observable<Review[]> {
+    // backend may return a plain array or a paged wrapper — handle both
     return this.httpClient
       .get<Review[] | { items: Review[] }>(`${this.baseUrl}/doctors/${id}/reviews`)
       .pipe(
@@ -193,7 +198,7 @@ export class DoctorSearchService {
     specialtyId?: number | null,
     lat?: number | null,
     lng?: number | null,
-    radiusKm: number = 3.5,
+    radiusKm: number = 3.5, // default search radius in kilometres
     page: number = 1,
     pageSize: number = 6
   ): Observable<Doctor[]> {

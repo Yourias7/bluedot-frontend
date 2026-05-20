@@ -17,6 +17,7 @@ import { DeleteAccountButton } from '../../../shared/components/delete-account-b
   templateUrl: './account-details.html',
   styleUrl: './account-details.scss',
 })
+// Patient account details page: loads profile from /account/me and supports per-field inline editing
 export class AccountDetails implements OnInit {
   @Input() patientInfo!: Patient;
 
@@ -41,6 +42,7 @@ export class AccountDetails implements OnInit {
     private patientService: PatientService,
     private authenticationServices: AuthenticationServices
   ) {
+    // PatientService currently returns stub data — /account/me in ngOnInit will override it
     const patient = this.patientService.getPatient();
     if (patient) {
       this.patientInfo = patient;
@@ -218,14 +220,14 @@ export class AccountDetails implements OnInit {
 
       const value = this.form.get(key)?.value;
 
-      if (key === 'role') continue;
+      if (key === 'role') continue; // role is display-only and must not be sent to the API
 
       if (key === 'dateOfBirth') {
-        patch.dateOfBirth = value ? value : null;
+        patch.dateOfBirth = value ? value : null; // send null explicitly to clear the field
         continue;
       }
 
-      (patch as any)[key] = value;
+      (patch as any)[key] = value; // all other fields map directly by name
     }
 
     return patch;

@@ -17,14 +17,15 @@ import { FormsModule } from '@angular/forms';
   styleUrls: ['./map-layout.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
+// Leaflet map view: plots doctor markers, shows user location, and opens a detail sidebar on marker click
 export class MapLayout implements AfterViewInit {
 
-  selectedDoctor?:Doctor;
-  zoomLevel:number = 14;
-  private map!: L.Map
-  private userMarker?: L.CircleMarker;
-  private userAccuracyCircle?: L.Circle;
-  private doctorMarkers: L.Marker[] = [];
+  selectedDoctor?: Doctor;
+  zoomLevel: number = 14;
+  private map!: L.Map;
+  private userMarker?: L.CircleMarker;        // blue dot for the user's position
+  private userAccuracyCircle?: L.Circle;      // semi-transparent circle showing GPS accuracy radius
+  private doctorMarkers: L.Marker[] = [];     // tracked so they can be cleared before re-rendering
   userLocationError: string | null = null;
   doctorLoadError: string | null = null;
   sidebarOpen = false;
@@ -186,8 +187,8 @@ export class MapLayout implements AfterViewInit {
       },
       {
         enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 0
+        timeout: 10000,  // ms before giving up on a fix
+        maximumAge: 0    // always request a fresh position, never use cache
       }
     );
   }
@@ -199,6 +200,7 @@ export class MapLayout implements AfterViewInit {
 
     const userLatLng = L.latLng(lat, lng);
 
+    // update existing markers in place rather than removing and re-adding them
     if (this.userMarker) {
       this.userMarker.setLatLng(userLatLng);
     } else {

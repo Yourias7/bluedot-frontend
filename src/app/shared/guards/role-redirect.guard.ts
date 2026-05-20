@@ -1,3 +1,5 @@
+// Redirects doctors and managers to their dedicated dashboards;
+// guests and patients fall through and reach the intended route
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 
@@ -17,5 +19,5 @@ export const roleRedirectGuard = () => {
     return router.createUrlTree(['/manager']);
   }
 
-  return true;
+  return true; // guest or patient — allow access to the route
 };

@@ -1,3 +1,5 @@
+// Route guard that allows only unauthenticated users (guests) to proceed;
+// authenticated users are redirected to their role-specific home route
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 
@@ -10,7 +12,7 @@ export const guestOnlyGuard = () => {
   const currentUserRole = authService.getCurrentUserRole();
 
   if (currentUserRole === 'guest') {
-    return true;
+    return true; // not logged in — allow access to the route
   }
 
   if (currentUserRole === 'doctor') {
@@ -25,5 +27,5 @@ export const guestOnlyGuard = () => {
     return router.createUrlTree(['/landing-page']);
   }
 
-  return router.createUrlTree(['/landing-page']);
+  return router.createUrlTree(['/landing-page']); // fallback for unknown roles
 };

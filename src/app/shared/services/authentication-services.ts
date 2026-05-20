@@ -7,6 +7,7 @@ import { environment } from '../../../environments/environment';
 import { UserRole } from '../domain/user-role';
 import { User } from '../domain/user';
 
+// Request/response DTOs for the /account endpoints
 export type LoginDto = {
   email: string;
   password: string;
@@ -42,6 +43,7 @@ type LoginResponseDto = {
   dateOfBirth?: string;
 };
 
+// Shape of the /account/me response — all fields optional to handle partial responses across roles
 export type AccountMeDto = {
   id?: number;
   firstName?: string;
@@ -60,17 +62,19 @@ export type AccountMeDto = {
 };
 
 export type UpdateAccountMeDto = Partial<AccountMeDto> & {
-  password?: string;
+  password?: string; // password is not part of AccountMeDto but can be changed via PATCH
 };
 
 @Injectable({
   providedIn: 'root',
 })
 
+// Manages authentication state (JWT token + role) via localStorage and BehaviorSubjects
 export class AuthenticationServices {
   private http = inject(HttpClient);
   private baseUrl = environment.apiUrl;
 
+  // seeded from localStorage so state survives a page refresh
   private currentUserRoleSubject = new BehaviorSubject<UserRole>(this.getRoleFromStorage());
   public currentUserRole$ = this.currentUserRoleSubject.asObservable();
 
@@ -205,8 +209,8 @@ export class AuthenticationServices {
     const normalizedRole = role.toLowerCase();
     if (normalizedRole === 'doctor') return 'doctor';
     if (normalizedRole === 'patient') return 'patient';
-    if (normalizedRole === 'manager' || normalizedRole === 'admin') return 'manager';
+    if (normalizedRole === 'manager' || normalizedRole === 'admin') return 'manager'; // backend may send 'admin' or 'manager'
 
-    return 'guest';
+    return 'guest'; // fallback for any unrecognised role string
   }
 }

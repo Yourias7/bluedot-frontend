@@ -6,11 +6,13 @@ import { DatePickerModule } from 'primeng/datepicker';
 import { AvailabilitySlot } from '../../../../shared/domain/availability-slot';
 import { DoctorService } from '../../../../shared/services/doctor-service';
 
+// Doctor availability page: view and toggle availability slots per day; calendar highlights days with appointments
+// Shape of the date object emitted by PrimeNG's calendar cell template context
 type PrimeNgCalendarDate = {
   day: number;
-  month: number;
+  month: number; // 0-based (January = 0)
   year: number;
-  otherMonth?: boolean;
+  otherMonth?: boolean; // true for dates belonging to the previous/next month shown in the grid
 };
 
 @Component({
@@ -23,11 +25,11 @@ export class DoctorAvailability {
   selectedDate: string | null = null;
   selectedDateObject: Date = new Date();
 
-  readonly minSelectableDate: Date = new Date();
+  readonly minSelectableDate: Date = new Date(); // prevents selecting past dates in the date picker
 
   availabilitySlots: AvailabilitySlot[] = [];
 
-  pendingAppointmentDates: string[] = [];
+  pendingAppointmentDates: string[] = [];    // YYYY-MM-DD dates used to highlight the calendar
   confirmedAppointmentDates: string[] = [];
 
   isEditMode = false;
@@ -96,6 +98,7 @@ export class DoctorAvailability {
     this.isLoading = true;
     this.errorMessage = '';
 
+    // appointments must be loaded first so slot statuses can be cross-referenced against them
     this.doctorservice.loadDoctorAppointments().subscribe({
       next: () => {
         this.pendingAppointmentDates = this.doctorservice.getPendingAppointmentDates();
@@ -299,10 +302,10 @@ export class DoctorAvailability {
 
   private formatPrimeNgCalendarDate(calendarDate: PrimeNgCalendarDate): string | null {
     if (calendarDate.otherMonth) {
-      return null;
+      return null; // ignore overflow dates from adjacent months
     }
 
-    const month = calendarDate.month + 1;
+    const month = calendarDate.month + 1; // convert from 0-based to 1-based
 
     const monthText = month.toString().padStart(2, '0');
     const dayText = calendarDate.day.toString().padStart(2, '0');

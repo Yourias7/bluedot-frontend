@@ -1,3 +1,4 @@
+// Service for submitting post-appointment reviews; reviews are scoped to a specific appointment
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -6,7 +7,7 @@ import { environment } from '../../../environments/environment';
 import { Review } from '../domain/review';
 
 export type CreateReviewRequestDto = {
-  rating: number;
+  rating: number;  // 1–5 star rating
   comment: string;
 };
 

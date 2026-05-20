@@ -1,3 +1,5 @@
+// HTTP interceptor that attaches the JWT token to every outgoing request
+// and handles global error redirects for 401, 403, and 500 responses
 import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
@@ -11,6 +13,7 @@ export const authInterceptor: HttpInterceptorFn = (request, next) => {
 
   const token = authService.getToken();
 
+  // only clone the request when a token exists to avoid unnecessary overhead
   const authenticatedRequest = token
     ? request.clone({
         setHeaders: {
@@ -22,7 +25,7 @@ export const authInterceptor: HttpInterceptorFn = (request, next) => {
   return next(authenticatedRequest).pipe(
     catchError(error => {
       if (error.status === 401) {
-        authService.logout();
+        authService.logout(); // token expired or invalid — clear session
         router.navigate(['/landing-page']);
       }
 
@@ -34,7 +37,7 @@ export const authInterceptor: HttpInterceptorFn = (request, next) => {
         router.navigate(['/500']);
       }
 
-      return throwError(() => error);
+      return throwError(() => error); // re-throw so individual callers can still handle it
     })
   );
 };

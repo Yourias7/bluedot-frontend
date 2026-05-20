@@ -28,7 +28,7 @@ import { managerOnlyGuard } from './shared/guards/manager-only.guard';
 import { Error404 } from './shared/components/error-404/error-404';
 import { Error403 } from './shared/components/error-403/error-403';
 import { Error500 } from './shared/components/error-500/error-500';
-
+// App's landing page
 export const routes: Routes = [
   {
     path: '',

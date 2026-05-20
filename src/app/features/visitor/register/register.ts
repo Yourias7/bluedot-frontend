@@ -19,8 +19,9 @@ import { of } from 'rxjs';
   templateUrl: './register.html',
   styleUrl: './register.scss',
 })
+// Registration page: tabbed form supporting both patient and doctor sign-up flows
 export class Register implements OnInit {
-  items: Specialty[] = [];
+  items: Specialty[] = []; // specialty list for the doctor registration multi-select
 
   patient_registerForm: FormGroup;
   doctor_registerForm: FormGroup;
@@ -44,7 +45,7 @@ export class Register implements OnInit {
 
     this.patient_registerForm = new FormGroup({
       email: new FormControl('', [Validators.required, Validators.email]),
-      pass: new FormControl('', [Validators.required, Validators.minLength(8), Validators.pattern('^(?=.*[A-Z]).*$')]),
+      pass: new FormControl('', [Validators.required, Validators.minLength(8), Validators.pattern('^(?=.*[A-Z]).*$')]), // min 8 chars, at least one uppercase
       confirmPass: new FormControl('', [Validators.required]),
       firstName: new FormControl('', [Validators.required]),
       lastName: new FormControl('', [Validators.required]),
@@ -122,6 +123,7 @@ export class Register implements OnInit {
   }
 
   submitPatient() {
+    // TODO: these initial assignments are overwritten immediately below — clean up
     this.errorMessage = 'Αποτυχία εγγραφής ασθενή. Ελέγξτε τα στοιχεία και δοκιμάστε ξανά.';
     this.successMessage = 'Η εγγραφή ολοκληρώθηκε επιτυχώς. Μπορείτε πλέον να συνδεθείτε.';
 
@@ -201,6 +203,7 @@ export class Register implements OnInit {
       return;
     }
 
+    // specialization can be a single object or an array depending on the listbox selection mode
     const selectedSpecialties = Array.isArray(formData.specialization)
       ? formData.specialization as Specialty[]
       : [formData.specialization as Specialty];
@@ -258,6 +261,7 @@ export class Register implements OnInit {
   }
 
   private mapGender(gender: string): string {
+    // backend expects PascalCase gender strings
     if (gender === 'male') {
       return 'Male';
     }

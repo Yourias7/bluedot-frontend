@@ -1,3 +1,4 @@
+// Shown when the server returns an unexpected error (500 Internal Server Error)
 import { Component } from '@angular/core';
 import { ReturnButton } from '../return-button/return-button';
 

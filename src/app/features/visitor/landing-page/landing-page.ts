@@ -11,15 +11,15 @@ import { Router } from '@angular/router';
   templateUrl: './landing-page.html',
   styleUrl: './landing-page.scss',
 })
+// Landing page: specialty + location search form that navigates to /search-results with query params
 export class LandingPage {
-  items: Specialty[] = [];
+  items: Specialty[] = []; // specialty options loaded from the API for the search dropdown
 
+  // values can be a fully resolved object (selected from dropdown) or a raw string (typed by user)
   selectedSpecialty: Specialty | string | null = null;
   selectedLocation: LocationSuggestion | string | null = null;
 
-  constructor(private searchService: DoctorSearchService, private router: Router) {
-
-  }
+  constructor(private searchService: DoctorSearchService, private router: Router) {}
 
   ngOnInit() {
     this.searchService.getSpecialties().subscribe((data) => {
@@ -32,10 +32,11 @@ export class LandingPage {
     this.selectedSpecialty = value;
 
     if (value && typeof value === 'object') {
-      return;
+      return; // already a resolved Specialty — nothing more to do
     }
 
     if (typeof value === 'string' && value.trim().length > 0) {
+      // try to match a typed string against the loaded list so we get an id for the API call
       const needle = value.trim().toLowerCase();
       this.selectedSpecialty =
         this.items.find(item => item.name?.toLowerCase() === needle) ?? value;
@@ -74,6 +75,7 @@ export class LandingPage {
     }
 
     if (typeof value === 'string' && value.trim().length > 0) {
+      // free-text entry — only proceed if it matches a known specialty
       const needle = value.trim().toLowerCase();
       return (
         this.items.find(item => item.name?.toLowerCase() === needle) ?? null
@@ -90,6 +92,6 @@ export class LandingPage {
       return value;
     }
 
-    return null;
+    return null; // free-text location without selecting a suggestion is ignored
   }
 }
